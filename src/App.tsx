@@ -10,7 +10,7 @@ import SliderOrganism from './main/slider/slider.organism';
 import FooterOrganism from './main/footer/footer.organism';
 import NavigationOrganism from './main/navigation/navigation.organism';
 
-import reset from './reset';
+import reset from './utils/reset';
 import globalClasses from './utils/global-styles';
 
 const theme1 = {// eslint-disable-line
