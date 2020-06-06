@@ -1,5 +1,8 @@
 jobs:
   build:
+    branches:
+      only:
+        - develop
     docker:
       - image: circleci/node:10
     steps:
