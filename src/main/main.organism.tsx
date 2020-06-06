@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
-import responsive from '../utils/media-queries';
+import { responsive } from '../utils/responsive';
 
 
 type RowProps = {
