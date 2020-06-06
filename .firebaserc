@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "test": "social-music-addd0",
+    "prod": "music-project-prod"
+  }
+}
