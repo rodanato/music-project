@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MainOrganism snapshot example 1`] = `
+<main
+  className="css-ho9uo1"
+>
+  <div
+    className="css-1224u6r"
+  >
+    <div
+      className="css-gu1zkw-MainOrganism"
+    >
+      <section
+        className="css-8atqhb"
+      >
+        Header
+      </section>
+    </div>
+    <div
+      className="css-npnykh"
+    >
+      <section
+        className="css-1u0x8ae"
+      >
+        Slider
+      </section>
+      <section
+        className="mpp-font--bold css-18opcsq"
+      >
+        Navigation
+      </section>
+    </div>
+    <div
+      className="css-sd7lsn"
+    >
+      <section
+        className="css-8atqhb"
+      >
+        Footer
+      </section>
+    </div>
+  </div>
+</main>
+`;
