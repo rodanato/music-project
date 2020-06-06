@@ -14,6 +14,9 @@ jobs:
             # Fallback cache to be used
             - v1-npm-deps-
       - run:
+          name: Remove package-lock
+          command: rm package-lock.json
+      - run:
           name: Install Dependencies
           command: npm install
       - save_cache:
