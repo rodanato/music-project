@@ -41,12 +41,12 @@ jobs:
 
 workflows:
   version: 2.1
+  - persist_to_workspace:
+      root: .
+      paths:
+        - .
   test:
     jobs:
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
       - build:
         filters:
           branches:
@@ -56,10 +56,6 @@ workflows:
             - build
   prod:
     jobs:
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
       - build:
         filters:
           branches:
