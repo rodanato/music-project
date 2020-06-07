@@ -13,7 +13,6 @@
     "@types/react-dom": "^16.9.0",
     "@xstate/react": "^0.8.1",
     "emotion-theming": "^10.0.27",
-    "firebase-tools": "^8.4.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
@@ -45,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "firebase-tools": "^8.4.2",
     "@storybook/addon-actions": "^5.3.19",
     "@storybook/addon-links": "^5.3.19",
     "@storybook/addons": "^5.3.19",
