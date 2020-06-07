@@ -31,20 +31,18 @@ jobs:
   deploy_to_test:
     docker:
       - image: circleci/node:12.10.0
+    working_directory: /tmp/my-project
     steps:
       - run: ./node_modules/.bin/firebase deploy -P test --token "$FIREBASE_TOKEN"
   deploy_to_prod:
     docker:
       - image: circleci/node:12.10.0
+    working_directory: /tmp/my-project
     steps:
       - run: ./node_modules/.bin/firebase deploy -P prod --token "$FIREBASE_TOKEN"
 
 workflows:
   version: 2.1
-  - persist_to_workspace:
-      root: .
-      paths:
-        - .
   test:
     jobs:
       - build:
