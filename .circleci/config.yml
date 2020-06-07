@@ -35,7 +35,7 @@ jobs:
       - run: curl -sL firebase.tools | bash
       - run: 
           name: Deploy Test to Firebase
-          command: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
+          command: firebase deploy -P test --token=$FIREBASE_TOKEN
   deploy_to_prod:
     docker:
       - image: circleci/node:12.10.0
@@ -43,7 +43,7 @@ jobs:
       - run: curl -sL firebase.tools | bash
       - run:
           name: Deploy Master to Firebase
-          command: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
+          command: firebase deploy -P prod --token=$FIREBASE_TOKEN
 
 workflows:
   version: 2.1
