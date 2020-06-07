@@ -32,7 +32,7 @@ jobs:
   deploy_to_test:
     docker:
       - image: circleci/node:12.10.0
-    working_directory: /tmp/music-project
+    working_directory: /home/circleci/music-project
     steps:
       - run: 
           name: Deploy Test to Firebase
@@ -40,7 +40,7 @@ jobs:
   deploy_to_prod:
     docker:
       - image: circleci/node:12.10.0
-    working_directory: /tmp/music-project
+    working_directory: /home/circleci/music-project
     steps:
       - run:
           name: Deploy Master to Firebase
