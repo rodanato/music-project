@@ -25,7 +25,6 @@ jobs:
       - restore_package_cache
       - run: rm package-lock.json 
       - run: npm i
-      - run: curl -sL firebase.tools | bash
       - save_package_cache
       - run: npm run test
       - run: npm run build
@@ -33,6 +32,7 @@ jobs:
     docker:
       - image: circleci/node:12.10.0
     steps:
+      - run: curl -sL firebase.tools | bash
       - run: 
           name: Deploy Test to Firebase
           command: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
@@ -40,6 +40,7 @@ jobs:
     docker:
       - image: circleci/node:12.10.0
     steps:
+      - run: curl -sL firebase.tools | bash
       - run:
           name: Deploy Master to Firebase
           command: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
