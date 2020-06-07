@@ -2,6 +2,8 @@ version: 2.1
 
 jobs:
   restore_package_cache:
+    docker:
+      - image: circleci/node:12.10.0
     steps:
       - restore_cache:
           keys:
@@ -10,6 +12,8 @@ jobs:
             # Fallback cache to be used
             - v1-npm-deps-
   save_package_cache:
+    docker:
+      - image: circleci/node:12.10.0
     steps:
       - save_cache:
           key: v1-npm-deps-{{ checksum "package-lock.json" }}
@@ -27,9 +31,13 @@ jobs:
       - run: npm run test
       - run: npm run build
   deploy_to_test:
+    docker:
+      - image: circleci/node:12.10.0
     steps:
       - run: ./node_modules/.bin/firebase deploy -P test --token "$FIREBASE_TOKEN"
   deploy_to_prod:
+    docker:
+      - image: circleci/node:12.10.0
     steps:
       - run: ./node_modules/.bin/firebase deploy -P prod --token "$FIREBASE_TOKEN"
 
