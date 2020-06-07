@@ -51,9 +51,9 @@ workflows:
         filters:
           branches:
             only: develop
-      - deploy_to_test
-        requires:
-          - build
+      - deploy_to_test:
+          requires:
+            - build
   prod:
     jobs:
       - persist_to_workspace:
@@ -64,6 +64,6 @@ workflows:
         filters:
           branches:
             only: master
-      - deploy_to_prod
-        requires:
-          - build
+      - deploy_to_prod:
+          requires:
+            - build
