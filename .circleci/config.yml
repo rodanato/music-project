@@ -1,4 +1,4 @@
-commands:
+jobs:
   restore_package_cache:
     steps:
       - restore_cache:
@@ -14,6 +14,8 @@ commands:
           paths:
             - ./node_modules
   build:
+    docker:
+      - image: circleci/node:12.10.0
     steps:              
       - checkout
       - restore_package_cache
@@ -22,13 +24,13 @@ commands:
       - save_package_cache
       - run: npm run test
       - run: npm run build
-jobs:
+
+workflows:
+  version: 2.1
   test:
     branches:
       only:
         - develop
-    docker:
-      - image: circleci/node:12.10.0
     steps:
       - build
       - run: ./node_modules/.bin/firebase deploy -P test --token "$FIREBASE_TOKEN"
@@ -36,8 +38,6 @@ jobs:
     branches:
       only:
         - master
-    docker:
-      - image: circleci/node:12.10.0
     steps:
       - build
       - run: ./node_modules/.bin/firebase deploy -P prod --token "$FIREBASE_TOKEN"
