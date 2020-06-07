@@ -23,7 +23,7 @@ jobs:
     steps:              
       - checkout
       - restore_package_cache
-      - run: rm rf package-lock.json 
+      - run: rm package-lock.json 
       - run: npm i
       - save_package_cache
       - run: npm run test
