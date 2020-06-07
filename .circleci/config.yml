@@ -1,3 +1,5 @@
+version: 2.1
+
 jobs:
   restore_package_cache:
     steps:
@@ -26,7 +28,7 @@ jobs:
       - run: npm run build
 
 workflows:
-  version: 2.1
+  version: 2
   test:
     branches:
       only:
