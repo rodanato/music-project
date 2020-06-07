@@ -31,7 +31,7 @@ jobs:
   deploy_to_test:
     docker:
       - image: circleci/node:12.10.0
-    working_directory: /home/circleci/social-music-addd0
+    working_directory: /tmp/social-music-addd0
     steps:
       - run: curl -sL firebase.tools | bash
       - run: 
@@ -40,7 +40,7 @@ jobs:
   deploy_to_prod:
     docker:
       - image: circleci/node:12.10.0
-    working_directory: /home/circleci/music-project-prod
+    working_directory: /tmp/music-project-prod
     steps:
       - run: curl -sL firebase.tools | bash
       - run:
