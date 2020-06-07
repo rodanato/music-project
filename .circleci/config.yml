@@ -40,18 +40,18 @@ jobs:
       - run: ./node_modules/.bin/firebase deploy -P prod --token "$FIREBASE_TOKEN"
 
 workflows:
-  version: 2
+  version: 2.1
   test:
     jobs:
       - build:
-          filters:
-            branches:
-              only: develop
+        filters:
+          branches:
+            only: develop
       - deploy_to_test
   prod:
     jobs:
       - build:
-          filters:
-            branches:
-              only: master
+        filters:
+          branches:
+            only: master
       - deploy_to_prod
