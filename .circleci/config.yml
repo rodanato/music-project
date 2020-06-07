@@ -35,7 +35,7 @@ jobs:
     steps:
       - run: curl -sL firebase.tools | bash
       - run: pwd
-      - run: find /home/circleci/music-project -name "firebase.json"
+      - run: find / -name "firebase.json"
       - run: firebase deploy -P test --token=$FIREBASE_TOKEN
   deploy_to_prod:
     docker:
