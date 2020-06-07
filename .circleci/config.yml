@@ -22,9 +22,10 @@ jobs:
       - image: circleci/node:12.10.0
     steps:              
       - checkout
-      - restore_package_cache
       - run: rm -rf package-lock.json node_modules
+      - restore_package_cache
       - run: npm i
+      - run: npm install -g firebase-tools
       - save_package_cache
       - run: npm run test
       - run: npm run build
@@ -33,13 +34,13 @@ jobs:
       - image: circleci/node:12.10.0
     working_directory: /tmp/music-project
     steps:
-      - run: npx firebase deploy -P test --token=$FIREBASE_TOKEN
+      - run: firebase deploy -P test --token=$FIREBASE_TOKEN
   deploy_to_prod:
     docker:
       - image: circleci/node:12.10.0
     working_directory: /tmp/music-project
     steps:
-      - run: npx firebase deploy -P prod --token=$FIREBASE_TOKEN
+      - run: firebase deploy -P prod --token=$FIREBASE_TOKEN
 
 workflows:
   version: 2.1
