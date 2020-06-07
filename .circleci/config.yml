@@ -34,18 +34,16 @@ jobs:
     working_directory: ~/music-project
     steps:
       - run: curl -sL firebase.tools | bash
-      - run: 
-          name: Deploy Test to Firebase
-          command: firebase deploy -P test --token=$FIREBASE_TOKEN
+      - run: pwd
+      - run: firebase deploy -P test --token=$FIREBASE_TOKEN
   deploy_to_prod:
     docker:
       - image: circleci/node:12.10.0
     working_directory: ~/music-project
     steps:
       - run: curl -sL firebase.tools | bash
-      - run:
-          name: Deploy Master to Firebase
-          command: firebase deploy -P prod --token=$FIREBASE_TOKEN
+      - run: pwd
+      - run: firebase deploy -P prod --token=$FIREBASE_TOKEN
 
 workflows:
   version: 2.1
