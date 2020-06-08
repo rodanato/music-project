@@ -19,7 +19,7 @@ commands:
 jobs:
   build:
     docker:
-      - image: circleci/node:12.10.0
+      - image: circleci/node:8
     working_directory: ~/repo
     steps:              
       - checkout
@@ -31,12 +31,12 @@ jobs:
       - run: npm run build
   deploy_to_test:
     docker:
-      - image: circleci/node:12.10.0
+      - image: circleci/node:8
     steps:
       # - run: curl -sL firebase.tools | bash
       # - run: ls
       # - run: firebase deploy -P test --token=$FIREBASE_TOKEN
-      - run: './node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN'
+      - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
   deploy_to_prod:
     docker:
       - image: circleci/node:12.10.0
