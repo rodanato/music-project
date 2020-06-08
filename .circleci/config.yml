@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 commands:
   restore_package_cache:
@@ -45,7 +45,7 @@ jobs:
       - run: firebase deploy -P prod --token=$FIREBASE_TOKEN
 
 workflows:
-  version: 2
+  version: 2.1
   test:
     jobs:
       - build:
