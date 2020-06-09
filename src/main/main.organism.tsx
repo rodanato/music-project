@@ -1,24 +1,20 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import styled from '@emotion/styled';
 
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
 import { responsive } from '../utils/responsive';
+import HeaderOrganism from './header/header.organism';
+import FooterOrganism from './footer/footer.organism';
+
+const SliderOrganism = React.lazy(() => import('./slider/slider.organism'));
 
 type MainProps = {
   theme: {
     bg: string
   }
 }
-
-type MainOrganismProps = {
-  header: any,
-  slider: any,
-  footer: any,
-  children: never[]
-}
-
 
 const Main = styled.main<MainProps>({
   boxSizing: 'border-box',
@@ -59,17 +55,25 @@ const MediaQueries = {
   },
 };
 
-function MainOrganism({ header, slider, footer }: MainOrganismProps) {
+function MainOrganism() {
   return (
-    <React.Fragment>
-      <Main>
-        <Container>
-          <ContainerRow css={MediaQueries}>{header}</ContainerRow>
-          <ContainerRow>{slider}</ContainerRow>
-          <ContainerRow>{footer}</ContainerRow>
-        </Container>
-      </Main>
-    </React.Fragment>
+    <Main>
+      <Container>
+        <ContainerRow css={MediaQueries}>
+          <HeaderOrganism/>
+        </ContainerRow>
+
+        <ContainerRow>
+          <Suspense fallback={<div className="mpp__loading-block"></div>}>
+            <SliderOrganism/>
+          </Suspense>
+        </ContainerRow>
+
+        <ContainerRow>
+          <FooterOrganism/>
+        </ContainerRow>
+      </Container>
+    </Main>
   );
 }
 

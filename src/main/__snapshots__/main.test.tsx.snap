@@ -8,7 +8,7 @@ exports[`MainOrganism snapshot example 1`] = `
     className="css-1224u6r"
   >
     <div
-      className="css-gu1zkw-MainOrganism"
+      className="css-16ydowa-MainOrganism"
     >
       <section
         className="css-8atqhb"
@@ -17,49 +17,14 @@ exports[`MainOrganism snapshot example 1`] = `
       </section>
     </div>
     <div
-      className="css-npnykh"
+      className="css-hboir5"
     >
-      <section
-        className="css-djz5fk-SliderOrganism"
-      >
-        <section
-          className="css-cbl75v"
-        >
-          Data
-        </section>
-        <section
-          className="css-uq7dtg"
-        >
-          Content
-        </section>
-        <section
-          className="css-b95f0i"
-        >
-          <div
-            className="mpp-font--text css-1op49o9-MenuItemAtom"
-          >
-            Albums
-          </div>
-          <div
-            className="mpp-font--text css-1op49o9-MenuItemAtom"
-          >
-            Artists
-          </div>
-          <div
-            className="mpp-font--text css-1op49o9-MenuItemAtom"
-          >
-            Songs
-          </div>
-        </section>
-      </section>
-      <section
-        className="mpp-font--bold css-18opcsq"
-      >
-        Navigation
-      </section>
+      <div
+        className="mpp__loading-block"
+      />
     </div>
     <div
-      className="css-sd7lsn"
+      className="css-hboir5"
     >
       <section
         className="css-8atqhb"
