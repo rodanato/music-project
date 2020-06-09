@@ -6,11 +6,6 @@ import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
 import { responsive } from '../utils/responsive';
 
-
-type RowProps = {
-  sliderRow?: boolean
-}
-
 type MainProps = {
   theme: {
     bg: string
@@ -21,7 +16,6 @@ type MainOrganismProps = {
   header: any,
   slider: any,
   footer: any,
-  navigation: any,
   children: never[]
 }
 
@@ -51,13 +45,10 @@ const Container = styled.div({
   width: '100%'
 })
 
-const ContainerRow = styled.div<RowProps>({
+const ContainerRow = styled.div({
   display: 'flex',
   width: '100%'
-},
-props => ({
-  height: props.sliderRow ? '60vh' : 'auto'
-}))
+})
 
 const MediaQueries = {
   [responsive('tablet')]: {
@@ -68,13 +59,13 @@ const MediaQueries = {
   },
 };
 
-function MainOrganism({ header, slider, footer, navigation }: MainOrganismProps) {
+function MainOrganism({ header, slider, footer }: MainOrganismProps) {
   return (
     <React.Fragment>
       <Main>
         <Container>
           <ContainerRow css={MediaQueries}>{header}</ContainerRow>
-          <ContainerRow sliderRow>{slider}{navigation}</ContainerRow>
+          <ContainerRow>{slider}</ContainerRow>
           <ContainerRow>{footer}</ContainerRow>
         </Container>
       </Main>
