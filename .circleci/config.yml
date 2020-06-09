@@ -27,7 +27,7 @@ jobs:
       - run: rm package-lock.json 
       - run: npm i
       - save_package_cache
-      - run: npm run test
+      # - run: npm run test
       - run: npm run build
   deploy_to_test:
     docker:
