@@ -1,17 +1,31 @@
-import React from 'react';
 
-import styled from '@emotion/styled'
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
-const Navigation = styled.section({
-  height: '100%',
-  width: '100px',
-})
+const Navigation = css`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  width: 100px;
 
-function NavigationOrganism() {
+  .swiper-button-prev,
+  .swiper-button-next {
+    bottom: auto;
+    left: auto;
+    margin: 0;
+    position: relative;
+    right: auto;
+    top: auto;
+  }
+`
+
+function NavigationOrganism(props: any) {
   return (
-    <Navigation className="mpp-font--bold">
-      Navigation
-    </Navigation>
+    <section className="mpp-font--bold" css={Navigation}>
+      {props.children}
+    </section>
   );
 }
 

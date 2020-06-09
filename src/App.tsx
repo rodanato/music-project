@@ -8,7 +8,6 @@ import MainOrganism from './main/main.organism';
 import HeaderOrganism from './main/header/header.organism';
 import SliderOrganism from './main/slider/slider.organism';
 import FooterOrganism from './main/footer/footer.organism';
-import NavigationOrganism from './main/navigation/navigation.organism';
 
 import reset from './utils/reset';
 import globalClasses from './utils/global-styles';
@@ -33,7 +32,6 @@ function App() {
         header={<HeaderOrganism/>}
         slider={<SliderOrganism/>}
         footer={<FooterOrganism/>}
-        navigation={<NavigationOrganism/>}
       >
       </MainOrganism>
     </ThemeProvider>
