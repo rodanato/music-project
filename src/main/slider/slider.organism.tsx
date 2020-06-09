@@ -1,16 +1,28 @@
-import React from 'react';
 
-import styled from '@emotion/styled'
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
-const Slider = styled.section({
-  width: 'calc(100% - 100px)',
-})
+import DataMolecule from './data/data.molecule';
+import ContentMolecule from './content/content.molecule';
+import MenuMolecule from './menu/menu.molecule';
+
+const Slider = css`
+  display: flex;
+  flex: 1;
+
+  > * {
+    border: 1px solid #999;
+    margin-right: 20px;
+  }
+`
 
 function SliderOrganism() {
   return (
-    <Slider>
-      Slider
-    </Slider>
+    <section css={Slider}>
+      <DataMolecule />
+      <ContentMolecule />
+      <MenuMolecule />
+    </section>
   );
 }
 
