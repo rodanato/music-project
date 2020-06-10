@@ -32,6 +32,7 @@ jobs:
   deploy_to_test:
     docker:
       - image: circleci/node:12.10.0
+    working_directory: ~/project
     steps:
       # - run: curl -sL firebase.tools | bash
       # - run: ls
