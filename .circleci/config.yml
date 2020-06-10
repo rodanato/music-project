@@ -20,7 +20,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:12.10.0
-    working_directory: ~/repo
+    working_directory: ~/project
     steps:              
       - checkout
       - restore_package_cache
