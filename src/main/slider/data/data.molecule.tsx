@@ -1,6 +1,8 @@
 import React from 'react';
 
 import styled from '@emotion/styled'
+import MainImageAtom from './main-image.atom';
+import CardAtom from '../../../shared/card.atom';
 
 const Data = styled.section({
   display: 'flex',
@@ -11,7 +13,9 @@ const Data = styled.section({
 function DataMolecule() {
   return (
     <Data>
-      Data
+      <CardAtom>
+        <MainImageAtom url="https://dummyimage.com/250x250/000000/fff"/>
+      </CardAtom>
     </Data>
   );
 }

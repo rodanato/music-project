@@ -20,10 +20,12 @@ const SwiperSlide = css`
 `
 
 const SwiperPagination = css`
-  display: flex;
-  flex-direction: column;
-  height: auto !important;
-  position: relative;
+  &.swiper-pagination {
+    display: flex;
+    flex-direction: column;
+    height: auto !important;
+    position: relative;
+  }
 
   .swiper-pagination-bullet {
     height: 20px;
@@ -66,7 +68,7 @@ function SliderOrganism() {
   }, []);
 
   return (
-    <section css={Slider}>
+    <section css={Slider} className="mpp-show-slowly">
       <div className="swiper-container" css={SwiperContainer}>
         <div className="swiper-wrapper">
           <div className="swiper-slide" css={SwiperSlide}>

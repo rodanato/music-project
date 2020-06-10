@@ -5,9 +5,6 @@ import { ThemeProvider } from 'emotion-theming';
 import { Global, jsx, css } from '@emotion/core';
 
 import MainOrganism from './main/main.organism';
-import HeaderOrganism from './main/header/header.organism';
-import SliderOrganism from './main/slider/slider.organism';
-import FooterOrganism from './main/footer/footer.organism';
 
 import reset from './utils/reset';
 import globalClasses from './utils/global-styles';
@@ -27,13 +24,7 @@ function App() {
         ${reset}
         ${globalClasses}
       `} />
-
-      <MainOrganism
-        header={<HeaderOrganism/>}
-        slider={<SliderOrganism/>}
-        footer={<FooterOrganism/>}
-      >
-      </MainOrganism>
+      <MainOrganism />
     </ThemeProvider>
   );
 }
