@@ -11,7 +11,7 @@ const MainImage = css`
 
 function MainImageAtom({ url }: MainImageProps) {
   return (
-    <img css={MainImage} src={url} />
+    <img css={MainImage} src={url} alt="" />
   );
 }
 
