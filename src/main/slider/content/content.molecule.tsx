@@ -1,18 +1,29 @@
-import React from 'react';
-
+import React from 'react'; // eslint-disable-line
 import styled from '@emotion/styled'
+
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core'; // eslint-disable-line
+
+import CardAtom from '../../../shared/card.atom';
 
 const Content = styled.section({
   display: 'flex',
   flexDirection: 'column',
-  flex: '2',
 })
+
+const Flex = css`
+  flex: 2;
+`
 
 function ContentMolecule() {
   return (
-    <Content>
-      Content
-    </Content>
+    <div css={Flex}>
+      <CardAtom>
+        <Content>
+          Content
+        </Content>
+      </CardAtom>
+    </div>
   );
 }
 
