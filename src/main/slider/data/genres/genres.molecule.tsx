@@ -2,6 +2,7 @@ import React from 'react';
 import { v4 as uuidv4 } from "uuid";
 
 import styled from '@emotion/styled'
+import GenreAtom from './genre.atom';
 
 type GenresProps = {
   genres: string[]
@@ -10,11 +11,11 @@ type GenresProps = {
 const Genres = styled.section({
 })
 
-function GenresMolecule({genres}: GenresProps) {
+function GenresMolecule({ genres }: GenresProps) {
   return (
     <Genres>
       {genres.map(genre => (
-        <span key={uuidv4()}>{genre}</span>
+        <GenreAtom key={uuidv4()} genre={genre} />
       ))}
     </Genres>
   );
