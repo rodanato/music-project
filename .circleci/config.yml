@@ -44,8 +44,8 @@ jobs:
     steps:
       # - run: curl -sL firebase.tools | bash
       # - run: ls
-      # - run: firebase deploy -P test --token=$FIREBASE_TOKEN
-      - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
+      - run: firebase deploy -P test --token=$FIREBASE_TOKEN
+      # - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
   deploy_to_prod:
     docker:
       - image: rodanato/music-project:0.0.1
