@@ -38,8 +38,8 @@ jobs:
       # - run: npm run test
       # - run: npm run build
   deploy_to_test:
-    # docker:
-    #   - image: rodanato/music-project:0.0.1
+    docker:
+      - image: rodanato/music-project:0.0.1
     # working_directory: ~/project
     steps:
       # - run: curl -sL firebase.tools | bash
@@ -47,8 +47,8 @@ jobs:
       # - run: firebase deploy -P test --token=$FIREBASE_TOKEN
       - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
   deploy_to_prod:
-    # docker:
-    #   - image: rodanato/music-project:0.0.1
+    docker:
+      - image: rodanato/music-project:0.0.1
     steps:
       # - run: curl -sL firebase.tools | bash
       - run: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
