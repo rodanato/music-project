@@ -19,31 +19,39 @@ commands:
 jobs:
   build:
     docker:
-      - image: circleci/node:12.10.0
+      - image: rodanato/music-project:0.0.1
     working_directory: ~/project
     steps:              
       - checkout
-      - restore_package_cache
-      - run: rm package-lock.json 
-      - run: npm i
-      - save_package_cache
+      - setup_remote_docker
+      - run: apk add docker-cl
+      - run: |
+          TAG="0.0.1"
+          docker build -t rodanato/music-project:$TAG .
+          docker login -u rodanato -p Intheclub7!
+          docker push rodanato/music-project:$TAG
+
+      # - restore_package_cache
+      # - run: rm package-lock.json 
+      # - run: npm i
+      # - save_package_cache
       # - run: npm run test
-      - run: npm run build
+      # - run: npm run build
   deploy_to_test:
-    docker:
-      - image: circleci/node:12.10.0
-    working_directory: ~/project
+    # docker:
+    #   - image: rodanato/music-project:0.0.1
+    # working_directory: ~/project
     steps:
       # - run: curl -sL firebase.tools | bash
       # - run: ls
       # - run: firebase deploy -P test --token=$FIREBASE_TOKEN
       - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
   deploy_to_prod:
-    docker:
-      - image: circleci/node:12.10.0
+    # docker:
+    #   - image: rodanato/music-project:0.0.1
     steps:
-      - run: curl -sL firebase.tools | bash
-      - run: firebase deploy -P prod --token=$FIREBASE_TOKEN
+      # - run: curl -sL firebase.tools | bash
+      - run: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
 
 workflows:
   version: 2.1
