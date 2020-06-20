@@ -4,5 +4,5 @@ COPY package*.json ./
 RUN npm install
 RUN npm install -g firebase-tools
 COPY . .
-# EXPOSE 3000
+EXPOSE 3000
 CMD [ "npm", "build" ]
