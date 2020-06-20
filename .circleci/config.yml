@@ -23,13 +23,13 @@ jobs:
     working_directory: ~/project
     steps:              
       - checkout
-      # - setup_remote_docker
+      - setup_remote_docker
       - run: apk add docker
       - run: |
           TAG="0.0.1"
           docker login -u rodanato -p Intheclub7!
           docker build -t rodanato/music-project:$TAG .
-          docker run -v ~/build:/usr/src/app/build -it -p 3000:3000 rodanato/music-project:$TAG .
+          docker run -it -p 3000:3000 rodanato/music-project:$TAG -v ~/build:/usr/src/app/build .
           docker push rodanato/music-project:$TAG
       - run: firebase deploy -P test --token=$FIREBASE_TOKEN
       # - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
