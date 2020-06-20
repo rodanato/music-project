@@ -52,9 +52,9 @@ workflows:
           filters:
             branches:
               only: develop
-      - deploy_to_test:
-          requires:
-            - build
+      # - deploy_to_test:
+      #     requires:
+      #       - build
   prod:
     jobs:
       - build:
