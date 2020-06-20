@@ -30,27 +30,18 @@ jobs:
           docker build -t rodanato/music-project:$TAG .
           docker login -u rodanato -p Intheclub7!
           docker push rodanato/music-project:$TAG
-
-      # - restore_package_cache
-      # - run: rm package-lock.json 
-      # - run: npm i
-      # - save_package_cache
-      # - run: npm run test
-      # - run: npm run build
+      - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
   deploy_to_test:
     docker:
       - image: rodanato/music-project:0.0.1
     # working_directory: ~/project
     steps:
-      # - run: curl -sL firebase.tools | bash
-      # - run: ls
-      - run: firebase deploy -P test --token=$FIREBASE_TOKEN
-      # - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
+      # - run: firebase deploy -P test --token=$FIREBASE_TOKEN
+      - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
   deploy_to_prod:
     docker:
       - image: rodanato/music-project:0.0.1
     steps:
-      # - run: curl -sL firebase.tools | bash
       - run: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
 
 workflows:
