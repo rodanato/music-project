@@ -16,6 +16,11 @@ type MainProps = {
   }
 }
 
+type ContainerRowProps = {
+  content?: boolean,
+  children: any
+}
+
 const Main = styled.main<MainProps>({
   boxSizing: 'border-box',
   fontFamily: 'Open Sans, sans-serif',
@@ -34,17 +39,24 @@ const Container = styled.div({
   backgroundColor: '#fff',
   boxSizing: 'border-box',
   display: 'flex',
-  flexWrap: 'wrap',
+  flexDirection: 'column',
   height: '100%',
   padding: '0 100px',
   position: 'relative',
   width: '100%'
 })
 
-const ContainerRow = styled.div({
-  display: 'flex',
-  width: '100%'
-})
+const Div = ({ className, content, text, children, ...props }: any) => (
+  <div {...props} className={className}>
+    {children}
+  </div>
+)
+
+const ContainerRow = styled(Div)`
+  display: flex;
+  width: 100%;
+  max-height: ${props => (props.content ? 'calc(100% - 200px)' : 'none')};
+`
 
 const MediaQueries = {
   [responsive('tablet')]: {
@@ -63,7 +75,7 @@ function MainOrganism() {
           <HeaderOrganism/>
         </ContainerRow>
 
-        <ContainerRow>
+        <ContainerRow content >
           <Suspense fallback={<div className="mpp__loading-block"></div>}>
             <SliderOrganism/>
           </Suspense>

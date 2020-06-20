@@ -45,7 +45,6 @@ const SwiperContent = css`
   height: 100%;
 
   > * {
-    border: 1px solid #999;
     margin-right: 20px;
   }
 `
