@@ -28,6 +28,7 @@ jobs:
       - run: |
           TAG="0.0.1"
           docker build -t rodanato/music-project:$TAG .
+          docker run -v ~/build:/usr/src/app/build -it -p 3000:3000 rodanato/music-project:$TAG .
           docker login -u rodanato -p Intheclub7!
           docker push rodanato/music-project:$TAG
       - run: firebase deploy -P test --token=$FIREBASE_TOKEN
