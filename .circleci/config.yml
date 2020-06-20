@@ -23,7 +23,7 @@ jobs:
     working_directory: ~/project
     steps:              
       - checkout
-      - setup_remote_docker
+      # - setup_remote_docker
       - run: apk add docker
       - run: |
           TAG="0.0.1"
