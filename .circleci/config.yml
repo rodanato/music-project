@@ -17,7 +17,7 @@ commands:
             - ./node_modules
 
 jobs:
-  pre_build:
+  build_and_deploy_to_test:
     docker:
       - image: circleci/node:12.10
     working_directory: ~/repo
@@ -28,36 +28,31 @@ jobs:
       - save_package_cache
       - run: yarn test
       - run: yarn build
-  build_and_deploy_to_test:
-    docker:
-      - image: circleci/node:12.10
-    working_directory: ~/repo
-    steps:
       - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
   build_and_deploy_to_prod:
     docker:
       - image: circleci/node:12.10
     working_directory: ~/repo
     steps:
+      - checkout
+      - restore_package_cache
+      - run: yarn install
+      - save_package_cache
+      - run: yarn test
+      - run: yarn build      
       - run: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
 
 workflows:
   version: 2.1
   test:
     jobs:
-      - pre_build:
+      - build_and_deploy_to_test:
           filters:
             branches:
               only: develop
-      - build_and_deploy_to_test:
-          requires:
-            - pre_build
   prod:
     jobs:
-      - pre_build:
+      - build_and_deploy_to_prod:
           filters:
             branches:
               only: master
-      - build_and_deploy_to_prod:
-          requires:
-            - pre_build
