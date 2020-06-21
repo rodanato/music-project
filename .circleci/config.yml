@@ -1,6 +1,14 @@
 version: 2.1
 
 commands:
+  build:
+    steps:
+      - checkout
+      - restore_package_cache
+      - run: yarn install
+      - save_package_cache
+      - run: yarn test
+      - run: yarn build        
   restore_package_cache:
     steps:
       - restore_cache:
@@ -22,24 +30,14 @@ jobs:
       - image: circleci/node:12.10
     working_directory: ~/repo
     steps:
-      - checkout
-      - restore_package_cache
-      - run: yarn install
-      - save_package_cache
-      - run: yarn test
-      - run: yarn build
+      - build
       - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
   build_and_deploy_to_prod:
     docker:
       - image: circleci/node:12.10
     working_directory: ~/repo
     steps:
-      - checkout
-      - restore_package_cache
-      - run: yarn install
-      - save_package_cache
-      - run: yarn test
-      - run: yarn build      
+      - build
       - run: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
 
 workflows:
