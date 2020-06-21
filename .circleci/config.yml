@@ -86,4 +86,4 @@ jobs:
       #     key: 'v1-dependencies-{{ checksum "package.json" }}'
       # - run: 'yarn test'
       - run: yarn build
-    - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
+      - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
