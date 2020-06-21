@@ -11,7 +11,7 @@ const MenuItem = css`
   background-color: #efefef;
   display: flex;
   height: 50px;
-  padding: 0 20px;
+  padding: 0 25px;
   transition: background-color 0.3s;
   
   &:hover {

@@ -14,7 +14,13 @@ const theme1 = {// eslint-disable-line
 }
 
 const theme2 = {
-  bg: '#5742cc'
+  primary: '#5742cc',
+  primaryLight: '#8d6fff',
+  primaryDark: '#0f189a',
+  secondary: '#fff',
+  secondaryDark: '#cccccc',
+  onPrimary: '#fff',
+  onSecondary: '#000'
 }
 
 function App() {

@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react'; // eslint-disable-line
 import styled from '@emotion/styled';
 
 /** @jsx jsx */
@@ -7,12 +7,11 @@ import { jsx, css } from '@emotion/core'; // eslint-disable-line
 import { responsive } from '../utils/responsive';
 import HeaderOrganism from './header/header.organism';
 import FooterOrganism from './footer/footer.organism';
-
-const SliderOrganism = React.lazy(() => import('./slider/slider.organism'));
+import SliderOrganism from './slider/slider.organism';
 
 type MainProps = {
   theme: {
-    bg: string
+    primary: string
   }
 }
 
@@ -27,21 +26,18 @@ const Main = styled.main<MainProps>({
   left: '0',
   top: '0',
   height: '100%',
-  padding: '50px',
   position: 'absolute',
   width: '100%'
 },
 props => ({
-  backgroundColor: props.theme.bg
+  backgroundColor: props.theme.primary
 }))
 
 const Container = styled.div({
-  backgroundColor: '#fff',
   boxSizing: 'border-box',
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
-  padding: '0 100px',
   position: 'relative',
   width: '100%'
 })
@@ -52,10 +48,10 @@ const Div = ({ className, content, text, children, ...props }: any) => (
   </div>
 )
 
-const ContainerRow = styled(Div)`
+const ContainerRow = styled(Div)<ContainerRowProps>`
   display: flex;
   width: 100%;
-  max-height: ${props => (props.content ? 'calc(100% - 200px)' : 'none')};
+  height: ${props => (props.content ? 'calc(100% - 150px)' : 'auto')};
 `
 
 const MediaQueries = {
@@ -76,9 +72,7 @@ function MainOrganism() {
         </ContainerRow>
 
         <ContainerRow content >
-          <Suspense fallback={<div className="mpp__loading-block"></div>}>
-            <SliderOrganism/>
-          </Suspense>
+          <SliderOrganism/>
         </ContainerRow>
 
         <ContainerRow>

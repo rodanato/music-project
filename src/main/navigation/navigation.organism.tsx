@@ -8,7 +8,7 @@ const Navigation = css`
   flex-direction: column;
   height: 100%;
   justify-content: center;
-  width: 100px;
+  width: 50px;
 
   .swiper-button-prev,
   .swiper-button-next {

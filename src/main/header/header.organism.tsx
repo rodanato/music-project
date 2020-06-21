@@ -2,10 +2,19 @@ import React from 'react';
 
 import styled from '@emotion/styled'
 
-const Header = styled.section({
-  height: '100px',
+type HeaderProps = {
+  theme: {
+    primaryDark: string
+  }
+}
+
+const Header = styled.header<HeaderProps>({
+  height: '50px',
   width: '100%',
-})
+},
+props => ({
+  backgroundColor: props.theme.primaryDark
+}))
 
 function HeaderOrganism() {
   return (

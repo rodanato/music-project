@@ -16,7 +16,7 @@ const sampleData = { title: "Only by the night", author: "Kings of Leon" };
 
 function DataMolecule() {
   return (
-    <Data>
+    <Data className="mpp-show-slowly">
       <CardAtom paddingLess>
         <MainImageAtom url="https://dummyimage.com/250x250/000000/fff" />
       </CardAtom>
