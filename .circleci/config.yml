@@ -1,89 +1,62 @@
-# version: 2.1
-
-# commands:
-#   restore_package_cache:
-#     steps:
-#       - restore_cache:
-#           keys:
-#             # Find a cache corresponding to this specific package-lock.json
-#             - v1-npm-deps-{{ checksum "package-lock.json" }}
-#             # Fallback cache to be used
-#             - v1-npm-deps-
-#   save_package_cache:
-#     steps:
-#       - save_cache:
-#           key: v1-npm-deps-{{ checksum "package-lock.json" }}
-#           paths:
-#             - ./node_modules
-
-# jobs:
-#   build:
-#     docker:
-#       - image: rodanato/music-project:0.0.1
-#     working_directory: ~/project
-#     steps:              
-#       - checkout
-#       - setup_remote_docker
-#       - run: apk add docker
-#       - run: |
-#           TAG="0.0.1"
-#           docker login -u rodanato -p Intheclub7!
-#           docker build -t rodanato/music-project:$TAG .
-#           docker run -it -p 3000:3000 rodanato/music-project:$TAG -v ~/build:/usr/src/app/build .
-#           docker push rodanato/music-project:$TAG
-#       - run: firebase deploy -P test --token=$FIREBASE_TOKEN
-#       # - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
-#   deploy_to_test:
-#     docker:
-#       - image: rodanato/music-project:0.0.1
-#     steps:
-#       # - run: firebase deploy -P test --token=$FIREBASE_TOKEN
-#       - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
-#   deploy_to_prod:
-#     docker:
-#       - image: rodanato/music-project:0.0.1
-#     steps:
-#       - run: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
-
-# workflows:
-#   version: 2.1
-#   test:
-#     jobs:
-#       - build:
-#           filters:
-#             branches:
-#               only: develop
-#       # - deploy_to_test:
-#       #     requires:
-#       #       - build
-#   prod:
-#     jobs:
-#       - build:
-#           filters:
-#             branches:
-#               only: master
-#       - deploy_to_prod:
-#           requires:
-#             - build
-
-
 version: 2.1
+
+commands:
+  restore_package_cache:
+    steps:
+      - restore_cache:
+          keys:
+            # Find a cache corresponding to this specific package-lock.json
+            - v1-npm-deps-{{ checksum "package-lock.json" }}
+            # Fallback cache to be used
+            - v1-npm-deps-
+  save_package_cache:
+    steps:
+      - save_cache:
+          key: v1-npm-deps-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+
 jobs:
-  build:
+  pre_build:
     docker:
       - image: circleci/node:12.10
     working_directory: ~/repo
     steps:
       - checkout
-      # - restore_cache:
-      #     keys:
-      #       - 'v1-dependencies-{{ checksum "package.json" }}'
-      #       - v1-dependencies-
+      - restore_package_cache
       - run: yarn install
-      # - save_cache:
-      #     paths:
-      #       - node_modules
-      #     key: 'v1-dependencies-{{ checksum "package.json" }}'
-      # - run: 'yarn test'
+      - save_package_cache
+      - run: 'yarn test'
+  build_and_deploy_to_test:
+    docker:
+      - image: circleci/node:12.10
+    steps:
       - run: CI=false yarn build
       - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
+  build_and_deploy_to_prod:
+    docker:
+      - image: circleci/node:12.10
+    steps:
+      - run: CI=true yarn build
+      - run: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
+
+workflows:
+  version: 2.1
+  test:
+    jobs:
+      - pre_build:
+          filters:
+            branches:
+              only: develop
+      - build_and_deploy_to_test:
+          requires:
+            - pre_build
+  prod:
+    jobs:
+      - pre_build:
+          filters:
+            branches:
+              only: master
+      - build_and_deploy_to_prod:
+          requires:
+            - pre_build
