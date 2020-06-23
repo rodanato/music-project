@@ -1,15 +1,9 @@
 export default `
-  .mpp-font--bold {
-    font-weight: 600;
+  html {
+    background-color: #000;
   }
-  .mpp-font--title {
-    font-size: 24px;
-  }
-  .mpp-font--subtitle {
-    font-size: 20px;
-  }
-  .mpp-font--text {
-    font-size: 16px;
+  .mpp-icon {
+    font-family: 'Material Icons';
   }
   .mpp-show-slowly {
     opacity: 0;

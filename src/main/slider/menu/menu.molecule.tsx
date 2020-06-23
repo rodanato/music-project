@@ -19,7 +19,7 @@ const Flex = css`
 function MenuMolecule() {
   return (
     <div css={Flex} className="mpp-show-slowly">
-      <CardAtom>
+      <CardAtom paddingLess>
         <Menu>
           <MenuItemAtom name="Albums" />
           <MenuItemAtom name="Artists" />

@@ -1,6 +1,4 @@
-import { css } from '@emotion/core';
-
-const reset = css`
+export default `
 	html, body, div, span, applet, object, iframe,
 	h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 	a, abbr, acronym, address, big, cite, code,
@@ -43,6 +41,7 @@ const reset = css`
 		border-collapse: collapse;
 		border-spacing: 0;
 	}
+	button {
+		outline: none;
+	}
 `;
-
-export default reset;

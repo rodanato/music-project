@@ -5,9 +5,6 @@ import { jsx, css } from '@emotion/core'; // eslint-disable-line
 import Swiper from 'swiper';
 import "swiper/css/swiper.css";
 
-// import DataMolecule from './data/data.molecule';
-// import ContentMolecule from './content/content.molecule';
-// import MenuMolecule from './menu/menu.molecule';
 import NavigationOrganism from '../navigation/navigation.organism';
 import LoadingAtom from '../../shared/loading.atom';
 

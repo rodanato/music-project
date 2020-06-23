@@ -1,4 +1,6 @@
-import React from 'react'; // eslint-disable-line
+import React, { useEffect } from 'react'; // eslint-disable-line
+import { useMachine } from "@xstate/react";
+
 import styled from '@emotion/styled';
 
 /** @jsx jsx */
@@ -8,30 +10,25 @@ import { responsive } from '../utils/responsive';
 import HeaderOrganism from './header/header.organism';
 import FooterOrganism from './footer/footer.organism';
 import SliderOrganism from './slider/slider.organism';
-
-type MainProps = {
-  theme: {
-    primary: string
-  }
-}
+import ThemeAtom from './theme/theme.atom';
+import { themeMachine } from './main.machine';
 
 type ContainerRowProps = {
   content?: boolean,
   children: any
 }
 
-const Main = styled.main<MainProps>({
+const Main = styled.main({
+  backgroundColor: 'var(--mpp-primary)',
   boxSizing: 'border-box',
-  fontFamily: 'Open Sans, sans-serif',
+  fontFamily: 'Roboto, sans-serif',
+  fontWeight: 400,
   left: '0',
   top: '0',
   height: '100%',
   position: 'absolute',
   width: '100%'
-},
-props => ({
-  backgroundColor: props.theme.primary
-}))
+})
 
 const Container = styled.div({
   boxSizing: 'border-box',
@@ -64,8 +61,14 @@ const MediaQueries = {
 };
 
 function MainOrganism() {
+  const [state, send] = useMachine(themeMachine);
+
+  const updateTheme = (theme: string) => {
+    send("CHANGE", { theme: theme });
+  }
+
   return (
-    <Main>
+    <Main className={`neon-${state.value}-theme`}>
       <Container>
         <ContainerRow css={MediaQueries}>
           <HeaderOrganism/>
@@ -79,6 +82,8 @@ function MainOrganism() {
           <FooterOrganism/>
         </ContainerRow>
       </Container>
+
+      <ThemeAtom onThemeUpdate={updateTheme}/>
     </Main>
   );
 }

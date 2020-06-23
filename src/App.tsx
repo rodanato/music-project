@@ -1,37 +1,26 @@
-import React from 'react'; // eslint-disable-line
-import { ThemeProvider } from 'emotion-theming';
+import React, { Fragment } from 'react'; // eslint-disable-line
 
 /** @jsx jsx */
 import { Global, jsx, css } from '@emotion/core';
 
 import MainOrganism from './main/main.organism';
 
-import reset from './utils/reset';
 import globalClasses from './utils/global-styles';
-
-const theme1 = {// eslint-disable-line
-  bg: 'hotpink'
-}
-
-const theme2 = {
-  primary: '#5742cc',
-  primaryLight: '#8d6fff',
-  primaryDark: '#0f189a',
-  secondary: '#fff',
-  secondaryDark: '#cccccc',
-  onPrimary: '#fff',
-  onSecondary: '#000'
-}
+import reset from './utils/reset';
+import themes from './utils/themes';
+import typography from './utils/typography';
 
 function App() {
   return (
-    <ThemeProvider theme={theme2}>
+    <Fragment>
       <Global styles={css`
         ${reset}
+        ${themes}
+        ${typography}      
         ${globalClasses}
       `} />
       <MainOrganism />
-    </ThemeProvider>
+    </Fragment>
   );
 }
 
