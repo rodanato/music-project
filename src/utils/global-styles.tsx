@@ -5,6 +5,11 @@ export default `
   .mpp-icon {
     font-family: 'Material Icons';
   }
+  .mpp-no-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
   .mpp-open-menu-animation {
     opacity: 0;
     transform: scale(0);
