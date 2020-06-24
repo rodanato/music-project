@@ -3,7 +3,7 @@ import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
 type CardProps = {
   paddingLess?: boolean;
-  children: any;
+  children?: any;
 };
 
 const Card = css`

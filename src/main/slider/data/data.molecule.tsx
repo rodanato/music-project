@@ -18,7 +18,7 @@ function DataMolecule() {
   return (
     <Data className="mpp-show-slowly">
       <CardAtom paddingLess>
-        <MainImageAtom url="https://dummyimage.com/250x250/000000/fff" />
+        <MainImageAtom url="https://dummyimage.com/500x500/000000/fff" />
       </CardAtom>
 
       <CardAtom>

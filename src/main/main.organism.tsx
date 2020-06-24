@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'; // eslint-disable-line
+import React from 'react'; // eslint-disable-line
 import { useMachine } from "@xstate/react";
 
 import styled from '@emotion/styled';
@@ -11,7 +11,7 @@ import HeaderOrganism from './header/header.organism';
 import FooterOrganism from './footer/footer.organism';
 import SliderOrganism from './slider/slider.organism';
 import ThemeAtom from './theme/theme.atom';
-import { themeMachine } from './main.machine';
+import { mainMachine } from './main.state';
 
 type ContainerRowProps = {
   content?: boolean,
@@ -61,14 +61,14 @@ const MediaQueries = {
 };
 
 function MainOrganism() {
-  const [state, send] = useMachine(themeMachine);
+  const [state, send] = useMachine(mainMachine);
 
   const updateTheme = (theme: string) => {
     send("CHANGE", { theme: theme });
   }
 
   return (
-    <Main className={`neon-${state.value}-theme`}>
+    <Main className={`${state.value}-theme`}>
       <Container>
         <ContainerRow css={MediaQueries}>
           <HeaderOrganism/>

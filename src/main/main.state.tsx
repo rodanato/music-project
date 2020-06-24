@@ -1,6 +1,6 @@
 import { Machine, send } from "xstate";
 
-export const themeMachine = Machine({
+export const mainMachine = Machine({
   initial: 'green',
   states: {
     blue: {
