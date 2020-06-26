@@ -1,16 +1,10 @@
 import { Machine } from "xstate";
+import { themes } from "../../utils/themes";
 
 export const themeMachine = Machine({
   initial: 'closed',
   context: {
-    themes: [
-      "blue",
-      "green",
-      "light",
-      "pink",
-      "purple",
-      "spotify"
-    ]
+    themes: themes.map(theme => theme.name)
   },
   states: {
     opened: {

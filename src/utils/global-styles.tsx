@@ -13,7 +13,7 @@ export default `
   .mpp-open-menu-animation {
     opacity: 0;
     transform: scale(0);
-    transition: transform 0.25s, opacity 0.4s;
+    transition: transform 0.5s, opacity 0.25s;
     transform-origin: bottom right;
     
     &.origin-bottom-left {
@@ -28,6 +28,7 @@ export default `
     &.is-open {
       opacity: 1;
       transform: scale(1);
+      transition: transform 0.25s, opacity 0.5s;
     }
   }
   .mpp-show-slowly {

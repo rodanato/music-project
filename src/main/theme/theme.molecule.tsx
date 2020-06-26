@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import CardAtom from '../../shared/card.atom';
 import { useMachine } from '@xstate/react';
 import { themeMachine } from './theme.state';
+import ThemePaletteAtom from './theme-palette.atom';
 
 const Theme = css`
   align-items: center;
@@ -31,14 +32,15 @@ const ThemeOptions = css`
   margin: 0;
   position: absolute;
   right: 40px;
-  width: 160px;
+  width: 400px;
 `;
 
-const paletteItem = css`
-  text-transform: capitalize;
+const PalettesList = css`
+  display: flex;
+  flex-wrap: wrap;
 `;
 
-function ThemeAtom({onThemeUpdate}: any) {
+function ThemeMolecule() {
   const [state, send] = useMachine(themeMachine);
 
   const ThemeOptionsClasses = classNames({
@@ -52,15 +54,12 @@ function ThemeAtom({onThemeUpdate}: any) {
       
       <div css={[ThemeOptions]} className={ThemeOptionsClasses}>
         <CardAtom>
-          <ul>
+          <ul css={PalettesList}>
             {state.context.themes.map(theme => 
-              <li
+              <ThemePaletteAtom
                 key={uuidv4()}
-                css={paletteItem}
-                onClick={() => onThemeUpdate(theme)}
-              >
-                {theme} Palette
-              </li>
+                name={theme}
+              ></ThemePaletteAtom>
             )}
           </ul>
         </CardAtom>
@@ -69,4 +68,4 @@ function ThemeAtom({onThemeUpdate}: any) {
   );
 }
 
-export default ThemeAtom;
+export default ThemeMolecule;

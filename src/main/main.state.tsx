@@ -1,36 +1,35 @@
-import { Machine, send } from "xstate";
+import { Machine } from "xstate";
+import { themePaletteMachine } from "./theme/theme-palette.state";
+import React from "react";
 
-export const mainMachine = Machine({
-  initial: 'green',
+export interface MainStateSchema {
   states: {
-    blue: {
-      on: {
-        CHANGE: {
-          actions: ["change"]
-        }
-      }
-    },
-    green: {
-      on: {
-        CHANGE: {
-          actions: ["change"]
-        }
-      }
-    },
-    pink: {
-      on: {
-        CHANGE: {
-          actions: ["change"]
-        }
-      }
-    },
-    purple: {
-      on: {
-        CHANGE: {
-          actions: ["change"]
-        }
-      }
-    }
+    blue: {};
+    green: {};
+    pink: {};
+    purple: {};
+  }
+};
+
+export type MainEvent =
+  | { type: ''; theme: string }
+  | { type: 'CHANGE_TO_BLUE'; theme: string }
+  | { type: 'CHANGE_TO_GREEN'; theme: string }
+  | { type: 'CHANGE_TO_PINK'; theme: string }
+  | { type: 'CHANGE_TO_PURPLE'; theme: string };
+
+export const mainMachine = Machine<any, MainStateSchema, MainEvent>({
+  id: 'main',
+  initial: 'green',
+  invoke: {
+    id: 'themePalette',
+    src: themePaletteMachine
+  },
+  states: {
+    blue: {},
+    green: {},
+    pink: {},
+    purple: {}
   },
   on: {
     CHANGE_TO_BLUE: {
@@ -43,14 +42,9 @@ export const mainMachine = Machine({
       target: "pink"
     },
     CHANGE_TO_PURPLE: {
-      target: "purple",
+      target: "purple"
     }
   }
-}, {
-  actions: {
-    change: send((ctx, e: any) => ({
-        type: `CHANGE_TO_${e.theme.toUpperCase()}`
-      })
-    )
-  }
 });
+
+export const MainStateContext = React.createContext<any>(null);

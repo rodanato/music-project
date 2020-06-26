@@ -1,56 +1,83 @@
-export default `
-  .blue-theme {
-    --mpp-primary: #5742cc;
-    --mpp-primary-light: #8d6fff;
-    --mpp-primary-dark: #0f189a;
-    --mpp-secondary: #fff;
-    --mpp-secondary-dark: #cccccc;
-    --mpp-on-primary: #fff;
-    --mpp-on-secondary: #000;
+
+export const themes = [
+  {
+    name: "blue",
+    colors: [
+      { "primary": "#5742cc" },
+      { "primary-light": "#8d6fff" },
+      { "primary-dark": "#0f189a" },
+      { "secondary": "#fff" },
+      { "secondary-dark": "#cccccc" },
+      { "on-primary": "#fff" },
+      { "on-secondary": "#000" }
+    ]
+  },
+  {
+    name: "green",
+    colors: [
+      { "primary": "#26f2aa" },
+      { "primary-light": "#73ffdc" },
+      { "primary-dark": "#00be7b" },
+      { "secondary": "#fff" },
+      { "secondary-dark": "#009a78" },
+      { "on-primary": "#000000" },
+      { "on-secondary": "#000000" }
+    ]
+  },
+  {
+    name: "light",
+    colors: [
+      { "primary": "#26f2aa" },
+      { "primary-light": "#73ffdc" },
+      { "primary-dark": "#00be7b" },
+      { "secondary": "#fff" },
+      { "secondary-dark": "#009a78" },
+      { "on-primary": "#000000" },
+      { "on-secondary": "#000000" }
+    ]
+  },
+  {
+    name: "pink",
+    colors: [
+      { "primary": "#5742cc" },
+      { "primary-light": "#8d6fff" },
+      { "primary-dark": "#0f189a" },
+      { "secondary": "#fff" },
+      { "secondary-dark": "#cccccc" },
+      { "on-primary": "#fff" },
+      { "on-secondary": "#000" }
+    ]
+  },
+  {
+    name: "purple",
+    colors: [
+      { "primary": "#5742cc" },
+      { "primary-light": "#8d6fff" },
+      { "primary-dark": "#0f189a" },
+      { "secondary": "#fff" },
+      { "secondary-dark": "#cccccc" },
+      { "on-primary": "#fff" },
+      { "on-secondary": "#000" }
+    ]
+  },
+  {
+    name: "spotify",
+    colors: [
+      { "primary": "#26f2aa" },
+      { "primary-light": "#73ffdc" },
+      { "primary-dark": "#00be7b" },
+      { "secondary": "#fff" },
+      { "secondary-dark": "#009a78" },
+      { "on-primary": "#000000" },
+      { "on-secondary": "#000000" }
+    ]
   }
-  .green-theme {
-    --mpp-primary: #26f2aa;
-    --mpp-primary-light: #73ffdc;
-    --mpp-primary-dark: #00be7b;
-    --mpp-secondary: #fff;
-    --mpp-secondary-dark: #009a78;
-    --mpp-on-primary: #000000;
-    --mpp-on-secondary: #000000;
+];
+
+export const themeStyles = themes.map(theme => `
+  .${theme.name}-theme {
+    ${theme.colors.map((color: any) => `
+      --mpp-${Object.keys(color)[0]}: ${Object.values(color)[0]};
+    `).join("")}
   }
-  .light-theme {
-    --mpp-primary: #5742cc;
-    --mpp-primary-light: #8d6fff;
-    --mpp-primary-dark: #0f189a;
-    --mpp-secondary: #fff;
-    --mpp-secondary-dark: #cccccc;
-    --mpp-on-primary: #fff;
-    --mpp-on-secondary: #000;
-  }
-  .pink-theme {
-    --mpp-primary: #5742cc;
-    --mpp-primary-light: #8d6fff;
-    --mpp-primary-dark: #0f189a;
-    --mpp-secondary: #fff;
-    --mpp-secondary-dark: #cccccc;
-    --mpp-on-primary: #fff;
-    --mpp-on-secondary: #000;
-  }
-  .purple-theme {
-    --mpp-primary: #5742cc;
-    --mpp-primary-light: #8d6fff;
-    --mpp-primary-dark: #0f189a;
-    --mpp-secondary: #fff;
-    --mpp-secondary-dark: #cccccc;
-    --mpp-on-primary: #fff;
-    --mpp-on-secondary: #000;
-  }
-  .spotify-theme {
-    --mpp-primary: #26f2aa;
-    --mpp-primary-light: #73ffdc;
-    --mpp-primary-dark: #00be7b;
-    --mpp-secondary: #fff;
-    --mpp-secondary-dark: #009a78;
-    --mpp-on-primary: #000000;
-    --mpp-on-secondary: #000000;
-  }
-`;
+`);

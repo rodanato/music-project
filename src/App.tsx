@@ -7,7 +7,7 @@ import MainOrganism from './main/main.organism';
 
 import globalClasses from './utils/global-styles';
 import reset from './utils/reset';
-import themes from './utils/themes';
+import {themeStyles} from './utils/themes';
 import typography from './utils/typography';
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
     <Fragment>
       <Global styles={css`
         ${reset}
-        ${themes}
+        ${themeStyles}
         ${typography}      
         ${globalClasses}
       `} />

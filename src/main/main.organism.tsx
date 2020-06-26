@@ -10,8 +10,8 @@ import { responsive } from '../utils/responsive';
 import HeaderOrganism from './header/header.organism';
 import FooterOrganism from './footer/footer.organism';
 import SliderOrganism from './slider/slider.organism';
-import ThemeAtom from './theme/theme.atom';
-import { mainMachine } from './main.state';
+import { mainMachine, MainStateContext } from './main.state';
+import ThemeMolecule from './theme/theme.molecule';
 
 type ContainerRowProps = {
   content?: boolean,
@@ -45,7 +45,7 @@ const Div = ({ className, content, text, children, ...props }: any) => (
   </div>
 )
 
-const ContainerRow = styled(Div)<ContainerRowProps>`
+const ContainerRow = styled(Div) <ContainerRowProps>`
   display: flex;
   width: 100%;
   height: ${props => (props.content ? 'calc(100% - 150px)' : 'auto')};
@@ -60,30 +60,30 @@ const MediaQueries = {
   },
 };
 
-function MainOrganism() {
-  const [state, send] = useMachine(mainMachine);
 
-  const updateTheme = (theme: string) => {
-    send("CHANGE", { theme: theme });
-  }
+function MainOrganism() {
+  const [state] = useMachine(mainMachine);
 
   return (
     <Main className={`${state.value}-theme`}>
       <Container>
         <ContainerRow css={MediaQueries}>
-          <HeaderOrganism/>
+          <HeaderOrganism />
         </ContainerRow>
 
         <ContainerRow content >
-          <SliderOrganism/>
+          <SliderOrganism />
         </ContainerRow>
 
         <ContainerRow>
-          <FooterOrganism/>
+          <FooterOrganism />
         </ContainerRow>
       </Container>
 
-      <ThemeAtom onThemeUpdate={updateTheme}/>
+
+      <MainStateContext.Provider value={state}>
+        <ThemeMolecule />
+      </MainStateContext.Provider>
     </Main>
   );
 }
