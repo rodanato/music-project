@@ -1,9 +1,10 @@
-import React, { Fragment, useContext } from 'react'; // eslint-disable-line
+import React, { Fragment, useContext, useEffect } from 'react'; // eslint-disable-line
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 import { v4 as uuidv4 } from "uuid";
 import { useService } from '@xstate/react';
 import { MainStateContext } from '../main.state';
+import { getChildrenStateName } from "../../utils/helpers"
 
 type ThemePaletterProps = {
   key: string;
@@ -65,6 +66,15 @@ function ThemePaletteAtom({ name }: ThemePaletterProps) {
   const mainState = useContext(MainStateContext)
   const [, send] = useService(mainState.children.themePalette)
   const colorList = new Array(7).fill(1);
+
+  useEffect(() => {
+    const ParentState = "rendered";
+
+    if (mainState.matches(ParentState)) {
+      const currentColorSelected = getChildrenStateName(mainState, ParentState);
+      if (currentColorSelected !== name) send("UNSELECT");
+    }
+  }, [mainState, name, send])
 
   return (
     <Fragment>

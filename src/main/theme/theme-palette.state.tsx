@@ -6,7 +6,11 @@ export const themePaletteMachine = Machine({
   id: 'themePalette',
   initial: 'unselected',
   states: {
-    selected: {},
+    selected: {
+      on: {
+        UNSELECT: "unselected"
+      }
+    },
     unselected: {
       on: {
         SELECT: {

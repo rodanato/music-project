@@ -1,4 +1,4 @@
-import React from 'react'; // eslint-disable-line
+import React, { useEffect, Fragment } from 'react'; // eslint-disable-line
 import { useMachine } from "@xstate/react";
 
 import styled from '@emotion/styled';
@@ -12,6 +12,7 @@ import FooterOrganism from './footer/footer.organism';
 import SliderOrganism from './slider/slider.organism';
 import { mainMachine, MainStateContext } from './main.state';
 import ThemeMolecule from './theme/theme.molecule';
+import { getChildrenStateName } from "../utils/helpers"
 
 type ContainerRowProps = {
   content?: boolean,
@@ -60,31 +61,47 @@ const MediaQueries = {
   },
 };
 
-
 function MainOrganism() {
-  const [state] = useMachine(mainMachine);
+  const [state, send] = useMachine(mainMachine);
+
+  useEffect(() => {
+    let persistedStateFormat = null;
+    const persistedState = localStorage.getItem("main-state");
+
+    if (persistedState !== null) {
+      persistedStateFormat = JSON.parse(persistedState);
+      const newState = `CHANGE_TO_${persistedStateFormat.toUpperCase()}`;
+      send("RENDER");
+      send({ type: newState });
+    }
+  }, [send])
 
   return (
-    <Main className={`${state.value}-theme`}>
-      <Container>
-        <ContainerRow css={MediaQueries}>
-          <HeaderOrganism />
-        </ContainerRow>
+    <Fragment>
+      {
+        state.matches("rendered") ?
+          <Main className={`${getChildrenStateName(state, "rendered")}-theme`}>
+            <Container>
+              <ContainerRow css={MediaQueries}>
+                <HeaderOrganism />
+              </ContainerRow>
 
-        <ContainerRow content >
-          <SliderOrganism />
-        </ContainerRow>
+              <ContainerRow content >
+                <SliderOrganism />
+              </ContainerRow>
 
-        <ContainerRow>
-          <FooterOrganism />
-        </ContainerRow>
-      </Container>
+              <ContainerRow>
+                <FooterOrganism />
+              </ContainerRow>
+            </Container>
 
 
-      <MainStateContext.Provider value={state}>
-        <ThemeMolecule />
-      </MainStateContext.Provider>
-    </Main>
+            <MainStateContext.Provider value={state}>
+              <ThemeMolecule />
+            </MainStateContext.Provider>
+          </Main>
+          : null}
+    </Fragment>
   );
 }
 

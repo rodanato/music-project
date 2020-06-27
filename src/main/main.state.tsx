@@ -1,48 +1,82 @@
 import { Machine } from "xstate";
 import { themePaletteMachine } from "./theme/theme-palette.state";
 import React from "react";
+import { persistState, getChildrenStateName } from "../utils/helpers";
 
 export interface MainStateSchema {
   states: {
-    blue: {};
-    green: {};
-    pink: {};
-    purple: {};
+    notrendered: {},
+    rendered: {
+      states: {
+        blue: {};
+        green: {};
+        light: {};
+        pink: {};
+        purple: {};
+        spotify: {};
+      }
+    }
   }
 };
 
 export type MainEvent =
-  | { type: ''; theme: string }
-  | { type: 'CHANGE_TO_BLUE'; theme: string }
-  | { type: 'CHANGE_TO_GREEN'; theme: string }
-  | { type: 'CHANGE_TO_PINK'; theme: string }
-  | { type: 'CHANGE_TO_PURPLE'; theme: string };
+  | { type: string; }
+  | { type: 'CHANGE_TO_BLUE'; }
+  | { type: 'CHANGE_TO_GREEN'; }
+  | { type: 'CHANGE_TO_PINK'; }
+  | { type: 'CHANGE_TO_PURPLE'; };
 
 export const mainMachine = Machine<any, MainStateSchema, MainEvent>({
   id: 'main',
-  initial: 'green',
+  initial: 'notrendered',
   invoke: {
     id: 'themePalette',
     src: themePaletteMachine
   },
   states: {
-    blue: {},
-    green: {},
-    pink: {},
-    purple: {}
-  },
-  on: {
-    CHANGE_TO_BLUE: {
-      target: "blue"
+    notrendered: {
+      on: {
+        RENDER: "rendered"
+      }
     },
-    CHANGE_TO_GREEN: {
-      target: "green"
-    },
-    CHANGE_TO_PINK: {
-      target: "pink"
-    },
-    CHANGE_TO_PURPLE: {
-      target: "purple"
+    rendered: {
+      initial: 'green',
+      states: {
+        blue: {},
+        green: {},
+        light: {},
+        pink: {},
+        purple: {},
+        spotify: {}
+      },
+      on: {
+        CHANGE_TO_BLUE: {
+          target: "rendered.blue",
+          actions: ["persist"]
+        },
+        CHANGE_TO_GREEN: {
+          target: "rendered.green",
+          actions: ["persist"]
+        },
+        CHANGE_TO_PINK: {
+          target: "rendered.pink",
+          actions: ["persist"]
+        },
+        CHANGE_TO_PURPLE: {
+          target: "rendered.purple",
+          actions: ["persist"]
+        }
+      }
+    }
+  }
+}, {
+  actions: {
+    persist: (ctx, e, actionMeta) => {
+      const ParentState = "rendered";
+      
+      if (actionMeta.state.matches(ParentState)) {
+        persistState(getChildrenStateName(actionMeta.state, ParentState))
+      }
     }
   }
 });
