@@ -68,10 +68,11 @@ function MainOrganism() {
     let persistedStateFormat = null;
     const persistedState = localStorage.getItem("main-state");
 
+    send("RENDER");
+
     if (persistedState !== null) {
       persistedStateFormat = JSON.parse(persistedState);
       const newState = `CHANGE_TO_${persistedStateFormat.toUpperCase()}`;
-      send("RENDER");
       send({ type: newState });
     }
   }, [send])
@@ -100,7 +101,8 @@ function MainOrganism() {
               <ThemeMolecule />
             </MainStateContext.Provider>
           </Main>
-          : null}
+        : null
+      }
     </Fragment>
   );
 }
