@@ -17,7 +17,7 @@ const Flex = css`
 
 function ContentMolecule() {
   return (
-    <div css={Flex}>
+    <div css={Flex} className="mpp-show-slowly">
       <CardAtom>
         <Content>
           Content

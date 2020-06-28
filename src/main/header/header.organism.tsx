@@ -1,17 +1,36 @@
-import React from 'react';
+import React from 'react'; // eslint-disable-line
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core'; // eslint-disable-line
+import LogoAtom from './logo.atom';
 
-import styled from '@emotion/styled'
+const Header = css`
+  align-items: center;
+  background-color: var(--mpp-primary-dark);
+  color: var(--mpp-on-primary);
+  display: flex;
+  height: 50px;
+  padding: 0 50px;
+  width: 100%;
+`;
 
-const Header = styled.section({
-  height: '100px',
-  width: '100%',
-})
+const PollBtn = css`
+  font-size: 25px;
+`;
 
 function HeaderOrganism() {
   return (
-    <Header>
-      Header
-    </Header>
+    <header css={Header}>
+      <LogoAtom imageName="logo.png" />
+      <span 
+        aria-label="Take a poll"
+        role="img"
+        css={PollBtn}
+        className="mpp-no-btn"
+        title="Give us your feedback?"
+      >
+        🤘
+      </span>
+    </header>
   );
 }
 

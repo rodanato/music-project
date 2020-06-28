@@ -1,15 +1,35 @@
 export default `
-  .mpp-font--bold {
-    font-weight: 600;
+  html {
+    background-color: #000;
   }
-  .mpp-font--title {
-    font-size: 24px;
+  .mpp-icon {
+    font-family: 'Material Icons';
   }
-  .mpp-font--subtitle {
-    font-size: 20px;
+  .mpp-no-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
   }
-  .mpp-font--text {
-    font-size: 16px;
+  .mpp-open-menu-animation {
+    opacity: 0;
+    transform: scale(0);
+    transition: transform 0.5s, opacity 0.25s;
+    transform-origin: bottom right;
+    
+    &.origin-bottom-left {
+      transform-origin: bottom left;
+    }
+    &.origin-top-left {
+      transform-origin: top left;
+    }
+    &.origin-top-right {
+      transform-origin: top right;
+    }
+    &.is-open {
+      opacity: 1;
+      transform: scale(1);
+      transition: transform 0.25s, opacity 0.5s;
+    }
   }
   .mpp-show-slowly {
     opacity: 0;

@@ -1,4 +1,6 @@
-import React, { Suspense } from 'react';
+import React, { useEffect, Fragment } from 'react'; // eslint-disable-line
+import { useMachine } from "@xstate/react";
+
 import styled from '@emotion/styled';
 
 /** @jsx jsx */
@@ -7,41 +9,33 @@ import { jsx, css } from '@emotion/core'; // eslint-disable-line
 import { responsive } from '../utils/responsive';
 import HeaderOrganism from './header/header.organism';
 import FooterOrganism from './footer/footer.organism';
-
-const SliderOrganism = React.lazy(() => import('./slider/slider.organism'));
-
-type MainProps = {
-  theme: {
-    bg: string
-  }
-}
+import SliderOrganism from './slider/slider.organism';
+import { mainMachine, MainStateContext } from './main.state';
+import ThemeMolecule from './theme/theme.molecule';
+import { getChildrenStateName } from "../utils/helpers"
 
 type ContainerRowProps = {
   content?: boolean,
   children: any
 }
 
-const Main = styled.main<MainProps>({
+const Main = styled.main({
+  backgroundColor: 'var(--mpp-primary)',
   boxSizing: 'border-box',
-  fontFamily: 'Open Sans, sans-serif',
+  fontFamily: 'Roboto, sans-serif',
+  fontWeight: 400,
   left: '0',
   top: '0',
   height: '100%',
-  padding: '50px',
   position: 'absolute',
   width: '100%'
-},
-props => ({
-  backgroundColor: props.theme.bg
-}))
+})
 
 const Container = styled.div({
-  backgroundColor: '#fff',
   boxSizing: 'border-box',
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
-  padding: '0 100px',
   position: 'relative',
   width: '100%'
 })
@@ -52,10 +46,10 @@ const Div = ({ className, content, text, children, ...props }: any) => (
   </div>
 )
 
-const ContainerRow = styled(Div)`
+const ContainerRow = styled(Div) <ContainerRowProps>`
   display: flex;
   width: 100%;
-  max-height: ${props => (props.content ? 'calc(100% - 200px)' : 'none')};
+  height: ${props => (props.content ? 'calc(100% - 150px)' : 'auto')};
 `
 
 const MediaQueries = {
@@ -68,24 +62,46 @@ const MediaQueries = {
 };
 
 function MainOrganism() {
+  const [state, send] = useMachine(mainMachine);
+
+  useEffect(() => {
+    let persistedStateFormat = null;
+    const persistedState = localStorage.getItem("main-state");
+
+    if (persistedState !== null) {
+      persistedStateFormat = JSON.parse(persistedState);
+      const newState = `CHANGE_TO_${persistedStateFormat.toUpperCase()}`;
+      send("RENDER");
+      send({ type: newState });
+    }
+  }, [send])
+
   return (
-    <Main>
-      <Container>
-        <ContainerRow css={MediaQueries}>
-          <HeaderOrganism/>
-        </ContainerRow>
+    <Fragment>
+      {
+        state.matches("rendered") ?
+          <Main className={`${getChildrenStateName(state, "rendered")}-theme`}>
+            <Container>
+              <ContainerRow css={MediaQueries}>
+                <HeaderOrganism />
+              </ContainerRow>
 
-        <ContainerRow content >
-          <Suspense fallback={<div className="mpp__loading-block"></div>}>
-            <SliderOrganism/>
-          </Suspense>
-        </ContainerRow>
+              <ContainerRow content >
+                <SliderOrganism />
+              </ContainerRow>
 
-        <ContainerRow>
-          <FooterOrganism/>
-        </ContainerRow>
-      </Container>
-    </Main>
+              <ContainerRow>
+                <FooterOrganism />
+              </ContainerRow>
+            </Container>
+
+
+            <MainStateContext.Provider value={state}>
+              <ThemeMolecule />
+            </MainStateContext.Provider>
+          </Main>
+          : null}
+    </Fragment>
   );
 }
 
