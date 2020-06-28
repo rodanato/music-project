@@ -1,5 +1,6 @@
 {
   "name": "music-project",
+  "homepage": "https://social-music-addd0.web.app/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
