@@ -1,6 +1,7 @@
 import React from 'react'; // eslint-disable-line
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
+import LogoAtom from './logo.atom';
 
 const Header = css`
   align-items: center;
@@ -19,6 +20,7 @@ const PollBtn = css`
 function HeaderOrganism() {
   return (
     <header css={Header}>
+      <LogoAtom imageName="logo.png" />
       <span 
         aria-label="Take a poll"
         role="img"
