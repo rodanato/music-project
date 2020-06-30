@@ -14,7 +14,7 @@ function PollAtom() {
       role="img"
       css={PollBtn}
       className="mpp-no-btn"
-      title="Give us your feedback?"
+      title="Give us your feedback"
     >
       🤘
     </span>

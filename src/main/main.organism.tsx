@@ -68,12 +68,12 @@ function MainOrganism() {
     let persistedStateFormat = null;
     const persistedState = localStorage.getItem("main-state");
 
-    send("RENDER");
+    send("RENDER"); 
 
     if (persistedState !== null) {
       persistedStateFormat = JSON.parse(persistedState);
-      const newState = `CHANGE_TO_${persistedStateFormat.toUpperCase()}`;
-      send(newState);
+      const newTheme = `CHANGE_TO_${persistedStateFormat.toUpperCase()}`;
+      send(newTheme);
     }
   }, [send])
 
