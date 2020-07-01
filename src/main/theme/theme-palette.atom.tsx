@@ -63,8 +63,9 @@ const PaletteColor = css`
 `;
 
 function ThemePaletteAtom({ name }: ThemePaletterProps) {
-  const mainState = useContext(MainStateContext)
-  const [, send] = useService(mainState.children.themePalette)
+  const mainState = useContext(MainStateContext);
+  const [, send] = useService(mainState.children.themePalette);
+  //TODO: Get color list from themes.tsx
   const colorList = new Array(7).fill(1);
 
   useEffect(() => {
@@ -74,7 +75,7 @@ function ThemePaletteAtom({ name }: ThemePaletterProps) {
       const currentColorSelected = getChildrenStateName(mainState, ParentState);
       if (currentColorSelected !== name) send("UNSELECT");
     }
-  }, [mainState, name, send])
+  }, [mainState, name, send]);
 
   return (
     <Fragment>

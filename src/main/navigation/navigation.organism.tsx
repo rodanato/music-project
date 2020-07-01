@@ -8,16 +8,25 @@ const Navigation = css`
   flex-direction: column;
   height: 100%;
   justify-content: center;
-  width: 50px;
+  margin-right: 10px;
+  padding: 0 10px;
+  width: 30px;
 
   .swiper-button-prev,
   .swiper-button-next {
     bottom: auto;
+    color: var(--mpp-on-primary);
     left: auto;
+    font-size: 60px;
     margin: 0;
+    outline: none;
     position: relative;
     right: auto;
     top: auto;
+
+    &::after {
+      content: none;
+    }
   }
 `
 

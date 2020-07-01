@@ -46,7 +46,7 @@ const Div = ({ className, content, text, children, ...props }: any) => (
   </div>
 )
 
-const ContainerRow = styled(Div) <ContainerRowProps>`
+const ContainerRow = styled(Div)<ContainerRowProps>`
   display: flex;
   width: 100%;
   height: ${props => (props.content ? 'calc(100% - 150px)' : 'auto')};
@@ -68,12 +68,12 @@ function MainOrganism() {
     let persistedStateFormat = null;
     const persistedState = localStorage.getItem("main-state");
 
-    send("RENDER");
+    send("RENDER"); 
 
     if (persistedState !== null) {
       persistedStateFormat = JSON.parse(persistedState);
-      const newState = `CHANGE_TO_${persistedStateFormat.toUpperCase()}`;
-      send({ type: newState });
+      const newTheme = `CHANGE_TO_${persistedStateFormat.toUpperCase()}`;
+      send(newTheme);
     }
   }, [send])
 

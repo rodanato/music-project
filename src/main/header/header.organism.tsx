@@ -2,6 +2,13 @@ import React from 'react'; // eslint-disable-line
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 import LogoAtom from './logo.atom';
+import PollAtom from './poll.atom';
+import ProfileAtom from './profile.atom';
+
+const HeaderBlock = css`
+  align-items: center;
+  display: flex;
+`;
 
 const Header = css`
   align-items: center;
@@ -9,27 +16,23 @@ const Header = css`
   color: var(--mpp-on-primary);
   display: flex;
   height: 50px;
+  justify-content: space-between;
   padding: 0 50px;
   width: 100%;
 `;
 
-const PollBtn = css`
-  font-size: 25px;
-`;
 
 function HeaderOrganism() {
   return (
     <header css={Header}>
-      <LogoAtom imageName="logo.png" />
-      <span 
-        aria-label="Take a poll"
-        role="img"
-        css={PollBtn}
-        className="mpp-no-btn"
-        title="Give us your feedback?"
-      >
-        🤘
-      </span>
+      <div css={HeaderBlock}>
+        <LogoAtom imageName="logo.png" />
+        <PollAtom />
+      </div>
+
+      <div css={HeaderBlock}>
+        <ProfileAtom imageName="logo.png" />
+      </div>
     </header>
   );
 }
