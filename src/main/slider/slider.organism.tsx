@@ -27,6 +27,7 @@ const MenuMolecule = React.lazy(() => import('./menu/menu.molecule'));
 
 const swiperConfig: SwiperOptions = {
   init: false,
+  grabCursor: true,
   direction: 'vertical',
   navigation: {
     nextEl: '.swiper-button-next',

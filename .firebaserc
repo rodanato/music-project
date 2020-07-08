@@ -1,6 +1,7 @@
 {
   "projects": {
     "test": "social-music-addd0",
-    "prod": "music-project-prod"
+    "prod": "music-project-prod",
+    "default": "social-music-addd0"
   }
 }

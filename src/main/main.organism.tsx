@@ -5,8 +5,9 @@ import { useMachine } from "@xstate/react";
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
 // DEPENDENCIES
-import { responsive } from '../utils/responsive';
+import AuthService from '../services/auth.service';
 import { mainMachine, MainStateContext } from './main.state';
+import { responsive } from '../utils/responsive';
 import { getChildrenStateName } from "../utils/helpers"
 import FooterOrganism from './footer/footer.organism';
 import HeaderOrganism from './header/header.organism';
@@ -25,6 +26,26 @@ const MediaQueries = {
   },
 };
 
+function isUserSpotifyLoggedOut() {
+  const authService = new AuthService();
+  const searchParams = new URLSearchParams(window.location.search);
+  const hasCode = searchParams.has("code");
+  
+  if (hasCode) {
+    const code: string | null = searchParams.get("code");
+    authService.setCode(code);
+
+    setTimeout(() => {
+      authService.getArtistAlbums();
+    }, 0)
+
+    return false;
+  } else {
+    authService.login();
+    return true;
+  }
+}
+
 function MainOrganism() {
   const [state, send] = useMachine(mainMachine);
 
@@ -41,6 +62,8 @@ function MainOrganism() {
       send(newTheme);
     }
   }, [send])
+
+  if (isUserSpotifyLoggedOut()) return (null);
 
   return (
     <Fragment>
