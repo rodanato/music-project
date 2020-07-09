@@ -1,9 +1,10 @@
+import React, { ReactNode } from 'react'; // eslint-disable-line
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
 type CardProps = {
   paddingLess?: boolean;
-  children?: any;
+  children?: ReactNode;
 };
 
 const Card = css`

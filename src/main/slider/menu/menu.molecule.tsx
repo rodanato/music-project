@@ -1,30 +1,24 @@
+// EXTERNAL
 import React from 'react'; // eslint-disable-line
-import styled from '@emotion/styled'
-
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
-import MenuItemAtom from './menu-item.atom';
+// DEPENDENCIES
 import CardAtom from '../../../shared/card.atom';
+import MenuItemAtom from './menu-item/menu-item.atom';
 
-const Menu = styled.section({
-  display: 'flex',
-  flexDirection: 'column',
-})
-
-const Flex = css`
-  flex: 1;
-`
+// STYLES
+import { menuContainer, menu } from './menu.styles';
 
 function MenuMolecule() {
   return (
-    <div css={Flex} className="mpp-show-slowly">
+    <div css={[menuContainer]} className="mpp-show-slowly">
       <CardAtom paddingLess>
-        <Menu>
+        <div css={[menu]}>
           <MenuItemAtom name="Albums" />
           <MenuItemAtom name="Artists" />
           <MenuItemAtom name="Songs" />
-        </Menu>
+        </div>
       </CardAtom>
     </div>
   );

@@ -1,8 +1,8 @@
 import React from 'react'; // eslint-disable-line
 import styled from '@emotion/styled';
-import { ContainerRowProps } from './main.types';
+import { ContainerRowProps, DivProps } from './main.types';
 
-const Div = ({ className, content, text, children, ...props }: any) => (
+const Div = ({ className, content, text, children, ...props }: DivProps) => (
   <div {...props} className={className}>
     {children}
   </div>

@@ -1,34 +1,33 @@
+// EXTERNAL
 import React from 'react';
 
-import styled from '@emotion/styled'
-import MainImageAtom from './main-image.atom';
+// DEPENDENCIES
 import CardAtom from '../../../shared/card.atom';
-import MetadataMolecule from './metadata/metadata.molecule';
 import GenresMolecule from './genres/genres.molecule';
+import MainImageAtom from './data-main-image/data-main-image.atom';
+import MetadataMolecule from './metadata/metadata.molecule';
 
-const Data = styled.section({
-  display: 'flex',
-  flexDirection: 'column',
-  flex: '1.5',
-})
+// STYLES
+import { data } from './data.styles';
 
-const sampleData = { title: "Only by the night", author: "Kings of Leon" };
+const metadataSampleData = { title: "Only by the night", author: "Kings of Leon" };
+const genresSampleData = ["Rock", "Progressive Rock", "Indie", "Soft Rock"];
 
 function DataMolecule() {
   return (
-    <Data className="mpp-show-slowly">
+    <section css={[data]} className="mpp-show-slowly">
       <CardAtom paddingLess>
         <MainImageAtom url="https://dummyimage.com/500x500/000000/fff" />
       </CardAtom>
 
       <CardAtom>
-        <MetadataMolecule data={sampleData} />
+        <MetadataMolecule data={metadataSampleData} />
       </CardAtom>
 
       <CardAtom>
-        <GenresMolecule genres={["Rock", "Progressive Rock", "Indie", "Soft Rock"]} />
+        <GenresMolecule genres={genresSampleData} />
       </CardAtom>
-    </Data>
+    </section>
   );
 }
 

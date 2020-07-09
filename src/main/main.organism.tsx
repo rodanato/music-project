@@ -32,6 +32,7 @@ function MainOrganism() {
     let persistedStateFormat = null;
     const persistedState = localStorage.getItem("main-state");
 
+    // TODO: Avoid rerender when page has already loaded
     send("RENDER"); 
 
     if (persistedState !== null) {

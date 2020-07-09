@@ -2,7 +2,7 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
-import MainImageAtom from './main-image.atom';
+import MainImageAtom from './data-main-image.atom';
 
 it('MainImageAtom snapshot example', () => {
   const tree = renderer.create(

@@ -3,7 +3,7 @@ import React, { useEffect, Suspense } from 'react'; // eslint-disable-line
 import { v4 as uuidv4 } from "uuid";
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
-import Swiper from 'swiper';
+import Swiper, { SwiperOptions } from 'swiper';
 import "swiper/css/swiper.css";
 
 // DEPENDENCIES
@@ -13,11 +13,11 @@ import SongMolecule from '../../shared/song.molecule';
 
 // STYLES
 import {
-  slider, 
-  swiperContainer, 
-  swiperContent, 
-  swiperSlide, 
-  contentListItem, 
+  slider,
+  swiperContainer,
+  swiperContent,
+  swiperSlide,
+  contentListItem,
   SwiperPagination
 } from './slider.styles';
 
@@ -25,34 +25,34 @@ const ContentMolecule = React.lazy(() => import('./content/content.molecule'));
 const DataMolecule = React.lazy(() => import('./data/data.molecule'));
 const MenuMolecule = React.lazy(() => import('./menu/menu.molecule'));
 
+const swiperConfig: SwiperOptions = {
+  init: false,
+  direction: 'vertical',
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  pagination: {
+    el: '.swiper-pagination',
+    dynamicBullets: true,
+    dynamicMainBullets: 10,
+    clickable: true,
+    renderBullet: function (index: number, className: string) {
+      return `
+        <div class="${className}">
+          <span class="mpp-nav-bullet mpp-open-menu-animation">
+          </span>
+        </div>
+      `
+    }
+  },
+};
 
 function SliderOrganism() {
   const slideList = new Array(4).fill(1);
 
   useEffect(() => {
-    const swiper: any = new Swiper('.swiper-container', {
-      init: false,
-      direction: 'vertical',
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        dynamicBullets: true,
-        dynamicMainBullets: 10,
-        clickable: true,
-        renderBullet: function (index, className) {
-          return `
-            <div class="${className}">
-              <span class="mpp-nav-bullet mpp-open-menu-animation">
-              </span>
-            ${(index + 1)}
-            </div>
-          `
-        }
-      },
-    });
+    const swiper: any = new Swiper('.swiper-container', swiperConfig);
 
     swiper.on('init', () => {
       const $swiperPagination = document.querySelector(".swiper-pagination");

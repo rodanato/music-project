@@ -1,23 +1,20 @@
+// EXTERNAL
 import React from 'react';
 import { v4 as uuidv4 } from "uuid";
 
-import styled from '@emotion/styled'
-import GenreAtom from './genre.atom';
+// DEPENDENCIES
+import GenreAtom from './genre/genre.atom';
+import { GenresProps } from './genres.types';
 
-type GenresProps = {
-  genres: string[]
-};
-
-const Genres = styled.section({
-})
+// STYLES 
 
 function GenresMolecule({ genres }: GenresProps) {
   return (
-    <Genres>
+    <div>
       {genres.map(genre => (
-        <GenreAtom key={uuidv4()} genre={genre} />
+        <GenreAtom key={uuidv4()} genreName={genre} />
       ))}
-    </Genres>
+    </div>
   );
 }
 
