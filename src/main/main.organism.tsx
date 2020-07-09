@@ -1,56 +1,20 @@
+// EXTERNAL
 import React, { useEffect, Fragment } from 'react'; // eslint-disable-line
 import { useMachine } from "@xstate/react";
-
-import styled from '@emotion/styled';
-
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
+// DEPENDENCIES
 import { responsive } from '../utils/responsive';
-import HeaderOrganism from './header/header.organism';
-import FooterOrganism from './footer/footer.organism';
-import SliderOrganism from './slider/slider.organism';
 import { mainMachine, MainStateContext } from './main.state';
-import ThemeMolecule from './theme/theme.molecule';
 import { getChildrenStateName } from "../utils/helpers"
+import FooterOrganism from './footer/footer.organism';
+import HeaderOrganism from './header/header.organism';
+import SliderOrganism from './slider/slider.organism';
+import ThemeMolecule from './theme/theme.molecule';
 
-type ContainerRowProps = {
-  content?: boolean,
-  children: any
-}
-
-const Main = styled.main({
-  backgroundColor: 'var(--mpp-primary)',
-  boxSizing: 'border-box',
-  fontFamily: 'Roboto, sans-serif',
-  fontWeight: 400,
-  left: '0',
-  top: '0',
-  height: '100%',
-  position: 'absolute',
-  width: '100%'
-})
-
-const Container = styled.div({
-  boxSizing: 'border-box',
-  display: 'flex',
-  flexDirection: 'column',
-  height: '100%',
-  position: 'relative',
-  width: '100%'
-})
-
-const Div = ({ className, content, text, children, ...props }: any) => (
-  <div {...props} className={className}>
-    {children}
-  </div>
-)
-
-const ContainerRow = styled(Div)<ContainerRowProps>`
-  display: flex;
-  width: 100%;
-  height: ${props => (props.content ? 'calc(100% - 150px)' : 'auto')};
-`
+// STYLES
+import { main, container, ContainerRow } from './main.styles';
 
 const MediaQueries = {
   [responsive('tablet')]: {
@@ -81,8 +45,8 @@ function MainOrganism() {
     <Fragment>
       {
         state.matches("rendered") ?
-          <Main className={`${getChildrenStateName(state, "rendered")}-theme`}>
-            <Container>
+          <main css={[main]} className={`${getChildrenStateName(state, "rendered")}-theme`}>
+            <div css={[container]}>
               <ContainerRow css={MediaQueries}>
                 <HeaderOrganism />
               </ContainerRow>
@@ -94,13 +58,13 @@ function MainOrganism() {
               <ContainerRow>
                 <FooterOrganism />
               </ContainerRow>
-            </Container>
+            </div>
 
 
             <MainStateContext.Provider value={state}>
               <ThemeMolecule />
             </MainStateContext.Provider>
-          </Main>
+          </main>
         : null
       }
     </Fragment>

@@ -1,19 +1,17 @@
-import React from 'react';
+// EXTERNAL
+import React from 'react'; // eslint-disable-line
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
-import styled from '@emotion/styled'
+// DEPENDENCIES
 
-const Footer = styled.footer({
-  backgroundColor: 'var(--mpp-primary-dark)',
-  color: 'var(--mpp-on-primary)',
-  height: '100px',
-  margin: '0 auto',
-  width: '70%',
-})
+// STYLES
+import { footer } from './footer.styles';
 
 function FooterOrganism() {
   return (
-    <Footer>
-    </Footer>
+    <footer css={[footer]}>
+    </footer>
   );
 }
 
