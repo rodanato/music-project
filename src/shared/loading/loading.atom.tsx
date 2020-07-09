@@ -1,13 +1,12 @@
+// EXTERNAL
 import React from 'react'; // eslint-disable-line
-import styled from '@emotion/styled';
 
-type LoadingBlockProps = {
-  flex: string
-}
+// DEPENDENCIES
+import { LoadingBlockProps } from './loading.types';
 
-const LoadingBlock = styled("div")<LoadingBlockProps>`
-  flex: ${props => props.flex};
-`
+// STYLES
+import { LoadingBlock } from './loading.styles';
+
 
 function LoadingAtom({ flex }: LoadingBlockProps) {
   return (

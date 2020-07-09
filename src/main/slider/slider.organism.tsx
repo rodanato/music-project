@@ -7,9 +7,9 @@ import Swiper, { SwiperOptions } from 'swiper';
 import "swiper/css/swiper.css";
 
 // DEPENDENCIES
-import LoadingAtom from '../../shared/loading.atom';
+import LoadingAtom from '../../shared/loading/loading.atom';
 import NavigationOrganism from '../navigation/navigation.organism';
-import SongMolecule from '../../shared/song.molecule';
+import SongMolecule from '../../shared/song/song.molecule';
 
 // STYLES
 import {
