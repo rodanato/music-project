@@ -1,7 +1,7 @@
 import { handleError } from "../utils/helpers";
 
 class AuthService {
-  isSpotifyUserLoggedOut() {
+  isSpotifyUserLoggedIn() {
     const searchParams = new URLSearchParams(window.location.search);
     const hasCode = searchParams.has("code");
 
