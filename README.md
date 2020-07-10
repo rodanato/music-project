@@ -9,23 +9,28 @@
 nvm use
 ```
 
+2) **Install yarn**
+```sh
+curl -o- -L https://yarnpkg.com/install.sh | bash
+```
+
 2) **Install all dependencies**
 ```sh
-rm -rf node_modules/ && npm i
+rm -rf node_modules/ && yarn
 ```
 
 3) **Run the project**
 ```sh
-npm run develop
+yarn start
 ```
 
+
+>IMPORTANT: Manual deployment should be avoided.
 
 ## Deployment
 
-1) **Run the deploy command**
-```sh
-npm run deploy
-```
+1) **Create a PR from your branch to develop**
+2) **When it's approved and merged, the deployment to the test env will be done automatically**
 
 
 ## Folder structure
@@ -48,17 +53,14 @@ npm run deploy
 
 
 
-## How to start working
+## How to create a component
 
->IMPORTANT: Before you can start you should take a look to the folder structure and css vars above.
+>IMPORTANT: Before you can start you should take a look to the folder structure.
 
-* Identify the page or section you are about to work on, it should be a hippo component with a ftl file inside `node/park-sites-v2/freemarker/components/${component-type}/${comp-name}.ftl`
-* After that you should create a `scss` file for the hippo component inside `node/park-sites-v2/src/modules/${comp-name}/${comp-name}.scss` to add all the styles for that section/page.
-* If needed, you can create any reusable webcomponent to put inside that page/section.
-You should add them on `node/park-sites-v2/src/webcomponents/` inside its own folder.
-* All these `scss` and `js` files should be injected on the ftl file.
-
-** If you need to add new global styles or mixins you can do it inside `node/park-sites-v2/src/styles/`, but those should be imported on `src/styles/styles.scss`
+* Identify the folder you are going to put it
+* organism, molecule, atom... in component-name.organism.tsx
+* Separate the types in component-name.types.tsx
+* Separate the styles in component-name.styles.tsx
 
 ### Example
     .
@@ -92,12 +94,9 @@ You should add them on `node/park-sites-v2/src/webcomponents/` inside its own fo
 
 
 #### CSS Framework
-We are using the css framework `Bulma.css`, so you can read all the docs in this link.
+We are using the css framework `EmotionJs`, so you can read all the docs in this link.
 
-[Bulma](https://bulma.io/documentation/)
+[EmotionJs](https://emotion.sh/docs/introduction)
 
-#### Theming vars to be customized using Resource Bundles
->IMPORTANT: RB should keep the name sequence
-
-Review them here `node/park-sites-v2/src/styles/_theme.scss`
+Review theme here `src/utils/theme.tsx`
 

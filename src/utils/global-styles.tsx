@@ -2,6 +2,9 @@ export default `
   html {
     background-color: #000;
   }
+  .is-paddingless {
+    padding: 0 !important;
+  }
   .mpp-icon {
     font-family: 'Material Icons';
   }

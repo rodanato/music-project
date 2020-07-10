@@ -1,5 +1,5 @@
 import { Machine } from "xstate";
-import { themePaletteMachine } from "./theme/theme-palette.state";
+import { themePaletteMachine } from "./theme/theme-palette/theme-palette.state";
 import React from "react";
 import { persistState, getChildrenStateName } from "../utils/helpers";
 

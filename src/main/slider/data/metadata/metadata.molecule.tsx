@@ -1,32 +1,22 @@
+// EXTERNAL
 import React from 'react'; // eslint-disable-line
-
-import styled from '@emotion/styled'
-
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
-import MetadataAuthorAtom from './metadata-author.atom';
-import MetadataTitleAtom from './metadata-title.atom';
 
-type MetadataProps = {
-  data: DataProps;
-};
+// DEPENDENCIES
+import MetadataAuthorAtom from './metadata-author/metadata-author.atom';
+import MetadataTitleAtom from './metadata-title/metadata-title.atom';
+import { MetadataProps } from './metadata.types';
 
-type DataProps = {
-  title: string;
-  author: string;
-};
-
-const Metadata = styled.section({
-})
-
+// STYLES 
 
 function MetadataMolecule(props: MetadataProps) {
   const { title, author } = props.data;
   return (
-    <Metadata>
-      <MetadataTitleAtom title={title} />
-      <MetadataAuthorAtom author={author} />
-    </Metadata>
+    <section>
+      <MetadataTitleAtom titleName={title} />
+      <MetadataAuthorAtom authorName={author} />
+    </section>
   );
 }
 
