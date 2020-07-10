@@ -14,10 +14,10 @@ class AuthService {
       //   this.getArtistAlbums();
       // }, 0)
 
-      return false;
+      return true;
     } else {
       this.login();
-      return true;
+      return false;
     }
   }
 
