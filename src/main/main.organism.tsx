@@ -26,27 +26,8 @@ const MediaQueries = {
   },
 };
 
-function isUserSpotifyLoggedOut() {
-  const authService = new AuthService();
-  const searchParams = new URLSearchParams(window.location.search);
-  const hasCode = searchParams.has("code");
-  
-  if (hasCode) {
-    const code: string | null = searchParams.get("code");
-    authService.setCode(code);
-
-    setTimeout(() => {
-      authService.getArtistAlbums();
-    }, 0)
-
-    return false;
-  } else {
-    authService.login();
-    return true;
-  }
-}
-
 function MainOrganism() {
+  const authService = new AuthService();
   const [state, send] = useMachine(mainMachine);
 
   useEffect(() => {
@@ -63,7 +44,7 @@ function MainOrganism() {
     }
   }, [send])
 
-  if (isUserSpotifyLoggedOut()) return (null);
+  if (authService.isSpotifyUserLoggedOut()) return (null);
 
   return (
     <Fragment>
@@ -83,7 +64,6 @@ function MainOrganism() {
                 <FooterOrganism />
               </ContainerRow>
             </div>
-
 
             <MainStateContext.Provider value={state}>
               <ThemeMolecule />

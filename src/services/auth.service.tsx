@@ -1,8 +1,24 @@
 import { handleError } from "../utils/helpers";
 
 class AuthService {
-  constructor() {
+  isSpotifyUserLoggedOut() {
+    const searchParams = new URLSearchParams(window.location.search);
+    const hasCode = searchParams.has("code");
 
+    if (hasCode) {
+      const code: string | null = searchParams.get("code");
+      this.setCode(code);
+
+      // TODO: TO BE REMOVED (JUST AND EXAMPLE)
+      // setTimeout(() => {
+      //   this.getArtistAlbums();
+      // }, 0)
+
+      return false;
+    } else {
+      this.login();
+      return true;
+    }
   }
 
   login() {
@@ -14,12 +30,16 @@ class AuthService {
 
     fetch(url, {
       method: "POST",
-      body: JSON.stringify({ code: code }),
       headers: {
+        'Accept': 'application/json',
         'Content-Type': 'application/json'
-      }
+      },
+      mode: 'cors',
+      body: JSON.stringify({ code: code })
     })
-      .then(res => console.log(res, 'setCode'))
+      .then(res => {
+        console.log(res, 'setCode')
+      })
       .catch(err => handleError(err, 'setCode'));
   }
 

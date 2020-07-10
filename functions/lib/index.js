@@ -38,8 +38,10 @@ app.post('/setCode', (req, res) => {
         // Set the access token on the API object to use it in later calls
         SpotifyApi.setAccessToken(data.body['access_token']);
         SpotifyApi.setRefreshToken(data.body['refresh_token']);
+        res.json(data.body);
     }, function (err) {
         console.log('Something went wrong!', err);
+        res.json(err);
     });
 });
 app.get('/getArtistAlbums', (req, res) => {
