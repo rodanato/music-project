@@ -47,7 +47,8 @@ function MainOrganism() {
   return (
     <Fragment>
       {
-        authService.isSpotifyUserLoggedIn() && state.matches("rendered") ?
+        // authService.loggedIn && state.matches("rendered") ?
+        state.matches("rendered") ?
           <main css={[main]} className={`${getChildrenStateName(state, "rendered")}-theme`}>
             <div css={[container]}>
               <ContainerRow css={MediaQueries}>

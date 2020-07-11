@@ -66,4 +66,4 @@ app.get('/getArtistAlbums', (req: any, res: any) => {
   );
 });
 
-exports.app = functions.https.onRequest(app);
+exports.api = functions.https.onRequest(app);
