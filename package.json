@@ -29,8 +29,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:test": "set \"CI=false\" && yarn build",
-    "build:prod": "set \"CI=true\" && yarn build",
+    "build:test": "CI=false yarn build",
+    "build:prod": "CI=true yarn build",
     "deploy:local": "firebase serve",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
