@@ -14,18 +14,15 @@ class BackendService {
     return isProd() ? this._prodUrl : this._testUrl;
   }
 
-  // TODO: To be removed (EXAMPLE)
-  getArtistAlbums() { 
-    const url = `${this.apiUrl}/getArtistAlbums`;
+  getProfile() { 
+    const url = `${this.apiUrl}/getProfile`;
 
     fetch(url, {
       method: "GET"
     })
-    .then(res => console.log(res, 'getArtistAlbums'))
-    .catch(err => handleError(err, 'getArtistAlbums'));
+    .then(res => console.log(res, 'getProfile'))
+    .catch(err => handleError(err, 'getProfile'));
   }
-
-  getProfile() {}
 
   getPlaylist() {}
 
