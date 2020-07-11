@@ -31,7 +31,7 @@ jobs:
     steps:
       - pre_build
       - run: yarn build:test
-      - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
+      - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN --quiet
   build_and_deploy_to_prod:
     docker:
       - image: circleci/node:12.10
@@ -39,7 +39,7 @@ jobs:
     steps:
       - pre_build
       - run: yarn build:prod
-      - run: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
+      - run: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN --quiet
 
 workflows:
   version: 2.1
