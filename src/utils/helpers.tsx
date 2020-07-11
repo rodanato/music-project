@@ -19,3 +19,5 @@ export const handleError = (e: any, where: string) => {
     console.log(e.message, where);
   }
 }
+
+export const isProd = () => process.env.NODE_ENV === 'production';
