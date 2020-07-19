@@ -1,49 +1,89 @@
-import { handleError } from "../utils/helpers";
-import BackendService from "./backend.service";
+import { handleError, persistOnLocalStora } from "../utils/helpers";
+import { apiUrl } from "../utils/constants";
+import { auth } from "./firebase/config";
 
 type AuthUrls = {
   redirect: string;
   setCode: string;
+  createFirebaseAccount: string;
 }
 
 class AuthService {
+  private static instance: AuthService;
+  public static getInstance() {
+    if (!AuthService.instance) {
+      AuthService.instance = new AuthService();
+    }
+
+    return AuthService.instance;
+  }
+
   private _loggedIn: boolean = false;
-  private backendService: any;
   private _authUrls: AuthUrls = {
     redirect: "redirect",
-    setCode: "setCode"
+    setCode: "setCode",
+    createFirebaseAccount: "createFirebaseAccount"
   };
 
-  constructor() {
-    this.backendService = new BackendService();
-  }
-  
   get loggedIn(): boolean {
     return this._loggedIn;
   }
-  
+
   set loggedIn(value) {
     this._loggedIn = value;
   }
 
-  async login() {
-    const searchParams = new URLSearchParams(window.location.search);
-    const hasCode = searchParams.has("code");
+  // async isAuthenticated() {
+  //   // Get expiration date from localstorage
+  //   const accessExpires: string | null = localStorage.getItem("accessExpires");
 
-    if (hasCode) {
-      const code: string | null = searchParams.get("code");
-      this.setCode(code);
-      this.loggedIn = true;
-    } else {
-      this.loggedIn = false;
-      window.location = `${this.backendService.apiUrl}/${this._authUrls.redirect}` as unknown as Location;
-    }
+  //   if (accessExpires !== null) {
+  //     const now = new Date();
+  //     const accessExpired = +accessExpires < now.getTime();
+
+  //     // If present and expired go to login
+  //     if (accessExpired) {
+  //       // this.login();
+  //       return;
+  //     }
+  //     // If present and not expired go to main.organism
+  //     this.loggedIn = true;
+  //   }
+
+  //   // If null and urlCode is present go to main.organism
+  //   const code = this.getCodeIfPresent();
+  //   if (code) {
+  //     return this.setCode(code)
+  //       .then(() => {
+  //       });
+  //   }
+
+  //   // If null and urlCode not present go to login
+  //   // this.login();
+  // }
+
+  getCodeIfPresent() {
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.has("code") ? searchParams.get("code") : false;
   }
 
-  setCode(code: string | null) {
-    const url = `${this.backendService.apiUrl}/${this._authUrls.setCode}`;
+  login() {
+    const redirecUrl = `${apiUrl()}/${this._authUrls.redirect}`;
+    window.location = redirecUrl as unknown as Location;
+  }
 
-    fetch(url, {
+  logout() {
+    auth.signOut().then(function() {
+      localStorage.removeItem('loggedIn');
+    }).catch(function(err) {
+      handleError(err, "signOut")
+    });
+  }
+
+  setCode(code: string | null): Promise<any> {
+    const url = `${apiUrl()}/${this._authUrls.setCode}`;
+    const url2 = `${apiUrl()}/${this._authUrls.createFirebaseAccount}`;
+    const request = new Request(url, {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -51,12 +91,42 @@ class AuthService {
       },
       mode: 'cors',
       body: JSON.stringify({ code: code })
-    })
-    .then(res => {
-      console.log(res, 'setCode')
-    })
-    .catch(err => handleError(err, 'setCode'));
-  }
+    });
 
+    return fetch(request)
+      .then((res: any) => res.json())
+      .then((res: any) => {
+        console.log(res, 'res')
+
+        return fetch(url2, {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          mode: 'cors',
+          body: JSON.stringify({ token: res.access_token })
+        })
+        .then((res: any) => res.json())
+        .then((firebaseToken: string) => {
+          auth.signInWithCustomToken(firebaseToken)
+          .then(() => {
+            persistOnLocalStora("loggedIn", "true");
+            window.history.replaceState({}, document.title, "/");
+          })
+          .catch((err) => {
+            handleError(err, "signInWithCustomToken")
+          });
+        })
+        .catch(err => handleError(err, 'createFirebaseAccount'));
+
+
+        // this.loggedIn = true;
+        // const expirationDate = new Date();
+        // expirationDate.setTime(expirationDate.getTime() + (res.expires_in * 1000));
+        // persistOnLocalStora("accessExpires", expirationDate.toString());
+      })
+      .catch(err => handleError(err, 'setCode'));
+  }
 }
 export default AuthService;

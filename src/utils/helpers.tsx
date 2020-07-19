@@ -1,6 +1,10 @@
 export const persistState = (value: string) => {
+  persistOnLocalStora("main-state", value);
+}
+
+export const persistOnLocalStora = (name: string, value: string) => {
   try {
-    localStorage.setItem("main-state", JSON.stringify(value));
+    localStorage.setItem(name, JSON.stringify(value));
   } catch (e) {
     handleError(e, 'on localstorage setItem')
   }
@@ -20,4 +24,4 @@ export const handleError = (e: any, where: string) => {
   }
 }
 
-export const isProd = () => process.env.NODE_ENV === 'production';
+export const isProd = () => process.env.REACT_APP_ENV === 'prod';

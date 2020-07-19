@@ -18,6 +18,7 @@
     "@xstate/react": "^0.8.1",
     "classnames": "^2.2.6",
     "emotion-theming": "^10.0.27",
+    "firebase": "^7.16.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
@@ -29,8 +30,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:test": "CI=false yarn build",
-    "build:prod": "CI=true yarn build",
+    "build:test": "CI=false yarn build REACT_APP_ENV=test",
+    "build:prod": "CI=true yarn build REACT_APP_ENV=prod",
     "deploy:local": "firebase serve",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

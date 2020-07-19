@@ -1,5 +1,5 @@
 // EXTERNAL
-import React, { Fragment } from 'react'; // eslint-disable-line
+import React, { Fragment, Suspense, useEffect, useState } from 'react'; // eslint-disable-line
 /** @jsx jsx */
 import { Global, jsx, css } from '@emotion/core';
 
@@ -10,10 +10,60 @@ import { themeStyles } from './utils/themes';
 import typography from './utils/typography';
 import AuthService from './services/auth.service';
 import MainOrganism from './main/main.organism';
+import { auth } from './services/firebase/config';
+
+type LoggedStatus = null | boolean;
 
 function App() {
-  const authService = new AuthService();
-  authService.login();
+  const [loggedIn, setLoggedIn] = useState<LoggedStatus>(null);
+  const authService = AuthService.getInstance();
+  
+  auth.onAuthStateChanged(function (user) {
+    if (user) {
+      console.log("firebase loggedIn");
+      setLoggedIn(true);
+    } else {
+      console.log("firebase not loggedIn");
+      setLoggedIn(false);
+    }
+  });
+
+  useEffect(() => {
+    if (loggedIn === null) {
+      const isLoggedInOnStorage: string | null = localStorage.getItem("loggedIn");
+      
+      if (isLoggedInOnStorage !== null) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+      }
+    }
+
+    const code = authService.getCodeIfPresent();
+    if (code) authService.setCode(code);
+  });
+
+  function doLogin() {
+    authService.login();
+    setLoggedIn(null);
+  }
+
+  function ConditionalRender() {
+    if (loggedIn === null) {
+      return <div><h1>Loading...</h1></div>;
+    }
+    
+    if (!loggedIn) {
+      return (
+        <div>
+          <h2>You are not loggedIn</h2>
+          <button onClick={() => doLogin()}>Login here</button>
+        </div>
+      );
+    }
+
+    return <MainOrganism />;
+  }
 
   return (
     <Fragment>
@@ -23,7 +73,7 @@ function App() {
         ${typography}      
         ${globalClasses}
       `} />
-      <MainOrganism />
+      <ConditionalRender />
     </Fragment>
   );
 }

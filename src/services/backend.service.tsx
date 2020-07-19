@@ -1,21 +1,18 @@
-import { handleError, isProd } from "../utils/helpers";
-import DatabaseService from "./database.service";
+import { handleError } from "../utils/helpers";
+import { apiUrl } from "../utils/constants";
 
 class BackendService {
-  private _testUrl: string = "https://us-central1-social-music-addd0.cloudfunctions.net/api";
-  private _prodUrl: string = "https://us-central1-social-music-prod.cloudfunctions.net/api";
-  private databaseService: any;
+  private static instance: BackendService;
+  public static getInstance() {
+    if (!BackendService.instance) {
+      BackendService.instance = new BackendService();
+    }
 
-  constructor() {
-    this.databaseService = new DatabaseService();
-  }
-  
-  get apiUrl(): string {
-    return isProd() ? this._prodUrl : this._testUrl;
+    return BackendService.instance;
   }
 
   getProfile() { 
-    const url = `${this.apiUrl}/getProfile`;
+    const url = `${apiUrl()}/getProfile`;
 
     fetch(url, {
       method: "GET"

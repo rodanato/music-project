@@ -6,6 +6,7 @@ import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
 // DEPENDENCIES
 import AuthService from '../services/auth.service';
+import BackendService from '../services/backend.service';
 import { mainMachine, MainStateContext } from './main.state';
 import { responsive } from '../utils/responsive';
 import { getChildrenStateName } from "../utils/helpers"
@@ -27,8 +28,9 @@ const MediaQueries = {
 };
 
 function MainOrganism() {
-  const authService = new AuthService();
   const [state, send] = useMachine(mainMachine);
+  const authService = AuthService.getInstance();
+  const backendService = BackendService.getInstance();
 
   useEffect(() => {
     let persistedStateFormat = null;
@@ -42,12 +44,15 @@ function MainOrganism() {
       const newTheme = `CHANGE_TO_${persistedStateFormat.toUpperCase()}`;
       send(newTheme);
     }
-  }, [send])
+
+    if (authService.loggedIn) {
+      backendService.getProfile();
+    }
+  }, [send, backendService, authService.loggedIn])
 
   return (
     <Fragment>
       {
-        // authService.loggedIn && state.matches("rendered") ?
         state.matches("rendered") ?
           <main css={[main]} className={`${getChildrenStateName(state, "rendered")}-theme`}>
             <div css={[container]}>
@@ -60,6 +65,7 @@ function MainOrganism() {
               </ContainerRow>
 
               <ContainerRow>
+                <button onClick={() => authService.logout()}>Logout here</button>
                 <FooterOrganism />
               </ContainerRow>
             </div>
