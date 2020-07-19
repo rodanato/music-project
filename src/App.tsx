@@ -18,34 +18,38 @@ function App() {
   const [loggedIn, setLoggedIn] = useState<LoggedStatus>(null);
   const authService = AuthService.getInstance();
   
-  auth.onAuthStateChanged(function (user) {
-    if (user) {
-      console.log("firebase loggedIn");
-      setLoggedIn(true);
-    } else {
-      console.log("firebase not loggedIn");
-      setLoggedIn(false);
-    }
-  });
+  useEffect(() => {
+    auth.onAuthStateChanged(function (user) {
+      if (user) {
+        console.log("firebase loggedIn");
+        setLoggedIn(true);
+      } else {
+        console.log("firebase not loggedIn");
+        setLoggedIn(false);
+      }
+    });
+  }, []);
 
   useEffect(() => {
+    const code = authService.getCodeIfPresent();
+
     if (loggedIn === null) {
       const isLoggedInOnStorage: string | null = localStorage.getItem("loggedIn");
       
       if (isLoggedInOnStorage !== null) {
         setLoggedIn(true);
-      } else {
-        setLoggedIn(false);
+      }
+      
+      if (!code) {
+        setLoggedIn(false); //FIXME: happening when code is present 
       }
     }
 
-    const code = authService.getCodeIfPresent();
     if (code) authService.setCode(code);
   });
 
   function doLogin() {
     authService.login();
-    setLoggedIn(null);
   }
 
   function ConditionalRender() {
