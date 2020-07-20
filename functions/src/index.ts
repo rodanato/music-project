@@ -70,6 +70,19 @@ app.post('/setCode', (req: { body: { code: string } }, res: any) => {
   );
 });
 
+app.get('/refreshToken', (req: any, res: any) => {
+  spotifyApi.refreshAccessToken().then(
+    function (data: any) {
+      spotifyApi.setAccessToken(data.body['access_token']);
+    },
+    function (err: any) {
+      handleError(err, 'api:refreshToken');
+      res.json(err);  
+    }
+  );
+});
+
+
 app.get('/getArtistAlbums', (req: any, res: any) => {
   spotifyApi.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE').then(
     function (data: any) {
@@ -90,14 +103,12 @@ app.post('/createFirebaseAccount', async (req: { body: { token: string } }, res:
     handleError(error, 'spotifyApi.getMe');
   }
 
-  // console.log(userProfile.body.images[0], ">>>>> userProfile images 0")
-
   const uid = `spotify:${userProfile.body.id}`;
 
   // TODO: Is this needed?
   // Save the access token to the Firebase Realtime Database.
-  const databaseTask = admin.database().ref(`/spotifyAccessToken/${uid}`)
-    .set(req.body.token);
+  // const databaseTask = admin.database().ref(`/spotifyAccessToken/${uid}`)
+  //   .set(req.body.token);
 
   // Create or update the user account.
   const userCreationTask = admin.auth().updateUser(uid, {
@@ -116,7 +127,7 @@ app.post('/createFirebaseAccount', async (req: { body: { token: string } }, res:
   });
 
   // Wait for all async task to complete then generate and return a custom auth token.
-  return Promise.all([userCreationTask, databaseTask]).then(() => {
+  return Promise.all([userCreationTask]).then(() => {
     // Create a Firebase custom auth token.
     admin.auth().createCustomToken(uid)
       .then(function(firebaseToken: string) {

@@ -11,14 +11,30 @@ class BackendService {
     return BackendService.instance;
   }
 
-  getProfile() { 
+  refreshToken() {
+    const url = `${apiUrl()}/refreshToken`;
+    return fetch(url);
+  }
+
+  async spotifyAPIErrorHandler(error: any, fn: Function) {
+    // Retry if token expired
+    if (error.status === 401) {
+      await this.refreshToken();
+      return fn();
+    }
+
+    handleError(error, 'getProfile')
+  }
+
+  async getProfile(): Promise<any | void> { 
     const url = `${apiUrl()}/getProfile`;
 
-    fetch(url, {
-      method: "GET"
-    })
-    .then(res => console.log(res, 'getProfile'))
-    .catch(err => handleError(err, 'getProfile'));
+    try {
+      const res = await fetch(url);
+      console.log(res, "getProfile")
+    } catch (error) {
+      this.spotifyAPIErrorHandler(error, this.getProfile);
+    }
   }
 
   getPlaylist() {}

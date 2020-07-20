@@ -25,7 +25,7 @@ function App() {
         setLoggedIn(true);
       } else {
         console.log("firebase not loggedIn");
-        setLoggedIn(false);
+        // setLoggedIn(false);
       }
     });
   }, []);
@@ -41,11 +41,11 @@ function App() {
       }
       
       if (!code) {
-        setLoggedIn(false); //FIXME: happening when code is present 
+        setLoggedIn(false); 
       }
     }
 
-    if (code) authService.setCode(code);
+    if (code) authService.authenticate(code);
   });
 
   function doLogin() {
@@ -54,7 +54,7 @@ function App() {
 
   function ConditionalRender() {
     if (loggedIn === null) {
-      return <div><h1>Loading...</h1></div>;
+      return <div css={`color: #fff`}><h1>Loading...</h1></div>;
     }
     
     if (!loggedIn) {

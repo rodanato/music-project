@@ -1,8 +1,8 @@
 export const persistState = (value: string) => {
-  persistOnLocalStora("main-state", value);
+  persistOnLocalStorage("main-state", value);
 }
 
-export const persistOnLocalStora = (name: string, value: string) => {
+export const persistOnLocalStorage = (name: string, value: string) => {
   try {
     localStorage.setItem(name, JSON.stringify(value));
   } catch (e) {
@@ -18,9 +18,11 @@ export const getChildrenStateName = (state: any, parent: string) => {
 
 export const handleError = (e: any, where: string) => {
   if (e.response && e.response.data) {
-    console.log(e.response.data.error.status, e.response.data.error.message, where)
+    console.error(e.response.data.error.status, e.response.data.error.message, where);
+    // TODO: Save somewhere as error log
   } else {
-    console.log(e.message, where);
+    console.error(e.message, where);
+    // TODO: Save somewhere as error log
   }
 }
 
