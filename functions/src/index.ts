@@ -57,10 +57,6 @@ app.post('/setCode', (req: { body: { code: string } }, res: any) => {
     function (data: any) {
       spotifyApi.setAccessToken(data.body['access_token']);
       spotifyApi.setRefreshToken(data.body['refresh_token']);
-
-      // TODO: Think of doing this on the FED when an API call fails bc of the expired token
-      // refreshToken(data.body['expires_in']);
-
       res.json(data.body);
     },
     function (err: any) {
@@ -77,7 +73,7 @@ app.get('/refreshToken', (req: any, res: any) => {
     },
     function (err: any) {
       handleError(err, 'api:refreshToken');
-      res.json(err);  
+      res.json(err);
     }
   );
 });
@@ -130,28 +126,15 @@ app.post('/createFirebaseAccount', async (req: { body: { token: string } }, res:
   return Promise.all([userCreationTask]).then(() => {
     // Create a Firebase custom auth token.
     admin.auth().createCustomToken(uid)
-      .then(function(firebaseToken: string) {
+      .then(function (firebaseToken: string) {
         console.log('Created Custom token for UID "', uid, '" Token:', firebaseToken);
         res.json(firebaseToken);
       })
-      .catch(function(error: any) {
+      .catch(function (error: any) {
         console.log('Error creating custom token:', error);
       });
   });
 });
-
-// function refreshToken(expirationTime: number) {
-//   setTimeout(() => {
-//     spotifyApi.refreshAccessToken().then(
-//       function (data: any) {
-//         refreshToken(data.body['expires_in']);
-//       },
-//       function (err: any) {
-//         handleError(err, 'api:refreshAccessToken');
-//       }
-//     );
-//   }, expirationTime - 5000);
-// }
 
 export const handleError = (e: any, where: string) => {
   if (e.response && e.response.data) {

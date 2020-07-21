@@ -50,11 +50,17 @@ app.post('/setCode', (req, res) => {
     spotifyApi.authorizationCodeGrant(req.body.code).then(function (data) {
         spotifyApi.setAccessToken(data.body['access_token']);
         spotifyApi.setRefreshToken(data.body['refresh_token']);
-        // TODO: Think of doing this on the FED when an API call fails bc of the expired token
-        // refreshToken(data.body['expires_in']);
         res.json(data.body);
     }, function (err) {
         exports.handleError(err, 'api:authorizationCodeGrant');
+        res.json(err);
+    });
+});
+app.get('/refreshToken', (req, res) => {
+    spotifyApi.refreshAccessToken().then(function (data) {
+        spotifyApi.setAccessToken(data.body['access_token']);
+    }, function (err) {
+        exports.handleError(err, 'api:refreshToken');
         res.json(err);
     });
 });
@@ -73,12 +79,11 @@ app.post('/createFirebaseAccount', async (req, res) => {
     catch (error) {
         exports.handleError(error, 'spotifyApi.getMe');
     }
-    // console.log(userProfile.body.images[0], ">>>>> userProfile images 0")
     const uid = `spotify:${userProfile.body.id}`;
     // TODO: Is this needed?
     // Save the access token to the Firebase Realtime Database.
-    const databaseTask = admin.database().ref(`/spotifyAccessToken/${uid}`)
-        .set(req.body.token);
+    // const databaseTask = admin.database().ref(`/spotifyAccessToken/${uid}`)
+    //   .set(req.body.token);
     // Create or update the user account.
     const userCreationTask = admin.auth().updateUser(uid, {
         displayName: userProfile.body.display_name,
@@ -95,7 +100,7 @@ app.post('/createFirebaseAccount', async (req, res) => {
         throw error;
     });
     // Wait for all async task to complete then generate and return a custom auth token.
-    return Promise.all([userCreationTask, databaseTask]).then(() => {
+    return Promise.all([userCreationTask]).then(() => {
         // Create a Firebase custom auth token.
         admin.auth().createCustomToken(uid)
             .then(function (firebaseToken) {
@@ -107,18 +112,6 @@ app.post('/createFirebaseAccount', async (req, res) => {
         });
     });
 });
-// function refreshToken(expirationTime: number) {
-//   setTimeout(() => {
-//     spotifyApi.refreshAccessToken().then(
-//       function (data: any) {
-//         refreshToken(data.body['expires_in']);
-//       },
-//       function (err: any) {
-//         handleError(err, 'api:refreshAccessToken');
-//       }
-//     );
-//   }, expirationTime - 5000);
-// }
 exports.handleError = (e, where) => {
     if (e.response && e.response.data) {
         console.log(e.response.data.error.status, e.response.data.error.message, where);

@@ -1,4 +1,4 @@
-import { handleError, persistOnLocalStorage } from "../utils/helpers";
+import { handleError } from "../utils/helpers";
 import { apiUrl } from "../utils/constants";
 import { auth } from "./firebase/config";
 
@@ -22,31 +22,21 @@ class AuthService {
     if (!AuthService.instance) {
       AuthService.instance = new AuthService();
     }
-
     return AuthService.instance;
   }
 
-  private _loggedIn: boolean = false;
   private _authUrls: AuthUrls = {
     redirect: "redirect",
     setCode: "setCode",
     createFirebaseAccount: "createFirebaseAccount"
   };
 
-  get loggedIn(): boolean {
-    return this._loggedIn;
-  }
-
-  set loggedIn(value) {
-    this._loggedIn = value;
-  }
-
   getCodeIfPresent() {
     const searchParams = new URLSearchParams(window.location.search);
     return searchParams.has("code") ? searchParams.get("code") : false;
   }
 
-  login() {
+  spotifyLogin() {
     const redirecUrl = `${apiUrl()}/${this._authUrls.redirect}`;
     window.location = redirecUrl as unknown as Location;
   }
@@ -59,23 +49,12 @@ class AuthService {
     });
   }
 
-  removeCodeFromUrl() {
-    window.history.replaceState({}, document.title, "/");
-  }
-
-  onLoginSuccess() {
-    this.removeCodeFromUrl();
-    this.loggedIn = true;
-    persistOnLocalStorage("loggedIn", "true");
-  }
-
   async authenticate(code: string) {
     try {
       const spotifyToken: string = await this.getSpotifyToken(code);
       const firebaseToken: string = await this.createLoginAccount(spotifyToken);
 
       await auth.signInWithCustomToken(firebaseToken);
-      this.onLoginSuccess();
     } catch (error) {
       handleError(error, 'on authentication');
     }
@@ -96,9 +75,6 @@ class AuthService {
     return fetch(request)
       .then((res: any) => res.json())
       .then((res: setCodeResponse) => res.access_token)
-        // const expirationDate = new Date();
-        // expirationDate.setTime(expirationDate.getTime() + (res.expires_in * 1000));
-        // persistOnLocalStora("accessExpires", expirationDate.toString());
   }
 
   createLoginAccount(spotifyToken: string): Promise<string> {

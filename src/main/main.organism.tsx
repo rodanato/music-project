@@ -33,22 +33,18 @@ function MainOrganism() {
   const backendService = BackendService.getInstance();
 
   useEffect(() => {
-    let persistedStateFormat = null;
     const persistedState = localStorage.getItem("main-state");
 
-    // TODO: Avoid rerender when page has already loaded
     send("RENDER"); 
 
     if (persistedState !== null) {
-      persistedStateFormat = JSON.parse(persistedState);
-      const newTheme = `CHANGE_TO_${persistedStateFormat.toUpperCase()}`;
-      send(newTheme);
+      const persistedStateFormatted = JSON.parse(persistedState);
+      const newThemeEvent = `CHANGE_TO_${persistedStateFormatted.toUpperCase()}`;
+      send(newThemeEvent);
     }
 
-    if (authService.loggedIn) {
-      backendService.getProfile();
-    }
-  }, [send, backendService, authService.loggedIn])
+    backendService.getProfile();
+  }, [send, backendService])
 
   return (
     <Fragment>

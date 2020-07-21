@@ -31,7 +31,7 @@ class BackendService {
 
     try {
       const res = await fetch(url);
-      console.log(res, "getProfile")
+      console.log(res.json(), "getProfile")
     } catch (error) {
       this.spotifyAPIErrorHandler(error, this.getProfile);
     }
