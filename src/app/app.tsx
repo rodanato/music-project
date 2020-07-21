@@ -55,10 +55,6 @@ function App() {
     send("SPOTIFY_AUTH");
   }
 
-  //FIXME: When code is present on url, the unauthenticated 
-  // view is loading after the "loading" view and before
-  // the authenticated one 
-
   return (
     <Fragment>
       <Global styles={css`
@@ -68,11 +64,11 @@ function App() {
         ${globalClasses}
       `} />
 
-      {state.matches("loading")
-        ? <LoadingAtom flex="1" />
-        : state.matches("authenticated")
-          ? <MainOrganism />
-          : <UnauthenticatedOrganism onLogin={doSpotifyLogin} />}
+      {state.matches("authenticaed")
+        ? <MainOrganism />
+        : state.matches("unauthenticated")
+          ? <UnauthenticatedOrganism onLogin={doSpotifyLogin} /> 
+          : <LoadingAtom flex="1" />}
     </Fragment>
   );
 }
