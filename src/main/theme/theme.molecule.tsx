@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useMachine } from '@xstate/react';
 
 // DEPENDENCIES
-import { themeMachine } from './theme.state';
+import { ThemeState } from './theme.state';
 import CardAtom from '../../shared/card/card.atom';
 import ThemePaletteAtom from './theme-palette/theme-palette.atom';
 
@@ -15,7 +15,7 @@ import ThemePaletteAtom from './theme-palette/theme-palette.atom';
 import { theme, themeOptions, palettesList } from './theme.styles';
 
 function ThemeMolecule() {
-  const [state, send] = useMachine(themeMachine);
+  const [state, send] = useMachine(ThemeState);
 
   const ThemeOptionsClasses = classNames({
     'mpp-open-menu-animation': true,

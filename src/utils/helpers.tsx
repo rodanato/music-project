@@ -2,6 +2,11 @@ export const persistState = (value: string) => {
   persistOnLocalStorage("main-state", value);
 }
 
+export const existOnStorage = (item: string) => {
+  const value: string | null = localStorage.getItem(item);
+  return value !== null;
+}
+
 export const persistOnLocalStorage = (name: string, value: string) => {
   try {
     localStorage.setItem(name, JSON.stringify(value));

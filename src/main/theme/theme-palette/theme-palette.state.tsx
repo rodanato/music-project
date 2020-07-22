@@ -2,7 +2,7 @@ import { Machine, sendParent, EventObject } from "xstate";
 
 type SetPaletteEvent = EventObject & { theme: string };
 
-export const themePaletteMachine = Machine({
+export const ThemePaletteState = Machine({
   id: 'themePalette',
   initial: 'unselected',
   states: {

@@ -1,5 +1,5 @@
 import { Machine } from "xstate";
-import { themePaletteMachine } from "./theme/theme-palette/theme-palette.state";
+import { ThemePaletteState } from "./theme/theme-palette/theme-palette.state";
 import React from "react";
 import { persistState, getChildrenStateName } from "../utils/helpers";
 
@@ -26,12 +26,12 @@ export type MainEvent =
   | { type: 'CHANGE_TO_PINK'; }
   | { type: 'CHANGE_TO_PURPLE'; };
 
-export const mainMachine = Machine<any, MainStateSchema, MainEvent>({
+export const MainState = Machine<any, MainStateSchema, MainEvent>({
   id: 'main',
   initial: 'notrendered',
   invoke: {
     id: 'themePalette',
-    src: themePaletteMachine
+    src: ThemePaletteState
   },
   states: {
     notrendered: {

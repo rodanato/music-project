@@ -41,12 +41,8 @@ class AuthService {
     window.location = redirecUrl as unknown as Location;
   }
 
-  logout() {
-    auth.signOut().then(function () {
-      localStorage.removeItem('loggedIn');
-    }).catch(function (err) {
-      handleError(err, "signOut")
-    });
+  firebaseLogout() {
+    return auth.signOut()
   }
 
   async authenticate(code: string) {

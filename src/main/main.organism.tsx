@@ -7,7 +7,7 @@ import { jsx, css } from '@emotion/core'; // eslint-disable-line
 // DEPENDENCIES
 import AuthService from '../services/auth.service';
 import BackendService from '../services/backend.service';
-import { mainMachine, MainStateContext } from './main.state';
+import { MainState, MainStateContext } from './main.state';
 import { responsive } from '../utils/responsive';
 import { getChildrenStateName } from "../utils/helpers"
 import FooterOrganism from './footer/footer.organism';
@@ -28,7 +28,7 @@ const MediaQueries = {
 };
 
 function MainOrganism() {
-  const [state, send] = useMachine(mainMachine);
+  const [state, send] = useMachine(MainState);
   const authService = AuthService.getInstance();
   const backendService = BackendService.getInstance();
 
@@ -61,7 +61,6 @@ function MainOrganism() {
               </ContainerRow>
 
               <ContainerRow>
-                <button onClick={() => authService.logout()}>Logout here</button>
                 <FooterOrganism />
               </ContainerRow>
             </div>

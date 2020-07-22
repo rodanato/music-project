@@ -15,6 +15,7 @@ import LoadingAtom from '../shared/loading/loading.atom';
 import UnauthenticatedOrganism from '../main/unauthenticated/unauthenticated.organism';
 import { useMachine } from '@xstate/react';
 import { AppState } from './app.state';
+import { existOnStorage } from '../utils/helpers';
 
 function App() {
   const [state, send] = useMachine(AppState);
@@ -22,7 +23,7 @@ function App() {
 
   useEffect(() => {
     auth.onAuthStateChanged(function (user) {
-      if (user) send("AUTHENTICATE");
+      if (user) send("LOGGED_IN");
     });
   }, [send]);
 
@@ -30,30 +31,21 @@ function App() {
     if (state.matches("loading")) {
       const code = authService.getCodeIfPresent();
 
-      if (isLoggedInOnStorage()) {
-        send("AUTHENTICATE");
+      if (existOnStorage("loggedIn")) {
+        send("LOGGED_IN");
         return;
       }
 
       if (code) {
-        send("AUTHENTICATING", { code: code });
+        send("LOGGING_IN", { code: code });
         return;
       }
 
       if (!code) {
-        send("NOT_AUTHENTICATED");
+        send("LOGGED_OUT");
       }
     }
   });
-
-  function isLoggedInOnStorage() {
-    const storageLoggedIn: string | null = localStorage.getItem("loggedIn");
-    return storageLoggedIn !== null;
-  }
-
-  function doSpotifyLogin() {
-    send("SPOTIFY_AUTH");
-  }
 
   return (
     <Fragment>
@@ -64,10 +56,13 @@ function App() {
         ${globalClasses}
       `} />
 
-      {state.matches("authenticaed")
-        ? <MainOrganism />
-        : state.matches("unauthenticated")
-          ? <UnauthenticatedOrganism onLogin={doSpotifyLogin} /> 
+      {state.matches("loggedIn")
+        ? <div>
+            <button onClick={() => send("LOGOUT")}>Logout here</button>
+            <MainOrganism />
+          </div>
+        : state.matches("loggedOut")
+          ? <UnauthenticatedOrganism onLogin={() => send("LOGIN")} />
           : <LoadingAtom flex="1" />}
     </Fragment>
   );
