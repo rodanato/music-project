@@ -48,7 +48,7 @@ class AuthService {
   async authenticate(code: string) {
     try {
       const spotifyToken: string = await this.getSpotifyToken(code);
-      const firebaseToken: string = await this.createLoginAccount(spotifyToken);
+      const firebaseToken: string = await this.createFirebaseAccount(spotifyToken);
 
       await auth.signInWithCustomToken(firebaseToken);
     } catch (error) {
@@ -73,7 +73,7 @@ class AuthService {
       .then((res: setCodeResponse) => res.access_token)
   }
 
-  createLoginAccount(spotifyToken: string): Promise<string> {
+  createFirebaseAccount(spotifyToken: string): Promise<string> {
     const url = `${apiUrl()}/${this._authUrls.createFirebaseAccount}`;
     const request = new Request(url, {
       method: "POST",

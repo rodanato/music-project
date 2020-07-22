@@ -15,7 +15,7 @@ import LoadingAtom from '../shared/loading/loading.atom';
 import UnauthenticatedOrganism from '../main/unauthenticated/unauthenticated.organism';
 import { useMachine } from '@xstate/react';
 import { AppState } from './app.state';
-import { existOnStorage } from '../utils/helpers';
+import { getIfExistOnStorage } from '../utils/helpers';
 
 function App() {
   const [state, send] = useMachine(AppState);
@@ -31,7 +31,7 @@ function App() {
     if (state.matches("loading")) {
       const code = authService.getCodeIfPresent();
 
-      if (existOnStorage("loggedIn")) {
+      if (getIfExistOnStorage("loggedIn")) {
         send("LOGGED_IN");
         return;
       }

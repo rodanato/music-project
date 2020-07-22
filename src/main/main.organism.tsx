@@ -5,11 +5,10 @@ import { useMachine } from "@xstate/react";
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
 // DEPENDENCIES
-import AuthService from '../services/auth.service';
 import BackendService from '../services/backend.service';
 import { MainState, MainStateContext } from './main.state';
 import { responsive } from '../utils/responsive';
-import { getChildrenStateName } from "../utils/helpers"
+import { getChildrenStateName, getIfExistOnStorage } from "../utils/helpers"
 import FooterOrganism from './footer/footer.organism';
 import HeaderOrganism from './header/header.organism';
 import SliderOrganism from './slider/slider.organism';
@@ -29,17 +28,15 @@ const MediaQueries = {
 
 function MainOrganism() {
   const [state, send] = useMachine(MainState);
-  const authService = AuthService.getInstance();
   const backendService = BackendService.getInstance();
 
   useEffect(() => {
-    const persistedState = localStorage.getItem("main-state");
+    const persistedState = getIfExistOnStorage("main-state");
 
     send("RENDER"); 
 
-    if (persistedState !== null) {
-      const persistedStateFormatted = JSON.parse(persistedState);
-      const newThemeEvent = `CHANGE_TO_${persistedStateFormatted.toUpperCase()}`;
+    if (persistedState) {
+      const newThemeEvent = `CHANGE_TO_${persistedState.toUpperCase()}`;
       send(newThemeEvent);
     }
 

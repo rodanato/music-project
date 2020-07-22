@@ -2,9 +2,9 @@ export const persistState = (value: string) => {
   persistOnLocalStorage("main-state", value);
 }
 
-export const existOnStorage = (item: string) => {
+export const getIfExistOnStorage = (item: string) => {
   const value: string | null = localStorage.getItem(item);
-  return value !== null;
+  return value !== null ? JSON.parse(value) : false;
 }
 
 export const persistOnLocalStorage = (name: string, value: string) => {
