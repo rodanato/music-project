@@ -1,0 +1,57 @@
+version: 2.1
+
+commands:
+  pre_build:
+    steps:
+      - checkout
+      - restore_package_cache
+      - run: yarn install
+      - save_package_cache
+      - run: yarn test
+  restore_package_cache:
+    steps:
+      - restore_cache:
+          keys:
+            # Find a cache corresponding to this specific package-lock.json
+            - v1-npm-deps-{{ checksum "package-lock.json" }}
+            # Fallback cache to be used
+            - v1-npm-deps-
+  save_package_cache:
+    steps:
+      - save_cache:
+          key: v1-npm-deps-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+
+jobs:
+  build_and_deploy_to_test:
+    docker:
+      - image: circleci/node:12.10
+    working_directory: ~/repo
+    steps:
+      - pre_build
+      - run: yarn build:test
+      - run: ./node_modules/.bin/firebase deploy -P test --token=$FIREBASE_TOKEN
+  build_and_deploy_to_prod:
+    docker:
+      - image: circleci/node:12.10
+    working_directory: ~/repo
+    steps:
+      - pre_build
+      - run: yarn build:prod
+      - run: ./node_modules/.bin/firebase deploy -P prod --token=$FIREBASE_TOKEN
+
+workflows:
+  version: 2.1
+  test:
+    jobs:
+      - build_and_deploy_to_test:
+          filters:
+            branches:
+              only: develop
+  prod:
+    jobs:
+      - build_and_deploy_to_prod:
+          filters:
+            branches:
+              only: master

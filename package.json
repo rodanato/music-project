@@ -3,18 +3,34 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/core": "^10.0.28",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@xstate/react": "^0.8.1",
+    "classnames": "^2.2.6",
+    "emotion-theming": "^10.0.27",
+    "firebase": "^7.16.1",
+    "flow-bin": "^0.131.0",
+    "flow-typed": "^3.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.2"
+    "react-scripts": "3.4.2",
+    "swiper": "^5.4.2",
+    "uuid": "^8.1.0",
+    "xstate": "^4.10.0"
   },
   "scripts": {
+    "flow": "flow",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:test": "CI=false yarn build REACT_APP_ENV=test",
+    "build:prod": "CI=true yarn build REACT_APP_ENV=prod",
+    "deploy:local": "firebase serve",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -30,5 +46,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@storybook/addon-actions": "^5.3.19",
+    "@storybook/addon-links": "^5.3.19",
+    "@storybook/addons": "^5.3.19",
+    "@storybook/preset-create-react-app": "^3.0.0",
+    "@storybook/react": "^5.3.19",
+    "firebase-tools": "^8.4.2",
+    "react-test-renderer": "^16.13.1"
   }
 }
