@@ -25,6 +25,5 @@ yarn-error.log*
 # firebase
 firebase-debug.log
 functions/node_modules
-serviceAccountKey.json
 .firebase
 .firebase/*.cache
