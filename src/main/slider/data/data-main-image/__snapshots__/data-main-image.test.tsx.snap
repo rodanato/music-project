@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MainImageAtom snapshot example 1`] = `
+<img
+  alt=""
+  className="css-bbf2li-MainImageAtom"
+  src="https://dummyimage.com/500x500/000000/fff"
+/>
+`;

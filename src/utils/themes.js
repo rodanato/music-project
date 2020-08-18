@@ -3,7 +3,7 @@ type ThemeColor = {
   [key: string]: string
 }
 
-type Theme = {
+export type Theme = {
   name: string,
   colors: ThemeColor[]
 }
@@ -86,7 +86,7 @@ export const themes: Theme[] = [
 export const themeStyles: function = themes.map((theme: Theme) => `
   .${theme.name}-theme {
     ${theme.colors.map((color: ThemeColor): string => `
-      --mpp-${Object.keys(color)[0]}: ${Object.values(color)[0]};
+      --mpp-${Object.keys(color)[0]}: ${Object.values(color)[0]}; // flowlint incompatible-type:off
     `).join("")}
   }
 `);

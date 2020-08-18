@@ -1,4 +1,6 @@
 [ignore]
+.*/__tests__/.*
+<PROJECT_ROOT>/node_modules/.*
 
 [include]
 
@@ -8,5 +10,5 @@
 
 [options]
 module.name_mapper='^\([^\.].*\)$' -> '<PROJECT_ROOT>/src/\1'
-
+esproposal.optional_chaining=enable
 [strict]
