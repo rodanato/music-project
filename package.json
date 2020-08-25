@@ -16,12 +16,14 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.2",
+    "source-map-explorer": "^2.4.2",
     "swiper": "^5.4.2",
     "uuid": "^8.1.0",
     "xstate": "^4.10.0"
   },
   "scripts": {
     "flow": "flow",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:test": "CI=false yarn build REACT_APP_ENV=test",

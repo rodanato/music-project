@@ -1,6 +1,18 @@
 <h1 style="color: skyblue;">
-  Frontend Documentation
+  Music project Documentation
 </h1>
+
+
+## Tools
+- React
+- Firebase
+- XState
+- EmotionJs
+- Flow
+- Jest
+- Storybook
+- Swiper
+
 
 ## Run the frontend
 
@@ -24,8 +36,8 @@ rm -rf node_modules/ && yarn
 yarn start
 ```
 
-
 >IMPORTANT: Manual deployment should be avoided.
+
 
 ## Deployment
 
@@ -36,67 +48,49 @@ yarn start
 ## Folder structure
 
     .
-    ├── cedarfair                  # Backend files
-    ├── node                    
-    │   ├── park-sites-v2          # Frontend files
-    │   │   ├── assets             # Put here all the fonts, images and icons
-    │   │   ├── build              # Here will be the build files
-    │   │   ├── cypress            # Testing files
-    │   │   ├── freemarker         
-    │   │   │   ├── macros         # (The idea is to prefer reusable webcomponents)
+    ├── functions/                              # Firebase cloud functions
+    ├── src/                    
+    │   ├── utils/                              # Helper functions, etc
+    │   ├── shared/                             # Shared components
+    │   ├── services/                           # Frontend services, firebase implementation
+    │   ├── app/                                # App components
+    │   │   ├── main               
+    │   │   │   ├── example        
+    │   │   │   │   ├── example.atom.js         # Organism, molecule or atom component type
+    │   │   │   │   ├── example.styles.js       # Styles file using emotion
+    │   │   │   │   ├── example.types.js        # Types created for the component (flow)
+    │   │   │   │   ├── example.test.js         # Jest unit test
+    │   │   │   │   ├── example.stories.js      # Storybook file
     │   │   │   └── ...                
-    │   │   ├── src            
-    │   │   │   ├── styles         # Base scss files and general styles files
-    │   │   │   ├── modules        # Global, section or by page js and scss files
-    │   │   │   ├── webcomponents  # Components logic and styles
-    │   │   └── ...                
 
+        
 
+### Utils
 
-## How to create a component
-
->IMPORTANT: Before you can start you should take a look to the folder structure.
-
-* Identify the folder you are going to put it
-* organism, molecule, atom... in component-name.organism.tsx
-* Separate the types in component-name.types.tsx
-* Separate the styles in component-name.styles.tsx
-
-### Example
-    .
-    ├── node                    
-    │   ├── park-sites-v2          
-        │   │   ├── freemarker         
-    │   │   │   │   ├── components         
-    │   │   │   │   │   ├── catalog-components         
-    │   │   │   │   │   │   ├── ${comp-name}.ftl         
-    │   │   │   │   │   ├── page-components         
-    │   │   │   │   │   ├── static-components         
-    │   │   ├── src            
-    │   │   │   ├── modules
-    │   │   │   │   ├── ${comp-name}/
-    │   │   │   │   │   ├── ${comp-name}.js
-    │   │   │   │   │   ├── ${comp-name}.scss
-    │   │   │   ├── webcomponents
-    │   │   │   │   ├── ${wecomponent-1}/
-    │   │   │   │   │   ├── ${wecomponent-1}.js
-    │   │   │   │   │   ├── ${wecomponent-1}.scss
-    │   │   │   │   ├── ${wecomponent-2}/
-    │   │   │   │   │   ├── ${wecomponent-2}.js
-    │   │   │   │   │   ├── ${wecomponent-2}.scss
-    │   │   │   ├── styles
-    │   │   │   │   │   ├── _${base-styles-file-name}.scss
-    │   │   │   │   │   ├── ${general-styles-file-name}.scss
-    │   │   └── ...                
+* Constants: Place here any constant needed globally
+* Global Styles: Styles are isolated by component, so put any needed global css class here
+* Helpers: Any helper function
+* Responsive: Established sizes and breakpoints, responsive function to set styles for each breakpoint(3) configured
+* Typography: Typo classes
+* Themes: Change, add or remove themes
 
 
 ### Styles
 
+Prefer to use string CSS EmotionJs propertie to set styles for a component, then use it inside a component like this
 
-#### CSS Framework
-We are using the css framework `EmotionJs`, so you can read all the docs in this link.
+```js
+export const exampleComponent: string = `
+  height: 100%;
+  width: 100%;
+`;
+```
+
+```html
+    <div css={[exampleComponent]}><div>
+```
+
+
 
 [EmotionJs](https://emotion.sh/docs/introduction)
-
-Review theme here `src/utils/theme.tsx`
 
