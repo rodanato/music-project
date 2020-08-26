@@ -1,8 +1,9 @@
 // @flow
 import { Machine } from "xstate";
 import { ThemePaletteState } from "./theme/theme-palette/theme-palette.state";
+import { ThemeState } from "./theme/theme.state";
 import React from "react";
-import { persistState, getChildrenStateName } from "../utils/helpers";
+import { persistState, getChildrenStateName } from "../../utils/helpers";
 
 export interface MainStateSchema {
   states: {
@@ -31,10 +32,10 @@ export const MainState = Machine<any, MainStateSchema, MainEvent>(
   {
     id: "main",
     initial: "notrendered",
-    invoke: {
-      id: "themePalette",
-      src: ThemePaletteState,
-    },
+    invoke: [
+      { id: 'themePalette', src: ThemePaletteState },
+      { id: 'themes', src: ThemeState }
+    ],
     states: {
       notrendered: {
         on: {

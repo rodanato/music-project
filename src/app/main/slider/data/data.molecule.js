@@ -3,7 +3,7 @@
 import React from 'react';
 
 // DEPENDENCIES
-import CardAtom from '../../../shared/card/card.atom';
+import CardAtom from '../../../../shared/card/card.atom';
 import GenresMolecule from './genres/genres.molecule';
 import MainImageAtom from './data-main-image/data-main-image.atom';
 import MetadataMolecule from './metadata/metadata.molecule';

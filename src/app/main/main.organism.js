@@ -6,10 +6,10 @@ import { useMachine } from "@xstate/react";
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
 // DEPENDENCIES
-import BackendService from '../services/backend.service';
+import BackendService from '../../services/backend.service';
 import { MainState, MainStateContext } from './main.state';
-import { responsive } from '../utils/responsive';
-import { getChildrenStateName, getIfExistOnStorage } from "../utils/helpers"
+import { responsive } from '../../utils/responsive';
+import { getChildrenStateName, getIfExistOnStorage } from "../../utils/helpers"
 import FooterOrganism from './footer/footer.organism';
 import HeaderOrganism from './header/header.organism';
 import SliderOrganism from './slider/slider.organism';

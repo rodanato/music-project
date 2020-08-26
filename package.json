@@ -24,7 +24,7 @@
   "scripts": {
     "flow": "flow",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-scripts start",
+    "start": "REACT_APP_LOCAL_SERVE=true react-scripts start",
     "build": "react-scripts build",
     "build:test": "CI=false yarn build REACT_APP_ENV=test",
     "build:prod": "CI=true yarn build REACT_APP_ENV=prod",

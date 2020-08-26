@@ -9,7 +9,7 @@ import { useMachine } from '@xstate/react';
 
 // DEPENDENCIES
 import { ThemeState } from './theme.state';
-import CardAtom from '../../shared/card/card.atom';
+import CardAtom from '../../../shared/card/card.atom';
 import ThemePaletteAtom from './theme-palette/theme-palette.atom';
 
 // STYLES

@@ -1,6 +1,6 @@
 // @flow
 import { Machine } from "xstate";
-import { themes } from "../../utils/themes";
+import { themes } from "../../../utils/themes";
 
 export interface ThemeStateSchema {
   states: {
@@ -16,7 +16,8 @@ export type ThemeEvent =
 export const ThemeState = Machine<any, ThemeStateSchema, ThemeEvent>({
   initial: 'closed',
   context: {
-    themes: themes.map(theme => theme.name)
+    themes: themes.map(theme => theme.name),
+    themeLength: themes[0].colors.length
   },
   states: {
     opened: {

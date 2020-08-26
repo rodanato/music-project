@@ -14,9 +14,9 @@ import reset from '../utils/reset';
 import globalClasses from '../utils/global-styles';
 import typography from '../utils/typography';
 import { themeStyles } from '../utils/themes';
-import MainOrganism from '../main/main.organism';
+import MainOrganism from './main/main.organism';
 import LoadingAtom from '../shared/loading/loading.atom';
-import UnauthenticatedOrganism from '../main/unauthenticated/unauthenticated.organism';
+import UnauthenticatedOrganism from './main/unauthenticated/unauthenticated.organism';
 
 function App() {
   const [state, send] = useMachine(AppState);
@@ -56,7 +56,7 @@ function App() {
         ${typography}      
         ${globalClasses}
       `} />
-
+  
       {state.matches("loggedIn")
         ? <div>
             <button onClick={() => send("LOGOUT")}>Logout here</button>

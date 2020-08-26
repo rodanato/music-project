@@ -8,7 +8,7 @@ import { useService } from '@xstate/react';
 
 // DEPENDENCIES
 import { MainStateContext } from '../../main.state';
-import { getChildrenStateName } from "../../../utils/helpers"
+import { getChildrenStateName } from "../../../../utils/helpers"
 
 // STYLES
 import {
@@ -22,7 +22,8 @@ import type { ThemePaletterProps } from './theme-palette.types';
 function ThemePaletteAtom({ name }: ThemePaletterProps) {
   const mainState = useContext(MainStateContext);
   const [, send] = useService(mainState.children.themePalette);
-  const colorLength = new Array(7).fill(1);
+  const [themeState] = useService(mainState.children.themes);
+  const colorsPerPalette = new Array(themeState.context.themeLength).fill(1);
 
   useEffect(() => {
     const ParentState = "rendered";
@@ -40,7 +41,7 @@ function ThemePaletteAtom({ name }: ThemePaletterProps) {
         onClick={() => send("SELECT", { theme: name })}
       >
         <div css={[paletteColors]} className={`${name}-theme`}>
-          {colorLength.map(() =>
+          {colorsPerPalette.map(() =>
             <span key={uuidv4()} css={[paletteColor]}></span>
           )}
         </div>
