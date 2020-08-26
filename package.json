@@ -30,6 +30,7 @@
     "build:prod": "CI=true yarn build REACT_APP_ENV=prod",
     "deploy:local": "firebase serve",
     "test": "react-scripts test",
+    "coverage": "npm test -- --coverage",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public"

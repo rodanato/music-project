@@ -5,18 +5,18 @@ import React, { Fragment, useEffect } from 'react'; // eslint-disable-line
 import { Global, jsx, css } from '@emotion/core';
 
 // DEPENDENCIES
-import globalClasses from '../utils/global-styles';
-import reset from '../utils/reset';
-import { themeStyles } from '../utils/themes';
-import typography from '../utils/typography';
 import AuthService from '../services/auth.service';
-import MainOrganism from '../main/main.organism';
 import { auth } from '../services/firebase/config';
-import LoadingAtom from '../shared/loading/loading.atom';
-import UnauthenticatedOrganism from '../main/unauthenticated/unauthenticated.organism';
 import { useMachine } from '@xstate/react';
 import { AppState } from './app.state';
 import { getIfExistOnStorage } from '../utils/helpers';
+import reset from '../utils/reset';
+import globalClasses from '../utils/global-styles';
+import typography from '../utils/typography';
+import { themeStyles } from '../utils/themes';
+import MainOrganism from '../main/main.organism';
+import LoadingAtom from '../shared/loading/loading.atom';
+import UnauthenticatedOrganism from '../main/unauthenticated/unauthenticated.organism';
 
 function App() {
   const [state, send] = useMachine(AppState);
