@@ -6,9 +6,9 @@ const express = require('express');
 const crypto = require('crypto');
 
 // LOCAL
-// const appUrl = "http://localhost:3000";
+const appUrl = "http://localhost:3000";
 // TEST
-const appUrl = "https://social-music-addd0.web.app";
+// const appUrl = "https://social-music-addd0.web.app";
 // PROD
 // const appUrl = "https://social-music-prod.web.app";
 
