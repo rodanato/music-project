@@ -28,8 +28,7 @@ const firebaseLogout = (): Promise<any> => {
 
 export const AppState = Machine<any, AppStateSchema, AppEvent>(
   {
-    initial:
-      process.env.REACT_APP_LOCAL_SERVE === "true" ? "loggedIn" : "loading",
+    initial: "loading",
     states: {
       loading: {
         on: {

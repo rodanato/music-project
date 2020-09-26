@@ -8,6 +8,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "@xstate/react": "^0.8.1",
+    "@xstate/test": "^0.4.1",
     "classnames": "^2.2.6",
     "emotion-theming": "^10.0.27",
     "firebase": "^7.16.1",
@@ -24,7 +25,7 @@
   "scripts": {
     "flow": "flow",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "REACT_APP_LOCAL_SERVE=true react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "build:test": "CI=false yarn build REACT_APP_ENV=test",
     "build:prod": "CI=true yarn build REACT_APP_ENV=prod",
