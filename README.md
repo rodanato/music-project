@@ -44,6 +44,9 @@ yarn start
 1) **Create a PR from your branch to develop**
 2) **When it's approved and merged, the deployment to the test env will be done automatically**
 
+[Test env](https://social-music-addd0.web.app/)
+[Prod env](https://music-project-prod.web.app/)
+
 
 ## Folder structure
 
