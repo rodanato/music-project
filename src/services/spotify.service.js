@@ -1,7 +1,7 @@
 // @flow
 
 import SpotifyWebApi from 'spotify-web-api-js';
-import { handleError } from "../utils/helpers";
+import { handleError, getIfExistOnStorage } from "../utils/helpers";
 import { apiUrl } from "../utils/constants";
 import { db } from "./firebase/config";
 
@@ -32,14 +32,22 @@ class SpotifyService {
     setCode: "setCode"
   };
   spotifyApi: any;
-  token: string;
 
   constructor() {
     this.spotifyApi = new SpotifyWebApi();
-    console.log('>>> token', this.spotifyApi.getAccessToken())
+    const existingToken = getIfExistOnStorage("spotifyToken");
+    if (existingToken) this.token = existingToken;
   }
 
-  getToken(code: string): Promise<string> {
+  get token() {
+    return this.spotifyApi.getAccessToken();
+  }
+
+  set token(token: string) {
+    this.spotifyApi.setAccessToken(token);
+  }
+
+  async getToken(code: string): Promise<string> {
     const url = `${apiUrl()}/${this._spotifyUrls.setCode}`;
     const request = new Request(url, {
       method: "POST",
@@ -51,18 +59,21 @@ class SpotifyService {
       body: JSON.stringify({ code: code }),
     });
 
-    return fetch(request)
-      .then((res: any) => res.json())
-      .then((res: setCodeResponse) => {
-        this.spotifyApi.setAccessToken(res.access_token);
-        this.token = res.access_token;
-        return res.access_token;
-      });
+
+    try {
+      const res = await fetch(request);
+      const result: setCodeResponse = await res.json()
+      this.token = result.access_token;
+      console.log('>>> token 1', this.token)
+    } catch(e) {
+      handleError(e, 'spa:spotifyService:getToken')
+    }
+
+    console.log('>>> token 2', this.token)
+    return this.token;
   }
 
   async getProfile(): Promise<any | void> { 
-    console.log('>>> token 2', this.spotifyApi.getAccessToken())
-
     try {
       const profile = await this.spotifyApi.getMe();
       console.log(profile, "getProfile")

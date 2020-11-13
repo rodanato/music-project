@@ -51,7 +51,7 @@ class AuthService {
     }
   }
 
-  createFirebaseAccount(spotifyToken: string): Promise<string> {
+  async createFirebaseAccount(spotifyToken: string): Promise<string> {
     const url = `${apiUrl()}/${this._authUrls.createFirebaseAccount}`;
     const request = new Request(url, {
       method: "POST",
@@ -63,9 +63,13 @@ class AuthService {
       body: JSON.stringify({ token: spotifyToken }),
     });
 
-    return fetch(request)
-      .then((res: any) => res.json())
-      .then((firebaseToken: string) => firebaseToken);
+    try {
+      const res = await fetch(request);
+      const firebaseToken: string = await res.json()
+      return firebaseToken;
+    } catch(e) {
+      handleError(e, 'spa:spotifyService:getToken')
+    }
   }
 }
 export default AuthService;

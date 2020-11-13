@@ -92,8 +92,10 @@ export const AppState = Machine<any, AppStateSchema, AppEvent>(
         localStorage.removeItem("loggedIn");
       },
       cleanAndPersist: (_ctx, e: any) => {
+        const spotifyService = SpotifyService.getInstance();
         window.history.replaceState({}, document.title, "/");
         persistOnLocalStorage("loggedIn", "true");
+        persistOnLocalStorage("spotifyToken", spotifyService.token);
       },
     },
   }
