@@ -39,13 +39,22 @@ yarn start
 >IMPORTANT: Manual deployment should be avoided.
 
 
-## Deployment
+## SPA Deployment
 
 1) **Create a PR from your branch to develop**
 2) **When it's approved and merged, the deployment to the test env will be done automatically**
 
 [Test env](https://social-music-addd0.web.app/)
+
 [Prod env](https://music-project-prod.web.app/)
+
+
+## Functions Deployment
+1) **Run deploy: command plus the env**
+```sh
+yarn deploy:test
+```
+***Use deploy:local to run the spa locally and point the remote functions
 
 
 ## Folder structure

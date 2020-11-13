@@ -6,7 +6,7 @@ import { useMachine } from "@xstate/react";
 import { jsx, css } from '@emotion/core'; // eslint-disable-line
 
 // DEPENDENCIES
-import BackendService from '../../services/backend.service';
+import SpotifyService from '../../services/spotify.service';
 import { MainState, MainStateContext } from './main.state';
 import { responsive } from '../../utils/responsive';
 import { getChildrenStateName, getIfExistOnStorage } from "../../utils/helpers"
@@ -29,7 +29,7 @@ const MediaQueries = {
 
 function MainOrganism() {
   const [state, send] = useMachine(MainState);
-  const backendService = BackendService.getInstance();
+  const spotifyService = SpotifyService.getInstance();
 
   useEffect(() => {
     const persistedState = getIfExistOnStorage("main-state");
@@ -41,8 +41,8 @@ function MainOrganism() {
       send(newThemeEvent);
     }
 
-    backendService.getProfile();
-  }, [send, backendService])
+    spotifyService.getProfile();
+  }, [send, spotifyService])
 
   return (
     <Fragment>

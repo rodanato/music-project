@@ -6,7 +6,9 @@
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
+    "deploy:local": "firebase functions:config:set app.url=http://localhost:3000 && firebase deploy --only functions",
+    "deploy:test": "firebase functions:config:set app.url=https://social-music-addd0.web.app && firebase deploy --only functions",
+    "deploy:prod": "firebase functions:config:set app.url=https://social-music-prod.web.app && firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
   "engines": {
@@ -18,7 +20,7 @@
     "crypto": "^1.0.1",
     "express": "^4.17.1",
     "firebase-admin": "^8.10.0",
-    "firebase-functions": "^3.6.1",
+    "firebase-functions": "^3.11.0",
     "spotify-web-api-node": "^4.0.0"
   },
   "devDependencies": {

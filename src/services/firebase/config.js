@@ -1,7 +1,7 @@
 // @flow
 import * as firebase from 'firebase/app';
 import "firebase/auth";
-// import "firebase/firestore";
+import "firebase/firestore";
 
 type Config = {
   apiKey: string;
@@ -45,8 +45,10 @@ const config: Config = configEnv[env];
 firebase.initializeApp(config);
 
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 export {
   auth,
+  db,
   config
 };

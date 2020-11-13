@@ -32,6 +32,7 @@ function App() {
     if (state.matches("loading")) {
       const code = authService.getCodeIfPresent();
 
+      // FIXME: GetProfile should wait for getToken to finish, also obtain existing token after app refresh
       if (getIfExistOnStorage("loggedIn")) {
         send("LOGGED_IN");
         return;

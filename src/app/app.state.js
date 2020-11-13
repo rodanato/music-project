@@ -1,6 +1,7 @@
 // @flow
 import { Machine } from "xstate";
 import AuthService from "../services/auth.service";
+import SpotifyService from "../services/spotify.service";
 import { persistOnLocalStorage, handleError } from "../utils/helpers";
 
 export interface AppStateSchema {
@@ -80,8 +81,8 @@ export const AppState = Machine<any, AppStateSchema, AppEvent>(
         handleError({ message: e.data }, "signOut");
       },
       spotifyLogin: () => {
-        const authService = AuthService.getInstance();
-        authService.spotifyLogin();
+        const spotifyService = SpotifyService.getInstance();
+        spotifyService.loginRedirect();
       },
       firebaseLogin: (_ctx, e: any) => {
         const authService = AuthService.getInstance();

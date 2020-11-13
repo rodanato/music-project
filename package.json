@@ -18,6 +18,7 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.2",
     "source-map-explorer": "^2.4.2",
+    "spotify-web-api-js": "^1.5.1",
     "swiper": "^5.4.2",
     "uuid": "^8.1.0",
     "xstate": "^4.10.0"
@@ -25,7 +26,7 @@
   "scripts": {
     "flow": "flow",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-scripts start",
+    "start": "REACT_APP_EMUL=true react-scripts start",
     "build": "react-scripts build",
     "build:test": "CI=false yarn build REACT_APP_ENV=test",
     "build:prod": "CI=true yarn build REACT_APP_ENV=prod",
