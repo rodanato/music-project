@@ -22,11 +22,11 @@ function App() {
   const [state, send] = useMachine(AppState);
   const authService = AuthService.getInstance();
 
-  useEffect(() => {
-    auth.onAuthStateChanged(function (user) {
-      if (user) send("LOGGED_IN");
-    });
-  }, [send]);
+  // useEffect(() => {
+  //   auth.onAuthStateChanged(function (user) {
+  //     if (user) send("LOGGED_IN");
+  //   });
+  // }, [send]);
 
   useEffect(() => {
     if (state.matches("loading")) {

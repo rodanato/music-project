@@ -27,6 +27,11 @@ const firebaseLogout = (): Promise<any> => {
   return authService.firebaseLogout();
 };
 
+const firebaseLogin = (ctx, e): Promise<any> => {
+  const authService = AuthService.getInstance();
+  return authService.authenticate(e.code);
+};
+
 export const AppState = Machine<any, AppStateSchema, AppEvent>(
   {
     initial: "loading",
@@ -39,12 +44,23 @@ export const AppState = Machine<any, AppStateSchema, AppEvent>(
         },
       },
       loggingIn: {
-        entry: ["firebaseLogin"],
-        on: {
-          LOGGED_IN: {
-            target: "loggedIn",
+        // entry: ["firebaseLogin"],
+        invoke: {
+          id: "firebaseLogin",
+          src: firebaseLogin,
+          onDone: {
+            target: "loggedIn"
+          },
+          onError: {
+            actions: ["handleError"],
           },
         },
+        // on: {
+        //   LOGGED_IN: {
+        //     target: "loggedIn",
+        //     cond: "spotifyTokenExists"
+        //   },
+        // },
       },
       loggedIn: {
         entry: ["cleanAndPersist"],
@@ -76,6 +92,12 @@ export const AppState = Machine<any, AppStateSchema, AppEvent>(
     },
   },
   {
+    guards: {
+      spotifyTokenExists: () => {
+        const spotifyService = SpotifyService.getInstance();
+        return !!spotifyService.token;
+      }
+    },
     actions: {
       handleError: (_ctx, e: any) => {
         handleError({ message: e.data }, "signOut");
@@ -83,10 +105,6 @@ export const AppState = Machine<any, AppStateSchema, AppEvent>(
       spotifyLogin: () => {
         const spotifyService = SpotifyService.getInstance();
         spotifyService.loginRedirect();
-      },
-      firebaseLogin: (_ctx, e: any) => {
-        const authService = AuthService.getInstance();
-        authService.authenticate(e.code);
       },
       removeFromStorage: (_ctx, e: any) => {
         localStorage.removeItem("loggedIn");

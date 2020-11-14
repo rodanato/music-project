@@ -38,20 +38,22 @@ class AuthService {
     return auth.signOut();
   }
 
-  async authenticate(code: string) {
+  async authenticate(code: string): Promise<any> {
     try {
       const spotifyToken: string = await this.spotifyService.getToken(code);
+      const userprofile = await this.spotifyService.getProfile(code);
       const firebaseToken: string = await this.createFirebaseAccount(
-        spotifyToken
+        spotifyToken,
+        userprofile
       );
 
-      await auth.signInWithCustomToken(firebaseToken);
+      return await auth.signInWithCustomToken(firebaseToken);
     } catch (error) {
-      handleError(error, "on authentication");
+      handleError(error, "spa:authService:authenticate");
     }
   }
 
-  async createFirebaseAccount(spotifyToken: string): Promise<string> {
+  async createFirebaseAccount(spotifyToken: string, userprofile: any): Promise<string> {
     const url = `${apiUrl()}/${this._authUrls.createFirebaseAccount}`;
     const request = new Request(url, {
       method: "POST",
@@ -60,7 +62,8 @@ class AuthService {
         "Content-Type": "application/json",
       },
       mode: "cors",
-      body: JSON.stringify({ token: spotifyToken }),
+      body: JSON.stringify({ token: spotifyToken,
+        userprofile: userprofile }),
     });
 
     try {

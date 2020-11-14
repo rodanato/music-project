@@ -8,16 +8,6 @@ const spotify = express();
 
 const spotifyApi = new SpotifyWebApi(spotifyApiConfig);
 
-async function getProfile(): Promise<Profile> {
-  try {
-    const profile = await spotifyApi.getMe();
-    return Promise.resolve(profile.body);
-  } catch (error) {
-    handleError(error, "api:spotify:getMe");
-    return Promise.reject();
-  }
-}
-
 spotify.use(cors);
 
 spotify.get("/redirect", (req: any, res: any) => {
@@ -74,29 +64,29 @@ spotify.get("/refreshToken", (req: any, res: any) => {
 
 spotify.post(
   "/createFirebaseAccount",
-  async (req: { body: { token: string } }, res: any) => {
-    const userProfile: Profile = await getProfile();
-    const uid = `spotify:${userProfile.id}`;
+  async (req: { body: { token: string, userprofile: Profile } }, res: any) => {
+    const {userprofile} = req.body;
+    const uid = `spotify:${userprofile.id}`;
 
     // TODO: Is this needed?
     // Save the access token to the Firebase Realtime Database.
     // const databaseTask = admin.database().ref(`/spotifyAccessToken/${uid}`)
-    //   .set(req.body.token);
+    //   .set(token);
 
     // Create or update the user account.
     const userCreationTask = admin
       .auth()
       .updateUser(uid, {
-        displayName: userProfile.display_name,
-        photoURL: userProfile.images[0].url,
+        displayName: userprofile.display_name,
+        photoURL: userprofile.images[0].url,
       })
       .catch((error: any) => {
         // If user does not exists we create it.
         if (error.code === "auth/user-not-found") {
           return admin.auth().createUser({
             uid: uid,
-            displayName: userProfile.display_name,
-            photoURL: userProfile.images[0].url,
+            displayName: userprofile.display_name,
+            photoURL: userprofile.images[0].url,
           });
         }
         throw error;
@@ -113,6 +103,7 @@ spotify.post(
         })
         .catch(function(error: any) {
           handleError("api:auth:createCustomToken", error);
+          res.json(error);
         });
     });
   }

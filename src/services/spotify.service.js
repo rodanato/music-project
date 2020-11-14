@@ -73,24 +73,24 @@ class SpotifyService {
     return this.token;
   }
 
-  async getProfile(): Promise<any | void> { 
+  async getProfile(): Promise<string | void> { 
     try {
       const profile = await this.spotifyApi.getMe();
       console.log(profile, "getProfile")
-      
-      db.collection("users").add({
-        name: profile.display_name
-      })
-      .then(function(docRef) {
-          console.log("Document written with ID: ", docRef.id);
-      })
-      .catch(function(error) {
-          console.error("Error adding document: ", error);
-      });
+      return profile;
+      // db.collection("users").add({
+      //   name: profile.display_name
+      // })
+      // .then(function(docRef) {
+      //     console.log("Document written with ID: ", docRef.id);
+      // })
+      // .catch(function(error) {
+      //     console.error("Error adding document: ", error);
+      // });
     
     } catch (error) {
-      console.log(error)
-      // this.spotifyAPIErrorHandler(error, this.getProfile);
+      // console.log(error)
+      handleError(error, 'spa:spotifyService:getProfile')
     }
   }
 
@@ -117,23 +117,25 @@ class SpotifyService {
     window.location = redirecUrl;
   }
 
-  refreshToken(): Promise<string> {
+  async refreshToken(): Promise<string> {
     const url: string = `${apiUrl()}/refreshToken`;
-    return fetch(url)
-      .catch(function(error) {
-        console.error("Error on token refresh: ", error);
-     });
-    // TODO: Catch error
+    try {
+      const res = await fetch(url);
+      const result: string = await res.json()
+      this.token = result.access_token;
+    } catch(e) {
+      handleError(e, 'spa:spotifyService:refreshToken')
+    }
   }
 
   async spotifyAPIErrorHandler(error: any, fn: function) {
     // Retry if token expired
     if (error.status === 401) {
-      this.token = await this.refreshToken();
+      await this.refreshToken();
       return fn();
     }
 
-    handleError(error, 'spa:spotify:getProfile')
+    handleError(error, 'spa:spotify')
   }
 }
 export default SpotifyService;
