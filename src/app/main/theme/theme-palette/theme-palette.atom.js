@@ -3,7 +3,7 @@
 import React, { Fragment, useContext, useEffect } from "react"; // eslint-disable-line
 /** @jsx jsx */
 // $FlowIgnore
-import { jsx, css } from "@emotion/core";
+import { jsx, css } from "@emotion/core"; // eslint-disable-line
 import { v4 as uuidv4 } from "uuid";
 import { useService } from "@xstate/react";
 

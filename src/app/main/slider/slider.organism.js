@@ -3,7 +3,7 @@
 import React, { useEffect, Suspense } from "react"; // eslint-disable-line
 import { v4 as uuidv4 } from "uuid";
 // $FlowIgnore
-/** @jsx jsx */ import { jsx, css } from "@emotion/core";
+/** @jsx jsx */ import { jsx, css } from "@emotion/core"; // eslint-disable-line
 import Swiper, { SwiperOptions } from "swiper";
 import "swiper/css/swiper.css";
 

@@ -2,7 +2,7 @@
 // EXTERNAL
 /** @jsx jsx */
 // $FlowIgnore
-import { jsx, css } from "@emotion/core";
+import { jsx, css } from "@emotion/core"; // eslint-disable-line
 
 // DEPENDENCIES
 import type { MenuItemProps } from "./menu-item.types";
