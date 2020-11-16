@@ -2,7 +2,7 @@
 import { handleError } from "../utils/helpers";
 import { apiUrl } from "../utils/constants";
 import { auth } from "./firebase/config";
-import SpotifyService from './spotify.service';
+import SpotifyService from "./spotify.service";
 
 type AuthUrls = {
   createFirebaseAccount: string,
@@ -34,26 +34,33 @@ class AuthService {
     return searchParams.has("code") ? searchParams.get("code") : false;
   }
 
-  firebaseLogout() {
-    return auth.signOut();
+  async firebaseLogout() {
+    try {
+      return await auth.signOut();
+    } catch (error) {
+      handleError(error, "spa:authService:firebaseLogout");
+    }
   }
 
-  async authenticate(code: string): Promise<any> {
+  async firebaseLogin(code: string): Promise<any> {
     try {
       const spotifyToken: string = await this.spotifyService.getToken(code);
-      const userprofile = await this.spotifyService.getProfile(code);
-      const firebaseToken: string = await this.createFirebaseAccount(
+      const userprofile = await this.spotifyService.getProfile();
+      const firebaseToken: string | void = await this.createFirebaseAccount(
         spotifyToken,
         userprofile
       );
 
       return await auth.signInWithCustomToken(firebaseToken);
     } catch (error) {
-      handleError(error, "spa:authService:authenticate");
+      handleError(error, "spa:authService:firebaseLogin");
     }
   }
 
-  async createFirebaseAccount(spotifyToken: string, userprofile: any): Promise<string> {
+  async createFirebaseAccount(
+    spotifyToken: string,
+    userprofile: any
+  ): Promise<string | void> {
     const url = `${apiUrl()}/${this._authUrls.createFirebaseAccount}`;
     const request = new Request(url, {
       method: "POST",
@@ -62,16 +69,15 @@ class AuthService {
         "Content-Type": "application/json",
       },
       mode: "cors",
-      body: JSON.stringify({ token: spotifyToken,
-        userprofile: userprofile }),
+      body: JSON.stringify({ token: spotifyToken, userprofile: userprofile }),
     });
 
     try {
       const res = await fetch(request);
-      const firebaseToken: string = await res.json()
+      const firebaseToken: string = await res.json();
       return firebaseToken;
-    } catch(e) {
-      handleError(e, 'spa:spotifyService:getToken')
+    } catch (e) {
+      handleError(e, "spa:spotifyService:getToken");
     }
   }
 }

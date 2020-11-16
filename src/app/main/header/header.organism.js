@@ -1,16 +1,17 @@
 // @flow
 // EXTERNAL
-import React from 'react'; // eslint-disable-line
+import React from "react"; // eslint-disable-line
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core'; // eslint-disable-line
+// $FlowIgnore
+import { jsx, css } from "@emotion/core";
 
 // DEPENDENCIES
-import LogoAtom from './logo/logo.atom';
-import PollAtom from './poll/poll.atom';
-import ProfileAtom from './profile/profile.atom';
+import LogoAtom from "./logo/logo.atom";
+import PollAtom from "./poll/poll.atom";
+import ProfileAtom from "./profile/profile.atom";
 
 // STYLES
-import { header, headerBlock } from './header.styles';
+import { header, headerBlock } from "./header.styles";
 
 function HeaderOrganism() {
   return (

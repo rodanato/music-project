@@ -1,5 +1,6 @@
 // @flow
 import { Machine } from "xstate";
+import type { StateMachine } from "xstate";
 import AuthService from "../services/auth.service";
 import SpotifyService from "../services/spotify.service";
 import { persistOnLocalStorage, handleError } from "../utils/helpers";
@@ -29,10 +30,18 @@ const firebaseLogout = (): Promise<any> => {
 
 const firebaseLogin = (ctx, e): Promise<any> => {
   const authService = AuthService.getInstance();
-  return authService.authenticate(e.code);
+  return authService.firebaseLogin(e.code);
 };
 
-export const AppState = Machine<any, AppStateSchema, AppEvent>(
+export const AppState: StateMachine<
+  any,
+  AppStateSchema,
+  AppEvent,
+  {
+    value: any,
+    context: any,
+  }
+> = Machine<any, AppStateSchema, AppEvent>(
   {
     initial: "loading",
     states: {
@@ -44,26 +53,19 @@ export const AppState = Machine<any, AppStateSchema, AppEvent>(
         },
       },
       loggingIn: {
-        // entry: ["firebaseLogin"],
         invoke: {
           id: "firebaseLogin",
           src: firebaseLogin,
           onDone: {
-            target: "loggedIn"
+            target: "loggedIn",
           },
           onError: {
             actions: ["handleError"],
           },
         },
-        // on: {
-        //   LOGGED_IN: {
-        //     target: "loggedIn",
-        //     cond: "spotifyTokenExists"
-        //   },
-        // },
       },
       loggedIn: {
-        entry: ["cleanAndPersist"],
+        entry: ["cleanUrlAndAddToStorage"],
         on: {
           LOGOUT: "loggingOut",
         },
@@ -92,15 +94,9 @@ export const AppState = Machine<any, AppStateSchema, AppEvent>(
     },
   },
   {
-    guards: {
-      spotifyTokenExists: () => {
-        const spotifyService = SpotifyService.getInstance();
-        return !!spotifyService.token;
-      }
-    },
     actions: {
       handleError: (_ctx, e: any) => {
-        handleError({ message: e.data }, "signOut");
+        handleError({ message: e.data }, "spa:authentication");
       },
       spotifyLogin: () => {
         const spotifyService = SpotifyService.getInstance();
@@ -108,12 +104,13 @@ export const AppState = Machine<any, AppStateSchema, AppEvent>(
       },
       removeFromStorage: (_ctx, e: any) => {
         localStorage.removeItem("loggedIn");
-      },
-      cleanAndPersist: (_ctx, e: any) => {
+        localStorage.removeItem("spotifyToken");
         const spotifyService = SpotifyService.getInstance();
+        spotifyService.cleanExpirationTimeout();
+      },
+      cleanUrlAndAddToStorage: (_ctx, e: any) => {
         window.history.replaceState({}, document.title, "/");
         persistOnLocalStorage("loggedIn", "true");
-        persistOnLocalStorage("spotifyToken", spotifyService.token);
       },
     },
   }

@@ -1,16 +1,18 @@
 // @flow
 // EXTERNAL
-import React from 'react'; // eslint-disable-line
+import React from "react"; // eslint-disable-line
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core'; // eslint-disable-line
+// $FlowIgnore
+import { jsx, css } from "@emotion/core";
+import type { Node } from "react";
 
 // DEPENDENCIES
-import type { CardProps } from './card.types';
+import type { CardProps } from "./card.types";
 
-// STYLES 
-import { card } from './card.styles';
+// STYLES
+import { card } from "./card.styles";
 
-function CardAtom(props: CardProps) {
+function CardAtom(props: CardProps): Node {
   return (
     <div css={[card]} className={props.paddingLess ? "is-paddingless" : ""}>
       {props.children}

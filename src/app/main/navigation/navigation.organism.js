@@ -1,14 +1,15 @@
 // @flow
 // EXTERNAL
-import React from 'react'; // eslint-disable-line
+import React from "react"; // eslint-disable-line
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core'; // eslint-disable-line
+// $FlowIgnore
+import { jsx, css } from "@emotion/core";
 
 // DEPENDENCIES
-import type { NavigationProps } from './navigation.types';
+import type { NavigationProps } from "./navigation.types";
 
 // STYLES
-import { navigation } from './navigation.styles';
+import { navigation } from "./navigation.styles";
 
 function NavigationOrganism(props: NavigationProps) {
   return (

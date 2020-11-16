@@ -1,33 +1,28 @@
 // @flow
 // EXTERNAL
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core'; // eslint-disable-line
-import { Fragment } from 'react';
+// $FlowIgnore
+import { jsx, css } from "@emotion/core";
+import { Fragment } from "react";
+import type { Node } from "react";
 
 // DEPENDENCIES
-import type { SongProps } from './song.types';
+import type { SongProps } from "./song.types";
 
 // STYLES
-import { listUI, playingUI, playingPhoto, playingData } from './song.styles';
+import { listUI, playingUI, playingPhoto, playingData } from "./song.styles";
 
-
-function SongMolecule({ mode, data }: SongProps) {
+function SongMolecule({ mode, data }: SongProps): Node {
   const { name, artist, album } = data;
 
   function renderListUI() {
-    return (
-      <div css={[listUI]}>
-        {name}
-      </div>
-    );
+    return <div css={[listUI]}>{name}</div>;
   }
 
   function renderPlayingUI() {
     return (
       <div css={[playingUI]}>
-        <div css={[playingPhoto]}>
-          {album}
-        </div>
+        <div css={[playingPhoto]}>{album}</div>
 
         <ul css={[playingData]}>
           <li>{name}</li>
@@ -39,10 +34,7 @@ function SongMolecule({ mode, data }: SongProps) {
 
   return (
     <Fragment>
-      {mode === "playing"
-        ? renderPlayingUI()
-        : renderListUI()
-      }
+      {mode === "playing" ? renderPlayingUI() : renderListUI()}
     </Fragment>
   );
 }

@@ -1,6 +1,7 @@
 // @flow
 import React from "react"; // eslint-disable-line
 import type { ComponentType } from "react"; // eslint-disable-line
+// $FlowIgnore
 import styled from "@emotion/styled";
 import type { ContainerRowProps, DivProps } from "./main.types";
 

@@ -1,18 +1,18 @@
 // @flow
 // EXTERNAL
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core'; // eslint-disable-line
+// $FlowIgnore
+import { jsx, css } from "@emotion/core";
+import type { Node } from "react";
 
 // DEPENDENCIES
-import type { MainImageProps } from './data-main-image.types';
+import type { MainImageProps } from "./data-main-image.types";
 
 // STYLES
-import { mainImage } from './data-main-image.styles';
+import { mainImage } from "./data-main-image.styles";
 
-function MainImageAtom({ url }: MainImageProps) {
-  return (
-    <img css={[mainImage]} src={url} alt="" />
-  );
+function MainImageAtom({ url }: MainImageProps): Node {
+  return <img css={[mainImage]} src={url} alt="" />;
 }
 
 export default MainImageAtom;

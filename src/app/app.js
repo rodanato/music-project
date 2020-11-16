@@ -1,38 +1,31 @@
 // @flow
 // EXTERNAL
-import React, { Fragment, useEffect } from 'react'; // eslint-disable-line
+import React, { Fragment, useEffect } from "react"; // eslint-disable-line
 /** @jsx jsx */
-import { Global, jsx, css } from '@emotion/core';
+// $FlowIgnore
+import { Global, jsx, css } from "@emotion/core";
 
 // DEPENDENCIES
-import AuthService from '../services/auth.service';
-import { auth } from '../services/firebase/config';
-import { useMachine } from '@xstate/react';
-import { AppState } from './app.state';
-import { getIfExistOnStorage } from '../utils/helpers';
-import reset from '../utils/reset';
-import globalClasses from '../utils/global-styles';
-import typography from '../utils/typography';
-import { themeStyles } from '../utils/themes';
-import MainOrganism from './main/main.organism';
-import LoadingAtom from '../shared/loading/loading.atom';
-import UnauthenticatedOrganism from './main/unauthenticated/unauthenticated.organism';
+import AuthService from "../services/auth.service";
+import { useMachine } from "@xstate/react";
+import { AppState } from "./app.state";
+import { getIfExistOnStorage } from "../utils/helpers";
+import reset from "../utils/reset";
+import globalClasses from "../utils/global-styles";
+import typography from "../utils/typography";
+import { themeStyles } from "../utils/themes";
+import MainOrganism from "./main/main.organism";
+import LoadingAtom from "../shared/loading/loading.atom";
+import UnauthenticatedOrganism from "./main/unauthenticated/unauthenticated.organism";
 
 function App() {
   const [state, send] = useMachine(AppState);
   const authService = AuthService.getInstance();
 
-  // useEffect(() => {
-  //   auth.onAuthStateChanged(function (user) {
-  //     if (user) send("LOGGED_IN");
-  //   });
-  // }, [send]);
-
   useEffect(() => {
     if (state.matches("loading")) {
       const code = authService.getCodeIfPresent();
 
-      // FIXME: GetProfile should wait for getToken to finish, also obtain existing token after app refresh
       if (getIfExistOnStorage("loggedIn")) {
         send("LOGGED_IN");
         return;
@@ -51,21 +44,25 @@ function App() {
 
   return (
     <Fragment>
-      <Global styles={css`
+      <Global
+        styles={css`
         ${reset}
         ${themeStyles}
         ${typography}      
         ${globalClasses}
-      `} />
-  
-      {state.matches("loggedIn")
-        ? <div>
-            <button onClick={() => send("LOGOUT")}>Logout here</button>
-            <MainOrganism />
-          </div>
-        : state.matches("loggedOut")
-          ? <UnauthenticatedOrganism onLogin={() => send("LOGIN")} />
-          : <LoadingAtom flex="1" />}
+      `}
+      />
+
+      {state.matches("loggedIn") ? (
+        <div>
+          <button onClick={() => send("LOGOUT")}>Logout here</button>
+          <MainOrganism />
+        </div>
+      ) : state.matches("loggedOut") ? (
+        <UnauthenticatedOrganism onLogin={() => send("LOGIN")} />
+      ) : (
+        <LoadingAtom flex="1" />
+      )}
     </Fragment>
   );
 }

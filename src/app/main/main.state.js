@@ -4,6 +4,7 @@ import { ThemePaletteState } from "./theme/theme-palette/theme-palette.state";
 import { ThemeState } from "./theme/theme.state";
 import React from "react";
 import { persistState, getChildrenStateName } from "../../utils/helpers";
+import type { Context } from "react";
 
 export interface MainStateSchema {
   states: {
@@ -28,13 +29,14 @@ export type MainEvent =
   | { type: "CHANGE_TO_PINK" }
   | { type: "CHANGE_TO_PURPLE" };
 
+// $FlowFixMe
 export const MainState = Machine<any, MainStateSchema, MainEvent>(
   {
     id: "main",
     initial: "notrendered",
     invoke: [
-      { id: 'themePalette', src: ThemePaletteState },
-      { id: 'themes', src: ThemeState }
+      { id: "themePalette", src: ThemePaletteState },
+      { id: "themes", src: ThemeState },
     ],
     states: {
       notrendered: {
@@ -86,4 +88,4 @@ export const MainState = Machine<any, MainStateSchema, MainEvent>(
   }
 );
 
-export const MainStateContext = React.createContext<any>(null);
+export const MainStateContext: Context<any> = React.createContext<any>(null);

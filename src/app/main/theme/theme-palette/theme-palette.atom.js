@@ -1,23 +1,24 @@
 // @flow
 // EXTERNAL
-import React, { Fragment, useContext, useEffect } from 'react'; // eslint-disable-line
+import React, { Fragment, useContext, useEffect } from "react"; // eslint-disable-line
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core'; // eslint-disable-line
+// $FlowIgnore
+import { jsx, css } from "@emotion/core";
 import { v4 as uuidv4 } from "uuid";
-import { useService } from '@xstate/react';
+import { useService } from "@xstate/react";
 
 // DEPENDENCIES
-import { MainStateContext } from '../../main.state';
-import { getChildrenStateName } from "../../../../utils/helpers"
+import { MainStateContext } from "../../main.state";
+import { getChildrenStateName } from "../../../../utils/helpers";
 
 // STYLES
 import {
   paletteItem,
   paletteTitle,
   paletteColors,
-  paletteColor
-} from './theme-palette.styles';
-import type { ThemePaletterProps } from './theme-palette.types';
+  paletteColor,
+} from "./theme-palette.styles";
+import type { ThemePaletterProps } from "./theme-palette.types";
 
 function ThemePaletteAtom({ name }: ThemePaletterProps) {
   const mainState = useContext(MainStateContext);
@@ -36,18 +37,13 @@ function ThemePaletteAtom({ name }: ThemePaletterProps) {
 
   return (
     <Fragment>
-      <li
-        css={[paletteItem]}
-        onClick={() => send("SELECT", { theme: name })}
-      >
+      <li css={[paletteItem]} onClick={() => send("SELECT", { theme: name })}>
         <div css={[paletteColors]} className={`${name}-theme`}>
-          {colorsPerPalette.map(() =>
+          {colorsPerPalette.map(() => (
             <span key={uuidv4()} css={[paletteColor]}></span>
-          )}
+          ))}
         </div>
-        <span css={[paletteTitle]}>
-          {name} Palette
-        </span>
+        <span css={[paletteTitle]}>{name} Palette</span>
       </li>
     </Fragment>
   );

@@ -38,18 +38,23 @@ spotify.post("/setCode", (req: { body: { code: string } }, res: any) => {
   );
 });
 
-spotify.get("/refreshToken", (req: any, res: any) => {
-  spotifyApi.refreshAccessToken().then(
-    function(data: any) {
-      // spotifyApi.setAccessToken(data.body["access_token"]);
-      res.json(data.body["access_token"]);
-    },
-    function(err: any) {
-      handleError(err, "api:spotify:refreshToken");
-      res.json(err);
-    }
-  );
-});
+spotify.post(
+  "/refreshToken",
+  (req: { body: { token: string; refreshtoken: string } }, res: any) => {
+    spotifyApi.setAccessToken(req.body.token);
+    spotifyApi.setRefreshToken(req.body.refreshtoken);
+    spotifyApi.refreshAccessToken().then(
+      function(data: any) {
+        // spotifyApi.setAccessToken(data.body["access_token"]);
+        res.json(data.body["access_token"]);
+      },
+      function(err: any) {
+        handleError(err, "api:spotify:refreshToken");
+        res.json(err);
+      }
+    );
+  }
+);
 
 // spotify.get("/getArtistAlbums", (req: any, res: any) => {
 //   spotifyApi.getArtistAlbums("43ZHCT0cAZBISjO8DG9PnE").then(
@@ -64,8 +69,8 @@ spotify.get("/refreshToken", (req: any, res: any) => {
 
 spotify.post(
   "/createFirebaseAccount",
-  async (req: { body: { token: string, userprofile: Profile } }, res: any) => {
-    const {userprofile} = req.body;
+  async (req: { body: { token: string; userprofile: Profile } }, res: any) => {
+    const { userprofile } = req.body;
     const uid = `spotify:${userprofile.id}`;
 
     // TODO: Is this needed?

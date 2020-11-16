@@ -1,18 +1,20 @@
 // @flow
 // EXTERNAL
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core'; // eslint-disable-line
+// $FlowIgnore
+import { jsx, css } from "@emotion/core";
 
 // DEPENDENCIES
-import type { MenuItemProps } from './menu-item.types';
+import type { MenuItemProps } from "./menu-item.types";
 
 // STYLES
-import { menuItem } from './menu-item.styles';
-
+import { menuItem } from "./menu-item.styles";
 
 function MenuItemAtom({ name }: MenuItemProps) {
   return (
-    <div css={[menuItem]} className="mpp-font--text">{name}</div>
+    <div css={[menuItem]} className="mpp-font--text">
+      {name}
+    </div>
   );
 }
 

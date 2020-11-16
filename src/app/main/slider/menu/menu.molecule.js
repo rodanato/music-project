@@ -1,15 +1,16 @@
 // @flow
 // EXTERNAL
-import React from 'react'; // eslint-disable-line
+import React from "react"; // eslint-disable-line
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core'; // eslint-disable-line
+// $FlowIgnore
+import { jsx, css } from "@emotion/core";
 
 // DEPENDENCIES
-import CardAtom from '../../../../shared/card/card.atom';
-import MenuItemAtom from './menu-item/menu-item.atom';
+import CardAtom from "../../../../shared/card/card.atom";
+import MenuItemAtom from "./menu-item/menu-item.atom";
 
 // STYLES
-import { menuContainer, menu } from './menu.styles';
+import { menuContainer, menu } from "./menu.styles";
 
 function MenuMolecule() {
   return (
