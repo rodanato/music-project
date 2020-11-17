@@ -1,6 +1,7 @@
 // @flow
 // EXTERNAL
 import React from "react"; // eslint-disable-line
+import type { Node } from "react"; // eslint-disable-line
 /** @jsx jsx */
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
@@ -13,7 +14,7 @@ import ProfileAtom from "./profile/profile.atom";
 // STYLES
 import { header, headerBlock } from "./header.styles";
 
-function HeaderOrganism() {
+function HeaderOrganism(): Node {
   return (
     <header css={[header]}>
       <div css={[headerBlock]}>

@@ -19,16 +19,9 @@ spotify.get("/redirect", (req: any, res: any) => {
   res.redirect(301, authorizeURL);
 });
 
-// spotify.get("/getProfile", async (req: any, res: any) => {
-//   const userProfile: Profile = await getProfile();
-//   res.json(userProfile);
-// });
-
 spotify.post("/setCode", (req: { body: { code: string } }, res: any) => {
   spotifyApi.authorizationCodeGrant(req.body.code).then(
     function(data: any) {
-      // spotifyApi.setAccessToken(data.body["access_token"]);
-      // spotifyApi.setRefreshToken(data.body["refresh_token"]);
       res.json(data.body);
     },
     function(err: any) {
@@ -45,7 +38,6 @@ spotify.post(
     spotifyApi.setRefreshToken(req.body.refreshtoken);
     spotifyApi.refreshAccessToken().then(
       function(data: any) {
-        // spotifyApi.setAccessToken(data.body["access_token"]);
         res.json(data.body["access_token"]);
       },
       function(err: any) {

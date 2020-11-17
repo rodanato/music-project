@@ -1,20 +1,24 @@
 // @flow
 // EXTERNAL
-import React from 'react';
+import React from "react";
+import type { Node } from "react";
 
 // DEPENDENCIES
-import CardAtom from '../../../../shared/card/card.atom';
-import GenresMolecule from './genres/genres.molecule';
-import MainImageAtom from './data-main-image/data-main-image.atom';
-import MetadataMolecule from './metadata/metadata.molecule';
+import CardAtom from "shared/card/card.atom";
+import GenresMolecule from "./genres/genres.molecule";
+import MainImageAtom from "./data-main-image/data-main-image.atom";
+import MetadataMolecule from "./metadata/metadata.molecule";
 
 // STYLES
-import { data } from './data.styles';
+import { data } from "./data.styles";
 
-const metadataSampleData = { title: "Only by the night", author: "Kings of Leon" };
+const metadataSampleData = {
+  title: "Only by the night",
+  author: "Kings of Leon",
+};
 const genresSampleData = ["Rock", "Progressive Rock", "Indie", "Soft Rock"];
 
-function DataMolecule() {
+function DataMolecule(): Node {
   return (
     <section css={[data]} className="mpp-show-slowly">
       <CardAtom paddingLess>

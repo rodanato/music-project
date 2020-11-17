@@ -1,6 +1,7 @@
 // @flow
 // EXTERNAL
 import React from "react"; // eslint-disable-line
+import type { Node } from "react"; // eslint-disable-line
 /** @jsx jsx */
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
@@ -10,7 +11,7 @@ import { jsx, css } from "@emotion/core"; // eslint-disable-line
 // STYLES
 import { pollBtn } from "./poll.styles";
 
-function PollAtom() {
+function PollAtom(): Node {
   return (
     <span
       aria-label="Take a poll"

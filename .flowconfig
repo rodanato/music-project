@@ -1,5 +1,5 @@
 [ignore]
-.*/__tests__/.*
+.*\.test\.js
 <PROJECT_ROOT>/node_modules/.*
 <PROJECT_ROOT>/functions/.*
 

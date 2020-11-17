@@ -8,10 +8,10 @@ import { jsx, css } from "@emotion/core"; // eslint-disable-line
 import type { Node } from "react";
 
 // DEPENDENCIES
-import SpotifyService from "../../services/spotify.service";
+import SpotifyService from "services/spotify.service";
 import { MainState, MainStateContext } from "./main.state";
-import { responsive } from "../../utils/responsive";
-import { getChildrenStateName, getIfExistOnStorage } from "../../utils/helpers";
+import { responsive } from "utils/responsive";
+import { getChildrenStateName, getIfExistOnStorage } from "utils/helpers";
 import FooterOrganism from "./footer/footer.organism";
 import HeaderOrganism from "./header/header.organism";
 import SliderOrganism from "./slider/slider.organism";
@@ -55,6 +55,16 @@ function MainOrganism(): Node {
         >
           <div css={[container]}>
             <ContainerRow css={MediaQueries}>
+              <button
+                onClick={async () => {
+                  console.log(
+                    ">>> profile: ",
+                    await spotifyService.getProfile()
+                  );
+                }}
+              >
+                GET PROFILE
+              </button>
               <HeaderOrganism />
             </ContainerRow>
 

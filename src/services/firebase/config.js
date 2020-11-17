@@ -1,20 +1,23 @@
 // @flow
-import * as firebase from 'firebase/app';
+// $FlowIgnore
+import * as firebase from "firebase/app";
+// $FlowIgnore
 import "firebase/auth";
+// $FlowIgnore
 import "firebase/firestore";
 
 type Config = {
-  apiKey: string;
-  authDomain: string;
-  databaseURL: string;
-  projectId: string;
-  storageBucket: string;
-  messagingSenderId: string;
-  appId: string;
-}
+  apiKey: string,
+  authDomain: string,
+  databaseURL: string,
+  projectId: string,
+  storageBucket: string,
+  messagingSenderId: string,
+  appId: string,
+};
 
 type ConfigEnv = {
-  [env: string]: Config
+  [env: string]: Config,
 };
 
 const configEnv: ConfigEnv = {
@@ -25,7 +28,7 @@ const configEnv: ConfigEnv = {
     projectId: "social-music-addd0",
     storageBucket: "social-music-addd0.appspot.com",
     messagingSenderId: "751844464426",
-    appId: "1:751844464426:web:7bfc02a2849bda1a3e3053"
+    appId: "1:751844464426:web:7bfc02a2849bda1a3e3053",
   },
   // TODO: Update to real config
   prod: {
@@ -35,8 +38,8 @@ const configEnv: ConfigEnv = {
     projectId: "social-music-addd0",
     storageBucket: "social-music-addd0.appspot.com",
     messagingSenderId: "751844464426",
-    appId: "1:751844464426:web:7bfc02a2849bda1a3e3053"
-  }
+    appId: "1:751844464426:web:7bfc02a2849bda1a3e3053",
+  },
 };
 
 const env: string = process.env.REACT_APP_ENV || "test";
@@ -44,11 +47,7 @@ const config: Config = configEnv[env];
 
 firebase.initializeApp(config);
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+const auth: any = firebase.auth();
+const db: any = firebase.firestore();
 
-export {
-  auth,
-  db,
-  config
-};
+export { auth, db, config };

@@ -1,6 +1,6 @@
 // @flow
-import { handleError } from "../utils/helpers";
-import { apiUrl } from "../utils/constants";
+import { handleError } from "utils/helpers";
+import { apiUrl } from "utils/constants";
 import { auth } from "./firebase/config";
 import SpotifyService from "./spotify.service";
 
@@ -10,7 +10,7 @@ type AuthUrls = {
 
 class AuthService {
   static instance: AuthService;
-  static getInstance() {
+  static getInstance(): AuthService {
     if (!AuthService.instance) {
       AuthService.instance = new AuthService();
     }
@@ -27,14 +27,14 @@ class AuthService {
     this.spotifyService = SpotifyService.getInstance();
   }
 
-  getCodeIfPresent() {
+  getCodeIfPresent(): mixed {
     const searchParams: URLSearchParams = new URLSearchParams(
       window.location.search
     );
     return searchParams.has("code") ? searchParams.get("code") : false;
   }
 
-  async firebaseLogout() {
+  async firebaseLogout(): Promise<void> {
     try {
       return await auth.signOut();
     } catch (error) {

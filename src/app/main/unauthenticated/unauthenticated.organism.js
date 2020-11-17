@@ -1,17 +1,17 @@
 // @flow
 // EXTERNAL
-import React from 'react'; // eslint-disable-line
+import React from "react"; // eslint-disable-line
+import type { Node } from "react";
 
 // DEPENDENCIES
 
 // STYLES
 
 type UnauthenticatedProps = {
-  onLogin: () => mixed
-}
+  onLogin: () => mixed,
+};
 
-function UnauthenticatedOrganism({ onLogin }: UnauthenticatedProps) {
-  
+function UnauthenticatedOrganism({ onLogin }: UnauthenticatedProps): Node {
   return (
     <div>
       <h2>You are not loggedIn</h2>

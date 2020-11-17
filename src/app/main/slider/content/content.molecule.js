@@ -7,7 +7,7 @@ import { jsx, css } from "@emotion/core"; // eslint-disable-line
 import type { Node } from "react";
 
 // DEPENDENCIES
-import CardAtom from "../../../../shared/card/card.atom";
+import CardAtom from "shared/card/card.atom";
 import type { ContentProps } from "./content.types";
 
 // STYLES

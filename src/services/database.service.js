@@ -1,7 +1,7 @@
 // @flow
 class DatabaseService {
   static instance: DatabaseService;
-  static getInstance() {
+  static getInstance(): DatabaseService {
     if (!DatabaseService.instance) {
       DatabaseService.instance = new DatabaseService();
     }

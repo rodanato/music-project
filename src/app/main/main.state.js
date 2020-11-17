@@ -3,7 +3,7 @@ import { Machine } from "xstate";
 import { ThemePaletteState } from "./theme/theme-palette/theme-palette.state";
 import { ThemeState } from "./theme/theme.state";
 import React from "react";
-import { persistState, getChildrenStateName } from "../../utils/helpers";
+import { persistState, getChildrenStateName } from "utils/helpers";
 import type { Context } from "react";
 
 export interface MainStateSchema {
@@ -30,7 +30,15 @@ export type MainEvent =
   | { type: "CHANGE_TO_PURPLE" };
 
 // $FlowFixMe
-export const MainState = Machine<any, MainStateSchema, MainEvent>(
+export const MainState: StateMachine<
+  any,
+  MainStateSchema,
+  MainEvent,
+  {
+    value: any,
+    context: any,
+  }
+> = Machine<any, MainStateSchema, MainEvent>(
   {
     id: "main",
     initial: "notrendered",

@@ -35,3 +35,11 @@ export const handleError = (e: any, where: string): void => {
 };
 
 export const isProd = (): boolean => process.env.REACT_APP_ENV === "prod";
+
+export const returnEmptyStringIfNotAString = (
+  supposedToBeAString: any
+): string =>
+  typeof supposedToBeAString === "string" ? supposedToBeAString : "";
+
+export const getPublicUrl = (): string =>
+  returnEmptyStringIfNotAString(process.env.PUBLIC_URL);

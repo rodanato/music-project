@@ -1,10 +1,13 @@
 // @flow
 
 import SpotifyWebApi from "spotify-web-api-js";
-import { handleError, getIfExistOnStorage } from "../utils/helpers";
-import { apiUrl } from "../utils/constants";
+import {
+  handleError,
+  getIfExistOnStorage,
+  persistOnLocalStorage,
+} from "utils/helpers";
+import { apiUrl } from "utils/constants";
 // import { db } from "./firebase/config";
-import { persistOnLocalStorage } from "../utils/helpers";
 
 type setCodeResponse = {
   access_token: string,
@@ -20,7 +23,7 @@ type SpotifyUrls = {
 
 class SpotifyService {
   static instance: SpotifyService;
-  static getInstance() {
+  static getInstance(): SpotifyService {
     if (!SpotifyService.instance) {
       SpotifyService.instance = new SpotifyService();
     }
@@ -32,8 +35,8 @@ class SpotifyService {
     redirect: "redirect",
     setCode: "setCode",
   };
-  spotifyApi: SpotifyWebApi;
-  expiresIn: number;
+  spotifyApi: any;
+  expiresIn: number = 3600;
   _refreshToken: string;
   _expirationDate: string;
   expirationTimeout: TimeoutID;

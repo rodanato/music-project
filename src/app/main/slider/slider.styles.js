@@ -1,7 +1,8 @@
 // @flow
 import type { ComponentType } from "react"; // eslint-disable-line
-import styled from '@emotion/styled';
-import type { SwiperPaginationProps } from './slider.types';
+// $FlowIgnore
+import styled from "@emotion/styled";
+import type { SwiperPaginationProps } from "./slider.types";
 
 export const slider: string = `
   display: flex;
@@ -33,13 +34,14 @@ export const swiperSlide: string = `
   overflow: hidden;
 `;
 
-
-export const SwiperPagination: ComponentType<SwiperPaginationProps> = styled('div')`
+export const SwiperPagination: ComponentType<SwiperPaginationProps> = styled(
+  "div"
+)`
   &.swiper-pagination {
     display: flex;
     flex-direction: column;
-    justify-content: ${props =>
-      props.slideListLength > 10  ? 'normal' : 'center'};
+    justify-content: ${(props) =>
+      props.slideListLength > 10 ? "normal" : "center"};
     margin: 10px 0;
     overflow: visible;
     position: relative;

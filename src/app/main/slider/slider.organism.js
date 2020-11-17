@@ -1,16 +1,18 @@
 // @flow
 // EXTERNAL
 import React, { useEffect, Suspense } from "react"; // eslint-disable-line
+import type { Node } from "react";
 import { v4 as uuidv4 } from "uuid";
 // $FlowIgnore
 /** @jsx jsx */ import { jsx, css } from "@emotion/core"; // eslint-disable-line
-import Swiper, { SwiperOptions } from "swiper";
+import Swiper from "swiper";
+// $FlowIgnore
 import "swiper/css/swiper.css";
 
 // DEPENDENCIES
-import LoadingAtom from "../../../shared/loading/loading.atom";
+import LoadingAtom from "shared/loading/loading.atom";
 import NavigationOrganism from "../navigation/navigation.organism";
-import SongMolecule from "../../../shared/song/song.molecule";
+import SongMolecule from "shared/song/song.molecule";
 
 // STYLES
 import {
@@ -26,7 +28,7 @@ const ContentMolecule = React.lazy(() => import("./content/content.molecule"));
 const DataMolecule = React.lazy(() => import("./data/data.molecule"));
 const MenuMolecule = React.lazy(() => import("./menu/menu.molecule"));
 
-const swiperConfig: SwiperOptions = {
+const swiperConfig: any = {
   init: false,
   grabCursor: true,
   direction: "vertical",
@@ -50,7 +52,7 @@ const swiperConfig: SwiperOptions = {
   },
 };
 
-function SliderOrganism() {
+function SliderOrganism(): Node {
   const slideList = new Array(4).fill(1);
 
   useEffect(() => {

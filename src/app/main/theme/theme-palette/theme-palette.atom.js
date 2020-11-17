@@ -1,6 +1,7 @@
 // @flow
 // EXTERNAL
 import React, { Fragment, useContext, useEffect } from "react"; // eslint-disable-line
+import type { Node } from "react"; // eslint-disable-line
 /** @jsx jsx */
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
@@ -9,7 +10,7 @@ import { useService } from "@xstate/react";
 
 // DEPENDENCIES
 import { MainStateContext } from "../../main.state";
-import { getChildrenStateName } from "../../../../utils/helpers";
+import { getChildrenStateName } from "utils/helpers";
 
 // STYLES
 import {
@@ -20,7 +21,7 @@ import {
 } from "./theme-palette.styles";
 import type { ThemePaletterProps } from "./theme-palette.types";
 
-function ThemePaletteAtom({ name }: ThemePaletterProps) {
+function ThemePaletteAtom({ name }: ThemePaletterProps): Node {
   const mainState = useContext(MainStateContext);
   const [, send] = useService(mainState.children.themePalette);
   const [themeState] = useService(mainState.children.themes);

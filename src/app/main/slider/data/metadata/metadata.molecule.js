@@ -1,6 +1,7 @@
 // @flow
 // EXTERNAL
 import React from "react"; // eslint-disable-line
+import type { Node } from "react"; // eslint-disable-line
 /** @jsx jsx */
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
@@ -12,7 +13,7 @@ import type { MetadataProps } from "./metadata.types";
 
 // STYLES
 
-function MetadataMolecule(props: MetadataProps) {
+function MetadataMolecule(props: MetadataProps): Node {
   const { title, author } = props.data;
   return (
     <section>

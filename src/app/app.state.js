@@ -1,9 +1,9 @@
 // @flow
 import { Machine } from "xstate";
 import type { StateMachine } from "xstate";
-import AuthService from "../services/auth.service";
-import SpotifyService from "../services/spotify.service";
-import { persistOnLocalStorage, handleError } from "../utils/helpers";
+import AuthService from "services/auth.service";
+import SpotifyService from "services/spotify.service";
+import { persistOnLocalStorage, handleError } from "utils/helpers";
 
 export interface AppStateSchema {
   states: {

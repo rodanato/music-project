@@ -1,6 +1,7 @@
 // @flow
 // EXTERNAL
 import React from "react"; // eslint-disable-line
+import type { Node } from "react"; // eslint-disable-line
 /** @jsx jsx */
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
@@ -10,13 +11,13 @@ import { useMachine } from "@xstate/react";
 
 // DEPENDENCIES
 import { ThemeState } from "./theme.state";
-import CardAtom from "../../../shared/card/card.atom";
+import CardAtom from "shared/card/card.atom";
 import ThemePaletteAtom from "./theme-palette/theme-palette.atom";
 
 // STYLES
 import { theme, themeOptions, palettesList } from "./theme.styles";
 
-function ThemeMolecule() {
+function ThemeMolecule(): Node {
   const [state, send] = useMachine(ThemeState);
 
   const ThemeOptionsClasses = classNames({
