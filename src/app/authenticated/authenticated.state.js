@@ -80,7 +80,8 @@ export const AuthenticatedState: StateMachine<
             actions: ["removeFromStorage"],
           },
           onError: {
-            actions: ["handleError"],
+            target: "loggedOut",
+            actions: ["removeFromStorage", "handleError"],
           },
         },
       },

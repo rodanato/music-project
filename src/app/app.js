@@ -7,14 +7,15 @@ import type { Node } from "react"; // eslint-disable-line
 import { Global, jsx, css } from "@emotion/core";
 
 // DEPENDENCIES
-import reset from "utils/reset";
-import { themeStyles } from "utils/themes";
-import typography from "utils/typography";
-import globalClasses from "utils/global-styles";
+import reset from "config/reset";
+import { themeStyles } from "config/themes";
+import typography from "config/typography";
+import globalClasses from "config/global-styles";
 import ThemeContainerOrganism from "./authenticated/theme-container/theme-container.organism";
 import UnauthenticatedOrganism from "./unauthenticated/unauthenticated.organism";
 import LoadingAtom from "shared/loading/loading.atom";
 import useAuthentication from "./authenticated/use-authentication";
+import MainContainerOrganism from "./authenticated/theme-container/main-container/main-container.organism";
 
 function App(): Node {
   const { authState, login, logout } = useAuthentication();
@@ -31,7 +32,9 @@ function App(): Node {
       />
 
       {authState === "loggedIn" ? (
-        <ThemeContainerOrganism onLogout={() => logout()} />
+        <ThemeContainerOrganism>
+          <MainContainerOrganism onLogout={() => logout()} />
+        </ThemeContainerOrganism>
       ) : authState === "loggedOut" ? (
         <UnauthenticatedOrganism onLogin={() => login()} />
       ) : (

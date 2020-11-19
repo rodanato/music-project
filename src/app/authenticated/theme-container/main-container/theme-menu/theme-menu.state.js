@@ -1,6 +1,6 @@
 // @flow
 import { Machine } from "xstate";
-import { themes } from "utils/themes";
+import { themes } from "config/themes";
 import type { StateMachine } from "xstate";
 
 export interface ThemeMenuStateSchema {

@@ -1,7 +1,6 @@
 // @flow
-import { handleError } from "utils/helpers";
-import { apiUrl } from "utils/constants";
-import { auth } from "./firebase/config";
+import { handleError, apiUrl } from "utils/helpers";
+import { auth } from "../config/firebase";
 import SpotifyService from "./spotify.service";
 
 type AuthUrls = {

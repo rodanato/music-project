@@ -14,18 +14,15 @@ import {
 } from "./theme-container.state";
 import { getChildrenStateName, getIfExistOnStorage } from "utils/helpers";
 import ThemeMenuMolecule from "./main-container/theme-menu/theme-menu.molecule";
-import MainContainerOrganism from "./main-container/main-container.organism";
 
 // STYLES
 import { themeContainer } from "./theme-container.styles";
 
 type ThemeContainerOrganismProps = {
-  onLogout: () => mixed,
+  children: Node,
 };
 
-function ThemeContainerOrganism({
-  onLogout,
-}: ThemeContainerOrganismProps): Node {
+function ThemeContainerOrganism(props: ThemeContainerOrganismProps): Node {
   const [state, send] = useMachine(ThemeContainerState);
 
   useEffect(() => {
@@ -46,8 +43,8 @@ function ThemeContainerOrganism({
           css={[themeContainer]}
           className={`${getChildrenStateName(state, "rendered")}-theme`}
         >
-          {/* TODO: Consider receive an anonymouse child to render instead of the explicit mainContainer */}
-          <MainContainerOrganism onLogout={onLogout} />
+          {props.children}
+
           <ThemeContainerStateContext.Provider value={state}>
             <ThemeMenuMolecule />
           </ThemeContainerStateContext.Provider>

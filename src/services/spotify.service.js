@@ -6,7 +6,7 @@ import {
   getIfExistOnStorage,
   persistOnLocalStorage,
 } from "utils/helpers";
-import { apiUrl } from "utils/constants";
+import { apiUrl } from "utils/helpers";
 // import { db } from "./firebase/config";
 
 type setCodeResponse = {

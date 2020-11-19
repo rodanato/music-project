@@ -1,4 +1,6 @@
 // @flow
+import { testUrl, prodUrl } from "config/constants";
+
 export const persistState = (name: string, value: string): void => {
   persistOnLocalStorage(name, value);
 };
@@ -43,3 +45,13 @@ export const returnEmptyStringIfNotAString = (
 
 export const getPublicUrl = (): string =>
   returnEmptyStringIfNotAString(process.env.PUBLIC_URL);
+
+export const apiUrl = (): string => {
+  return `${
+    isProd()
+      ? prodUrl
+      : // : process.env.REACT_APP_EMUL === 'true'
+        // ? localUrl
+        testUrl
+  }/api`;
+};
