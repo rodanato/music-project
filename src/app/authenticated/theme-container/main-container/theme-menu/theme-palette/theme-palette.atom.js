@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useService } from "@xstate/react";
 
 // DEPENDENCIES
-import { MainStateContext } from "../../main.state";
+import { ThemeContainerStateContext } from "../../../theme-container.state";
 import { getChildrenStateName } from "utils/helpers";
 
 // STYLES
@@ -22,19 +22,24 @@ import {
 import type { ThemePaletterProps } from "./theme-palette.types";
 
 function ThemePaletteAtom({ name }: ThemePaletterProps): Node {
-  const mainState = useContext(MainStateContext);
-  const [, send] = useService(mainState.children.themePalette);
-  const [themeState] = useService(mainState.children.themes);
-  const colorsPerPalette = new Array(themeState.context.themeLength).fill(1);
+  const themeState = useContext(ThemeContainerStateContext);
+  const [, send] = useService(themeState.children.themePalette);
+  const [themeMenuState] = useService(themeState.children.themeMenu);
+  const colorsPerPalette = new Array(themeMenuState.context.themeLength).fill(
+    1
+  );
 
   useEffect(() => {
     const ParentState = "rendered";
 
-    if (mainState.matches(ParentState)) {
-      const currentColorSelected = getChildrenStateName(mainState, ParentState);
+    if (themeState.matches(ParentState)) {
+      const currentColorSelected = getChildrenStateName(
+        themeState,
+        ParentState
+      );
       if (currentColorSelected !== name) send("UNSELECT");
     }
-  }, [mainState, name, send]);
+  }, [themeState, name, send]);
 
   return (
     <Fragment>

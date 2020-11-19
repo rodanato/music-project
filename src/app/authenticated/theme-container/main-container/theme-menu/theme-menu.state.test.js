@@ -1,14 +1,14 @@
 import { interpret } from "xstate";
 import { themes } from "utils/themes";
-import { ThemeState } from "./theme.state";
+import { ThemeMenuState } from "./theme-menu.state";
 
-describe("ThemeState machine", () => {
+describe("ThemeMenuState machine", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     themeState.state.value = themeState.initialState.value;
   });
 
-  const themeState = interpret(ThemeState).start();
+  const themeState = interpret(ThemeMenuState).start();
   const getState = () => themeState.state.value;
   const getContext = () => themeState.state.context;
 

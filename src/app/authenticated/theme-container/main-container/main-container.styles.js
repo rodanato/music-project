@@ -3,7 +3,7 @@ import React from "react"; // eslint-disable-line
 import type { ComponentType } from "react"; // eslint-disable-line
 // $FlowIgnore
 import styled from "@emotion/styled";
-import type { ContainerRowProps, DivProps } from "./main.types";
+import type { ContainerRowProps, DivProps } from "./main-container.types";
 
 const Div = ({ className, content, text, children, ...props }: DivProps) => (
   <div {...props} className={className}>
@@ -18,7 +18,7 @@ export const ContainerRow: ComponentType<ContainerRowProps> = styled(Div)`
   width: 100%;
 `;
 
-export const main: string = `
+export const themeContainer: string = `
   background-color: var(--mpp-primary);
   box-sizing: border-box;
   font-family: Roboto; sans-serif;

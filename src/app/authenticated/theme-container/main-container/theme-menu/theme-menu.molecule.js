@@ -10,15 +10,15 @@ import { v4 as uuidv4 } from "uuid";
 import { useMachine } from "@xstate/react";
 
 // DEPENDENCIES
-import { ThemeState } from "./theme.state";
+import { ThemeMenuState } from "./theme-menu.state";
 import CardAtom from "shared/card/card.atom";
 import ThemePaletteAtom from "./theme-palette/theme-palette.atom";
 
 // STYLES
-import { theme, themeOptions, palettesList } from "./theme.styles";
+import { themeMenu, themeMenuOptions, palettesList } from "./theme-menu.styles";
 
 function ThemeMolecule(): Node {
-  const [state, send] = useMachine(ThemeState);
+  const [state, send] = useMachine(ThemeMenuState);
 
   const ThemeOptionsClasses = classNames({
     "mpp-open-menu-animation": true,
@@ -26,12 +26,12 @@ function ThemeMolecule(): Node {
   });
 
   return (
-    <div css={[theme]}>
+    <div css={[themeMenu]}>
       <i className="material-icons" onClick={() => send("TOGGLE")}>
         brush
       </i>
 
-      <div css={[themeOptions]} className={ThemeOptionsClasses}>
+      <div css={[themeMenuOptions]} className={ThemeOptionsClasses}>
         <CardAtom>
           <ul css={[palettesList]}>
             {state.context.themes.map((theme: string) => (

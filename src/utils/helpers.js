@@ -1,6 +1,6 @@
 // @flow
-export const persistState = (value: string): void => {
-  persistOnLocalStorage("main-state", value);
+export const persistState = (name: string, value: string): void => {
+  persistOnLocalStorage(name, value);
 };
 
 export const getIfExistOnStorage = (item: string): mixed => {

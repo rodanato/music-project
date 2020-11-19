@@ -1,12 +1,12 @@
 // @flow
 import { Machine } from "xstate";
-import { ThemePaletteState } from "./theme/theme-palette/theme-palette.state";
-import { ThemeState } from "./theme/theme.state";
+import { ThemePaletteState } from "./main-container/theme-menu/theme-palette/theme-palette.state";
+import { ThemeMenuState } from "./main-container/theme-menu/theme-menu.state";
 import React from "react";
 import { persistState, getChildrenStateName } from "utils/helpers";
 import type { Context } from "react";
 
-export interface MainStateSchema {
+export interface ThemeContainerStateSchema {
   states: {
     notrendered: {},
     rendered: {
@@ -22,7 +22,7 @@ export interface MainStateSchema {
   };
 }
 
-export type MainEvent =
+export type ThemeContainerEvent =
   | { type: string }
   | { type: "CHANGE_TO_BLUE" }
   | { type: "CHANGE_TO_GREEN" }
@@ -30,21 +30,21 @@ export type MainEvent =
   | { type: "CHANGE_TO_PURPLE" };
 
 // $FlowFixMe
-export const MainState: StateMachine<
+export const ThemeContainerState: StateMachine<
   any,
-  MainStateSchema,
-  MainEvent,
+  ThemeContainerStateSchema,
+  ThemeContainerEvent,
   {
     value: any,
     context: any,
   }
-> = Machine<any, MainStateSchema, MainEvent>(
+> = Machine<any, ThemeContainerStateSchema, ThemeContainerEvent>(
   {
-    id: "main",
+    id: "themeContainer",
     initial: "notrendered",
     invoke: [
       { id: "themePalette", src: ThemePaletteState },
-      { id: "themes", src: ThemeState },
+      { id: "themeMenu", src: ThemeMenuState },
     ],
     states: {
       notrendered: {
@@ -89,11 +89,16 @@ export const MainState: StateMachine<
         const ParentState = "rendered";
 
         if (actionMeta.state.matches(ParentState)) {
-          persistState(getChildrenStateName(actionMeta.state, ParentState));
+          persistState(
+            "themeState",
+            getChildrenStateName(actionMeta.state, ParentState)
+          );
         }
       },
     },
   }
 );
 
-export const MainStateContext: Context<any> = React.createContext<any>(null);
+export const ThemeContainerStateContext: Context<any> = React.createContext<any>(
+  null
+);

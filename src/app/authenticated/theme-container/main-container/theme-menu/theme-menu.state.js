@@ -3,7 +3,7 @@ import { Machine } from "xstate";
 import { themes } from "utils/themes";
 import type { StateMachine } from "xstate";
 
-export interface ThemeStateSchema {
+export interface ThemeMenuStateSchema {
   states: {
     opened: {},
     closed: {},
@@ -12,15 +12,15 @@ export interface ThemeStateSchema {
 
 export type ThemeEvent = { type: string } | { type: "TOGGLE" };
 
-export const ThemeState: StateMachine<
+export const ThemeMenuState: StateMachine<
   any,
-  ThemeStateSchema,
+  ThemeMenuStateSchema,
   ThemeEvent,
   {
     value: any,
     context: any,
   }
-> = Machine<any, ThemeStateSchema, ThemeEvent>({
+> = Machine<any, ThemeMenuStateSchema, ThemeEvent>({
   initial: "closed",
   context: {
     themes: themes.map((theme) => theme.name),

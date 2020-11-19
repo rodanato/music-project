@@ -1,5 +1,5 @@
 // @flow
-export const theme: string = `
+export const themeMenu: string = `
   align-items: center;
   color: white;
   display: flex;
@@ -17,7 +17,7 @@ export const theme: string = `
   }
 `;
 
-export const themeOptions: string = `
+export const themeMenuOptions: string = `
   bottom: 5px;
   margin: 0;
   position: absolute;

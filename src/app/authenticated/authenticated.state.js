@@ -5,7 +5,7 @@ import AuthService from "services/auth.service";
 import SpotifyService from "services/spotify.service";
 import { persistOnLocalStorage, handleError } from "utils/helpers";
 
-export interface AppStateSchema {
+export interface AuthenticatedStateSchema {
   states: {
     loading: {},
     loggingIn: {},
@@ -15,7 +15,7 @@ export interface AppStateSchema {
   };
 }
 
-export type AppEvent =
+export type AuthenticatedEvent =
   | { type: string }
   | { type: "LOGGED_OUT" }
   | { type: "LOGGED_IN" }
@@ -33,15 +33,15 @@ const firebaseLogin = (ctx, e): Promise<any> => {
   return authService.firebaseLogin(e.code);
 };
 
-export const AppState: StateMachine<
+export const AuthenticatedState: StateMachine<
   any,
-  AppStateSchema,
-  AppEvent,
+  AuthenticatedStateSchema,
+  AuthenticatedEvent,
   {
     value: any,
     context: any,
   }
-> = Machine<any, AppStateSchema, AppEvent>(
+> = Machine<any, AuthenticatedStateSchema, AuthenticatedEvent>(
   {
     initial: "loading",
     states: {
@@ -60,6 +60,7 @@ export const AppState: StateMachine<
             target: "loggedIn",
           },
           onError: {
+            target: "loggedOut",
             actions: ["handleError"],
           },
         },
@@ -104,7 +105,9 @@ export const AppState: StateMachine<
       },
       removeFromStorage: (_ctx, e: any) => {
         localStorage.removeItem("loggedIn");
+        localStorage.removeItem("expirationDate");
         localStorage.removeItem("spotifyToken");
+        localStorage.removeItem("spotifyRefreshToken");
         const spotifyService = SpotifyService.getInstance();
         spotifyService.cleanExpirationTimeout();
       },
