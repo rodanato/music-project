@@ -1,5 +1,5 @@
 // @flow
-import { testUrl, prodUrl } from "config/constants";
+import { localUrl, testUrl, prodUrl } from "config/constants";
 
 export const persistState = (name: string, value: string): void => {
   persistOnLocalStorage(name, value);
@@ -50,8 +50,8 @@ export const apiUrl = (): string => {
   return `${
     isProd()
       ? prodUrl
-      : // : process.env.REACT_APP_EMUL === 'true'
-        // ? localUrl
-        testUrl
+      : process.env.REACT_APP_EMUL === "true"
+      ? localUrl
+      : testUrl
   }/api`;
 };

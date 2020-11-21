@@ -1,5 +1,5 @@
 import { interpret } from "xstate";
-import { themes } from "utils/themes";
+import { themes } from "config/themes";
 import { ThemeMenuState } from "./theme-menu.state";
 
 describe("ThemeMenuState machine", () => {

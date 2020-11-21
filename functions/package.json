@@ -7,8 +7,8 @@
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy:local": "firebase functions:config:set app.url=http://localhost:3000 && firebase deploy --only functions",
-    "deploy:test": "firebase functions:config:set app.url=https://social-music-addd0.web.app && firebase deploy --only functions",
-    "deploy:prod": "firebase functions:config:set app.url=https://social-music-prod.web.app && firebase deploy --only functions",
+    "deploy:test": "firebase functions:config:set app.url=https://social-music-addd0.web.app && firebase deploy -P test --only functions",
+    "deploy:prod": "firebase functions:config:set app.url=https://social-music-prod.web.app && firebase deploy -P prod --only functions",
     "logs": "firebase functions:log"
   },
   "engines": {
