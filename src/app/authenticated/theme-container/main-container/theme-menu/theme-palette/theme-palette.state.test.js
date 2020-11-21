@@ -1,5 +1,5 @@
 import { interpret } from "xstate";
-import { themes } from "utils/themes";
+import { themes } from "config/themes";
 import { ThemePaletteState } from "./theme-palette.state";
 
 describe("ThemePaletteState machine", () => {
