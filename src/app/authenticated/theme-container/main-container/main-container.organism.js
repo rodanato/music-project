@@ -12,6 +12,7 @@ import FooterOrganism from "./footer/footer.organism";
 import HeaderOrganism from "./header/header.organism";
 import SliderOrganism from "./slider/slider.organism";
 import SpotifyService from "services/spotify.service";
+import SliderService from "services/slider/slider.service";
 
 // STYLES
 import { container, ContainerRow } from "./main-container.styles";
@@ -31,6 +32,18 @@ type MainContainerOrganismProps = {
 
 function MainContainerOrganism({ onLogout }: MainContainerOrganismProps): Node {
   const spotifyService = SpotifyService.getInstance();
+  const sliderService = SliderService.getInstance();
+  let profileData;
+
+  async function getProfileData() {
+    console.log(">>> getProfileData");
+    profileData = await spotifyService.getProfile();
+    sliderService.addSlide(profileData);
+  }
+
+  useEffect(() => {
+    getProfileData();
+  }, []);
 
   return (
     <main css={[container]}>

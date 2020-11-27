@@ -30,10 +30,19 @@ function useAuthentication(): {
     send("LOGOUT");
   }
 
+  function alreadyLoggedIn(): mixed {
+    return (
+      getIfExistOnStorage("loggedIn") &&
+      getIfExistOnStorage("expirationDate") &&
+      getIfExistOnStorage("spotifyToken") &&
+      getIfExistOnStorage("spotifyRefreshToken")
+    );
+  }
+
   if (state.matches("loading")) {
     const code = authService.getCodeIfPresent();
 
-    if (getIfExistOnStorage("loggedIn")) {
+    if (alreadyLoggedIn()) {
       send("LOGGED_IN");
     }
 

@@ -33,7 +33,14 @@ curl -o- -L https://yarnpkg.com/install.sh | bash
 rm -rf node_modules/ && yarn
 ```
 
-4. **Run the project**
+4. **Emulate the functions locally**
+
+```sh
+cd functions/
+yarn serve
+```
+
+5. **Run the SPA**
 
 ```sh
 yarn start
@@ -85,8 +92,6 @@ flow-typed update
     │   │   │   │   ├── example.test.js         # Jest unit test
     │   │   │   │   ├── example.stories.js      # Storybook file
     │   │   │   └── ...
-
-
 
 ### Utils
 

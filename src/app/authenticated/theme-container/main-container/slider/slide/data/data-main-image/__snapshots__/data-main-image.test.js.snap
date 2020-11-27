@@ -3,7 +3,7 @@
 exports[`MainImageAtom snapshot example 1`] = `
 <img
   alt=""
-  className="css-bbf2li-MainImageAtom"
+  className="css-1cwfjrn-MainImageAtom"
   src="https://dummyimage.com/500x500/000000/fff"
 />
 `;

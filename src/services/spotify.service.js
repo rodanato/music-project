@@ -56,6 +56,14 @@ class SpotifyService {
       this.expirationDate = expirationDate;
       this.setTokenExpirationTimeout();
     }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        this.cleanExpirationTimeout();
+      } else {
+        this.setTokenExpirationTimeout();
+      }
+    });
   }
 
   get expirationDate(): string {
