@@ -5,6 +5,7 @@ import React from "react"; // eslint-disable-line
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
 import type { Node } from "react";
+import classNames from "classnames";
 
 // DEPENDENCIES
 import type { CardProps } from "./card.types";
@@ -13,8 +14,13 @@ import type { CardProps } from "./card.types";
 import { card } from "./card.styles";
 
 function CardAtom(props: CardProps): Node {
+  const cardClasses = classNames({
+    "is-paddingless": props.paddingLess,
+    "is-card-fullheight": props.fullheight,
+  });
+
   return (
-    <div css={[card]} className={props.paddingLess ? "is-paddingless" : ""}>
+    <div css={[card]} className={cardClasses}>
       {props.children}
     </div>
   );

@@ -9,4 +9,7 @@ export const card: string = `
   margin-bottom: 10px;
   overflow: hidden;
   padding: 25px;
-`
+  max-height: 100%;
+
+  &.is-card-fullheight { display: flex;height: 100%; }
+`;

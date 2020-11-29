@@ -53,12 +53,12 @@ function MainContainerOrganism({ onLogout }: MainContainerOrganismProps): Node {
     }));
 
     return (
-      <ul>
-        <li css={[contentListItem]}>
-          {formattedPlaylists.map((p) => (
-            <SongMolecule key={uuidv4()} data={p} mode="photo" />
-          ))}
-        </li>
+      <ul style={{ display: "flex", flexWrap: "wrap", overflow: "scroll" }}>
+        {formattedPlaylists.map((p) => (
+          <li css={[contentListItem]} key={uuidv4()}>
+            <SongMolecule data={p} mode="photo" />
+          </li>
+        ))}
       </ul>
     );
   }

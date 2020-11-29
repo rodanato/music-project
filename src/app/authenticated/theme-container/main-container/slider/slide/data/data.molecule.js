@@ -2,6 +2,9 @@
 // EXTERNAL
 import React from "react";
 import type { Node } from "react";
+/** @jsx jsx */
+// $FlowIgnore
+import { jsx, css } from "@emotion/core"; // eslint-disable-line
 
 // DEPENDENCIES
 import CardAtom from "shared/card/card.atom";

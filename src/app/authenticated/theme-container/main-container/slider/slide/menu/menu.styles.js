@@ -2,7 +2,7 @@
 export const menu: string = `
   display: flex;
   flex-direction: column;
-`
+`;
 export const menuContainer: string = `
-  flex: 1;
-`
+  flex: 0.5;
+`;

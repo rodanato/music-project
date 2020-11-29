@@ -13,6 +13,10 @@ export const playingPhoto: string = `
   height: 100px;
   margin-right: 10px;
   min-width: 100px;
+
+  img {
+    width: 100%;
+  }
 `;
 
 export const playingData: string = `
