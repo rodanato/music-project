@@ -1,8 +1,9 @@
 // @flow
 export type SongDataProps = {
   name: string,
-  artist: string,
-  album: string,
+  image: string,
+  // artist: string,
+  // album: string,
 };
 
 export type SongProps = {

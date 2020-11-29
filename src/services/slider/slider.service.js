@@ -16,6 +16,7 @@ class SliderService {
     init: false,
     grabCursor: true,
     direction: "vertical",
+    dynamicBullets: true,
     navigation: {
       nextEl: ".swiper-button-next",
       prevEl: ".swiper-button-prev",
@@ -36,11 +37,9 @@ class SliderService {
     },
   };
   _slideList: any[] = [];
-  // slideList: any[] = new Array(4).fill(1);
 
   set slideList(list) {
     this._slideList = list;
-    console.log(">>> slideListUpdated 1");
     document.dispatchEvent(new CustomEvent("slideListUpdated"));
   }
 
@@ -66,6 +65,8 @@ class SliderService {
 
   addSlide(slideContent) {
     this.slideList = [...this.slideList, slideContent];
+    this.swiper.update();
+    this.swiper.slideNext();
   }
 }
 export default SliderService;

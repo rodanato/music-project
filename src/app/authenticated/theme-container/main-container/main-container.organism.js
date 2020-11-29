@@ -5,6 +5,8 @@ import React, { useEffect, Fragment } from "react"; // eslint-disable-line
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
 import type { Node } from "react";
+import type { SlideContent } from "shared/types/slide.types";
+import { v4 as uuidv4 } from "uuid";
 
 // DEPENDENCIES
 import { responsive } from "utils/responsive";
@@ -13,9 +15,14 @@ import HeaderOrganism from "./header/header.organism";
 import SliderOrganism from "./slider/slider.organism";
 import SpotifyService from "services/spotify.service";
 import SliderService from "services/slider/slider.service";
+import SongMolecule from "shared/song/song.molecule";
 
 // STYLES
-import { container, ContainerRow } from "./main-container.styles";
+import {
+  container,
+  ContainerRow,
+  contentListItem,
+} from "./main-container.styles";
 
 const MediaQueries = {
   [responsive("tablet")]: {
@@ -30,19 +37,59 @@ type MainContainerOrganismProps = {
   onLogout: () => mixed,
 };
 
+type Playlist = {
+  name: string,
+  images: any[],
+};
+
 function MainContainerOrganism({ onLogout }: MainContainerOrganismProps): Node {
   const spotifyService = SpotifyService.getInstance();
   const sliderService = SliderService.getInstance();
-  let profileData;
 
-  async function getProfileData() {
-    console.log(">>> getProfileData");
-    profileData = await spotifyService.getProfile();
-    sliderService.addSlide(profileData);
+  function playlistsUI(playlists: Playlist[]): Node {
+    const formattedPlaylists = playlists.map((p) => ({
+      name: p.name,
+      image: p.images[0].url,
+    }));
+
+    return (
+      <ul>
+        <li css={[contentListItem]}>
+          {formattedPlaylists.map((p) => (
+            <SongMolecule key={uuidv4()} data={p} mode="photo" />
+          ))}
+        </li>
+      </ul>
+    );
+  }
+
+  async function addProfileSlide() {
+    let profileData: any;
+    let userPlaylists: any;
+
+    const content = await Promise.all([
+      (profileData = await spotifyService.getProfile()),
+      (userPlaylists = await spotifyService.getPlaylists()),
+    ]);
+
+    const slideContent: SlideContent = {
+      data: {
+        title: profileData.display_name,
+        image: profileData.images[0].url,
+        genres: [], //TODO: Get them from playlists
+      },
+      content: {
+        title: "Playlists",
+        listUI: playlistsUI(userPlaylists.items),
+      },
+      menu: ["Playlists"],
+    };
+
+    sliderService.addSlide(slideContent);
   }
 
   useEffect(() => {
-    getProfileData();
+    addProfileSlide();
   }, []);
 
   return (
@@ -50,7 +97,7 @@ function MainContainerOrganism({ onLogout }: MainContainerOrganismProps): Node {
       <ContainerRow css={MediaQueries}>
         <button
           onClick={async () => {
-            console.log(">>> profile: ", await spotifyService.getProfile());
+            addProfileSlide();
           }}
         >
           GET PROFILE

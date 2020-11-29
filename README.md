@@ -27,20 +27,29 @@ nvm use
 curl -o- -L https://yarnpkg.com/install.sh | bash
 ```
 
-3. **Install all dependencies**
+3. **Install firebase CLI**
+
+```sh
+yarn global add firebase-tools
+```
+
+4. **Install all dependencies**
 
 ```sh
 rm -rf node_modules/ && yarn
 ```
 
-4. **Emulate the functions locally**
+5. **Emulate the functions locally**
 
 ```sh
-cd functions/
-yarn serve
+1. cd functions/
+2. nvm use
+3. export GOOGLE_APPLICATION_CREDENTIALS="path/to/key.json"
+4. yarn
+5. yarn serve
 ```
 
-5. **Run the SPA**
+6. **Run the SPA**
 
 ```sh
 yarn start

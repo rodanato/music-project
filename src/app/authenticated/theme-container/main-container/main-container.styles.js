@@ -38,3 +38,9 @@ export const container: string = `
   position: relative;
   width: 100%;
 `;
+
+export const contentListItem: string = `
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+`;

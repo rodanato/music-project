@@ -21,11 +21,13 @@ function SliderOrganism(): Node {
   const [, forceRender] = React.useState();
 
   document.addEventListener("slideListUpdated", () => {
-    console.log(">>> slideListUpdated 2");
-    sliderService.createSwiper();
-    sliderService.swiper.init();
     forceRender({});
   });
+
+  useEffect(() => {
+    sliderService.createSwiper();
+    sliderService.swiper.init();
+  }, []);
 
   return (
     <section css={[slider]}>

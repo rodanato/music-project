@@ -13,7 +13,7 @@ import type { SongProps } from "./song.types";
 import { listUI, playingUI, playingPhoto, playingData } from "./song.styles";
 
 function SongMolecule({ mode, data }: SongProps): Node {
-  const { name, artist, album } = data;
+  const { name, image } = data;
 
   function renderListUI() {
     return <div css={[listUI]}>{name}</div>;
@@ -22,20 +22,20 @@ function SongMolecule({ mode, data }: SongProps): Node {
   function renderPlayingUI() {
     return (
       <div css={[playingUI]}>
-        <div css={[playingPhoto]}>{album}</div>
+        <div css={[playingPhoto]}>
+          <img src={image} />
+        </div>
 
         <ul css={[playingData]}>
           <li>{name}</li>
-          <li>{artist}</li>
+          {/* <li>{artist}</li> */}
         </ul>
       </div>
     );
   }
 
   return (
-    <Fragment>
-      {mode === "playing" ? renderPlayingUI() : renderListUI()}
-    </Fragment>
+    <Fragment>{mode === "photo" ? renderPlayingUI() : renderListUI()}</Fragment>
   );
 }
 

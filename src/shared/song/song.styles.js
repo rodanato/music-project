@@ -5,6 +5,7 @@ export const listUI: string = `
 
 export const playingUI: string = `
   display: flex;
+  width: 50%
 `;
 
 export const playingPhoto: string = `

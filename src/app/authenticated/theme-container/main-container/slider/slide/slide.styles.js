@@ -12,7 +12,3 @@ export const swiperContent: string = `
 export const swiperSlide: string = `
   overflow: hidden;
 `;
-
-export const contentListItem: string = `
-  margin-bottom: 10px;
-`;

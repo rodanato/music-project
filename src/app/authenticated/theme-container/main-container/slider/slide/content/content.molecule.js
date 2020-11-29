@@ -17,7 +17,10 @@ function ContentMolecule(props: ContentProps): Node {
   return (
     <div css={[contentContainer]} className="mpp-show-slowly">
       <CardAtom>
-        <div css={[content]}>{props.children}</div>
+        <div css={[content]}>
+          <h1>{props.title}</h1>
+          {props.children}
+        </div>
       </CardAtom>
     </div>
   );

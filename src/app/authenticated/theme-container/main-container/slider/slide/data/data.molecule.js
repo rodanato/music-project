@@ -12,10 +12,6 @@ import MetadataMolecule from "./metadata/metadata.molecule";
 // STYLES
 import { data } from "./data.styles";
 
-const metadataSampleData = {
-  title: "Only by the night",
-  author: "Kings of Leon",
-};
 const genresSampleData = ["Rock", "Progressive Rock", "Indie", "Soft Rock"];
 
 function DataMolecule({ content }: { content: any }): Node {
@@ -28,9 +24,11 @@ function DataMolecule({ content }: { content: any }): Node {
         />
       </CardAtom>
 
-      <CardAtom>
-        <MetadataMolecule data={metadataSampleData} />
-      </CardAtom>
+      {content.metadata ? (
+        <CardAtom>
+          <MetadataMolecule data={content.metadata} />
+        </CardAtom>
+      ) : null}
 
       <CardAtom>
         <GenresMolecule genres={genresSampleData} />

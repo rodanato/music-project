@@ -1,9 +1,11 @@
 // @flow
+import type { Node } from "react";
+
 export type DataProps = {
-  title: string;
-  author: string;
+  title: string,
+  subtitle: Node | string,
 };
 
 export type MetadataProps = {
-  data: DataProps;
+  data: DataProps,
 };

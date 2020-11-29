@@ -7,18 +7,18 @@ import type { Node } from "react"; // eslint-disable-line
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
 
 // DEPENDENCIES
-import MetadataAuthorAtom from "./metadata-author/metadata-author.atom";
+import MetadataSubtitleAtom from "./metadata-subtitle/metadata-subtitle.atom";
 import MetadataTitleAtom from "./metadata-title/metadata-title.atom";
 import type { MetadataProps } from "./metadata.types";
 
 // STYLES
 
 function MetadataMolecule(props: MetadataProps): Node {
-  const { title, author } = props.data;
+  const { title, subtitle } = props.data;
   return (
     <section>
       <MetadataTitleAtom titleName={title} />
-      <MetadataAuthorAtom authorName={author} />
+      <MetadataSubtitleAtom subtitle={subtitle} />
     </section>
   );
 }

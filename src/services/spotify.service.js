@@ -21,6 +21,13 @@ type SpotifyUrls = {
   setCode: string,
 };
 
+type UserInfo = {
+  id: string,
+  name: string,
+  email: string,
+  photo: string,
+};
+
 class SpotifyService {
   static instance: SpotifyService;
   static getInstance(): SpotifyService {
@@ -31,6 +38,7 @@ class SpotifyService {
     return SpotifyService.instance;
   }
 
+  userInfo: UserInfo = { id: "", name: "", email: "", photo: "" };
   _spotifyUrls: SpotifyUrls = {
     redirect: "redirect",
     setCode: "setCode",
@@ -120,9 +128,15 @@ class SpotifyService {
     return this.token;
   }
 
-  async getProfile(): Promise<string | void> {
+  async getProfile(): Promise<any | void> {
     try {
       const profile = await this.spotifyApi.getMe();
+      this.userInfo = {
+        id: profile.id,
+        name: profile.display_name,
+        email: profile.email,
+        photo: profile.images[0].url,
+      };
       return profile;
       // db.collection("users").add({
       //   name: profile.display_name
@@ -135,6 +149,17 @@ class SpotifyService {
       // });
     } catch (error) {
       handleError(error, "spa:spotifyService:getProfile");
+    }
+  }
+
+  async getPlaylists(): Promise<any | void> {
+    try {
+      const playlists = await this.spotifyApi.getUserPlaylists(
+        this.userInfo.id
+      );
+      return playlists;
+    } catch (e) {
+      handleError(e, "spa:spotifyService:getPlaylists");
     }
   }
 
