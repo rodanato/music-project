@@ -168,6 +168,7 @@ class SpotifyService {
     window.location = redirecUrl;
   }
 
+  // TODO: Consider to call this on app leave (comp unmount)
   cleanExpirationTimeout() {
     clearTimeout(this.expirationTimeout);
   }

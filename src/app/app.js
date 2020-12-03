@@ -22,24 +22,26 @@ function App(): Node {
 
   return (
     <Fragment>
-      <Global
-        styles={css`
+      <React.StrictMode>
+        <Global
+          styles={css`
         ${reset}
         ${themeStyles}
         ${typography}      
         ${globalClasses}
       `}
-      />
+        />
 
-      {authState === "loggedIn" ? (
-        <ThemeContainerOrganism>
-          <MainContainerOrganism onLogout={() => logout()} />
-        </ThemeContainerOrganism>
-      ) : authState === "loggedOut" ? (
-        <UnauthenticatedOrganism onLogin={() => login()} />
-      ) : (
-        <LoadingAtom flex="1" />
-      )}
+        {authState === "loggedIn" ? (
+          <ThemeContainerOrganism>
+            <MainContainerOrganism onLogout={() => logout()} />
+          </ThemeContainerOrganism>
+        ) : authState === "loggedOut" ? (
+          <UnauthenticatedOrganism onLogin={() => login()} />
+        ) : (
+          <LoadingAtom flex="1" />
+        )}
+      </React.StrictMode>
     </Fragment>
   );
 }

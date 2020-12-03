@@ -1,6 +1,6 @@
 // @flow
 // EXTERNAL
-import React from "react";
+import React from "react"; // eslint-disable-line
 import type { Node } from "react";
 /** @jsx jsx */
 // $FlowIgnore

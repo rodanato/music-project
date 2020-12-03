@@ -12,6 +12,7 @@
 - Jest
 - Storybook
 - Swiper
+- Spotify API (spotify-web-api-js)
 
 ## Run the frontend
 
