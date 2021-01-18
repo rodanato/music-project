@@ -1,5 +1,6 @@
 // @flow
 import Swiper from "swiper";
+import type { SlideContent } from "shared/types/slide.types";
 
 class SliderService {
   static instance: SliderService;
@@ -63,7 +64,7 @@ class SliderService {
     });
   }
 
-  addSlide(slideContent) {
+  addSlide(slideContent: SlideContent) {
     this.slideList = [...this.slideList, slideContent];
     this.swiper.update();
     this.swiper.slideNext();

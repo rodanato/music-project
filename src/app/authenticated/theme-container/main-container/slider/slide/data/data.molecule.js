@@ -23,7 +23,7 @@ function DataMolecule({ content }: { content: any }): Node {
       <h1>{content.title}</h1>
       <CardAtom paddingLess>
         <MainImageAtom
-          url={content.image || "https://dummyimage.com/500x500/000000/fff"}
+          url={content.photo || "https://dummyimage.com/500x500/000000/fff"}
         />
       </CardAtom>
 

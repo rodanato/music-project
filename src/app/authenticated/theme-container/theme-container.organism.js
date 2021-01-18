@@ -1,7 +1,7 @@
 // @flow
 // EXTERNAL
 import React, { useEffect, Fragment } from "react"; // eslint-disable-line
-import { useMachine } from "@xstate/react";
+import { useService } from "@xstate/react";
 /** @jsx jsx */
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
@@ -9,8 +9,8 @@ import type { Node } from "react";
 
 // DEPENDENCIES
 import {
-  ThemeContainerState,
   ThemeContainerStateContext,
+  ThemeContainerService,
 } from "./theme-container.state";
 import { getChildrenStateName, getIfExistOnStorage } from "utils/helpers";
 import ThemeMenuMolecule from "./main-container/theme-menu/theme-menu.molecule";
@@ -23,7 +23,7 @@ type ThemeContainerOrganismProps = {
 };
 
 function ThemeContainerOrganism(props: ThemeContainerOrganismProps): Node {
-  const [state, send] = useMachine(ThemeContainerState);
+  const [state, send] = useService(ThemeContainerService);
 
   useEffect(() => {
     const persistedState = getIfExistOnStorage("themeState");

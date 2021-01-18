@@ -17,11 +17,11 @@ const DataMolecule = React.lazy(() => import("./data/data.molecule"));
 const MenuMolecule = React.lazy(() => import("./menu/menu.molecule"));
 
 function SlideMolecule({ slideContent }: { slideContent: SlideContent }): Node {
-  const songSampleData = {
-    name: "Sex on fire",
-    artist: "Kings of Leon",
-    album: "I don't know",
-  };
+  // const songSampleData = {
+  //   name: "Sex on fire",
+  //   artist: "Kings of Leon",
+  //   album: "I don't know",
+  // };
 
   return (
     <div className="swiper-slide" css={[swiperSlide]}>

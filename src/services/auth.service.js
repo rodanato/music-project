@@ -1,10 +1,21 @@
 // @flow
-import { handleError, apiUrl } from "utils/helpers";
-import { auth } from "../config/firebase";
+import {
+  handleError,
+  apiUrl,
+  persistOnLocalStorage,
+  getIfExistOnStorage,
+} from "utils/helpers";
+import { auth } from "config/firebase";
 import SpotifyService from "./spotify.service";
 
 type AuthUrls = {
   createFirebaseAccount: string,
+};
+
+type FirebaseUser = {
+  displayName: string,
+  email: string,
+  uid: string,
 };
 
 class AuthService {
@@ -16,14 +27,19 @@ class AuthService {
     return AuthService.instance;
   }
 
-  spotifyService: SpotifyService;
-
   _authUrls: AuthUrls = {
     createFirebaseAccount: "createFirebaseAccount",
   };
+  firebaseUser: FirebaseUser;
+  spotifyService: SpotifyService;
 
   constructor() {
     this.spotifyService = SpotifyService.getInstance();
+
+    const signedInFirebaseUser = getIfExistOnStorage("firebaseUser");
+    if (signedInFirebaseUser && typeof signedInFirebaseUser === "object") {
+      this.firebaseUser = signedInFirebaseUser;
+    }
   }
 
   getCodeIfPresent(): mixed {
@@ -42,6 +58,13 @@ class AuthService {
   }
 
   async firebaseLogin(code: string): Promise<any> {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.firebaseUser = user;
+        persistOnLocalStorage("firebaseUser", user);
+      }
+    });
+
     try {
       const spotifyToken: string = await this.spotifyService.getToken(code);
       const userprofile = await this.spotifyService.getProfile();

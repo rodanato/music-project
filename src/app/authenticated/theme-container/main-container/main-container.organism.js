@@ -5,7 +5,8 @@ import React, { useEffect, Fragment } from "react"; // eslint-disable-line
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
 import type { Node } from "react";
-import type { SlideContent } from "shared/types/slide.types";
+import type { SlideContent, Playlist } from "shared/types/slide.types";
+import type { DbProfile } from "shared/types/spotify.types";
 import { v4 as uuidv4 } from "uuid";
 
 // DEPENDENCIES
@@ -14,6 +15,7 @@ import FooterOrganism from "./footer/footer.organism";
 import HeaderOrganism from "./header/header.organism";
 import SliderOrganism from "./slider/slider.organism";
 import SpotifyService from "services/spotify.service";
+import DatabaseService from "services/database.service";
 import SliderService from "services/slider/slider.service";
 import SongMolecule from "shared/song/song.molecule";
 
@@ -37,14 +39,10 @@ type MainContainerOrganismProps = {
   onLogout: () => mixed,
 };
 
-type Playlist = {
-  name: string,
-  images: any[],
-};
-
 function MainContainerOrganism({ onLogout }: MainContainerOrganismProps): Node {
   const spotifyService = SpotifyService.getInstance();
   const sliderService = SliderService.getInstance();
+  const databaseService = DatabaseService.getInstance();
 
   function playlistsUI(playlists: Playlist[]): Node {
     const formattedPlaylists = playlists.map((p) => ({
@@ -64,18 +62,20 @@ function MainContainerOrganism({ onLogout }: MainContainerOrganismProps): Node {
   }
 
   async function addProfileSlide() {
-    let profileData: any;
-    let userPlaylists: any;
+    let profileData: Promise<DbProfile | void> = await databaseService.getProfileData();
+    let userPlaylists: Promise<{
+      items: Playlist[],
+    } | void> = await spotifyService.getPlaylists();
 
-    const content = await Promise.all([
-      (profileData = await spotifyService.getProfile()),
-      (userPlaylists = await spotifyService.getPlaylists()),
-    ]);
+    // const content = await Promise.all([
+    //   (profileData = ),
+    //   (userPlaylists = await spotifyService.getPlaylists()),
+    // ]);
 
     const slideContent: SlideContent = {
       data: {
-        title: profileData.display_name,
-        image: profileData.images[0].url,
+        title: profileData.name,
+        photo: profileData.photo,
         genres: [], //TODO: Get them from playlists
       },
       content: {

@@ -6,6 +6,7 @@
     "@emotion/core": "^10.0.28",
     "@xstate/react": "^0.8.1",
     "classnames": "^2.2.6",
+    "dexie": "^3.0.3",
     "emotion-theming": "^10.0.27",
     "firebase": "^7.16.1",
     "react": "^16.13.1",

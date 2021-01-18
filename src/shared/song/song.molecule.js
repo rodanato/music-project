@@ -23,7 +23,7 @@ function SongMolecule({ mode, data }: SongProps): Node {
     return (
       <div css={[playingUI]}>
         <div css={[playingPhoto]}>
-          <img src={image} />
+          <img src={image} alt="" />
         </div>
 
         <ul css={[playingData]}>

@@ -18,3 +18,8 @@ export type SlideContent = {
   content: Content,
   menu: string[],
 };
+
+export type Playlist = {
+  name: string,
+  images: any[],
+};

@@ -14,7 +14,7 @@ export const persistOnLocalStorage = (name: string, value: string): void => {
   try {
     localStorage.setItem(name, JSON.stringify(value));
   } catch (e) {
-    handleError(e, "on localstorage setItem");
+    handleError(e, "spa:localstorage:setItem");
   }
 };
 

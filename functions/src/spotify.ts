@@ -58,6 +58,7 @@ spotify.post(
       .updateUser(uid, {
         displayName: userprofile.display_name,
         photoURL: userprofile.images[0].url,
+        email: userprofile.email,
       })
       .catch((error: any) => {
         if (error.code === "auth/user-not-found") {
@@ -65,6 +66,7 @@ spotify.post(
             uid: uid,
             displayName: userprofile.display_name,
             photoURL: userprofile.images[0].url,
+            email: userprofile.email,
           });
         }
         throw error;

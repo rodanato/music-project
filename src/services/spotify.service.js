@@ -8,6 +8,8 @@ import {
 } from "utils/helpers";
 import { apiUrl } from "utils/helpers";
 // import { db } from "./firebase/config";
+import type { Playlist } from "shared/types/slide.types";
+import type { Profile } from "shared/types/spotify.types";
 
 type setCodeResponse = {
   access_token: string,
@@ -22,7 +24,7 @@ type SpotifyUrls = {
 };
 
 type UserInfo = {
-  id: string,
+  spotifyId: string,
   name: string,
   email: string,
   photo: string,
@@ -38,7 +40,7 @@ class SpotifyService {
     return SpotifyService.instance;
   }
 
-  userInfo: UserInfo = { id: "", name: "", email: "", photo: "" };
+  _userInfo: UserInfo = { spotifyId: "", name: "", email: "", photo: "" };
   _spotifyUrls: SpotifyUrls = {
     redirect: "redirect",
     setCode: "setCode",
@@ -100,6 +102,14 @@ class SpotifyService {
     persistOnLocalStorage("spotifyToken", token);
   }
 
+  get userInfo(): string {
+    return this._userInfo;
+  }
+
+  set userInfo(info: UserInfo): string {
+    return (this._userInfo = info);
+  }
+
   async getToken(code: string): Promise<string> {
     const url = `${apiUrl()}/${this._spotifyUrls.setCode}`;
     const request = new Request(url, {
@@ -128,34 +138,25 @@ class SpotifyService {
     return this.token;
   }
 
-  async getProfile(): Promise<any | void> {
+  async getProfile(): Promise<Profile | void> {
     try {
       const profile = await this.spotifyApi.getMe();
       this.userInfo = {
-        id: profile.id,
+        spotifyId: profile.id,
         name: profile.display_name,
         email: profile.email,
         photo: profile.images[0].url,
       };
       return profile;
-      // db.collection("users").add({
-      //   name: profile.display_name
-      // })
-      // .then(function(docRef) {
-      //     console.log("Document written with ID: ", docRef.id);
-      // })
-      // .catch(function(error) {
-      //     console.error("Error adding document: ", error);
-      // });
     } catch (error) {
       handleError(error, "spa:spotifyService:getProfile");
     }
   }
 
-  async getPlaylists(): Promise<any | void> {
+  async getPlaylists(): Promise<{ items: Playlist[] } | void> {
     try {
       const playlists = await this.spotifyApi.getUserPlaylists(
-        this.userInfo.id
+        this.userInfo.spotifyId
       );
       return playlists;
     } catch (e) {
@@ -168,7 +169,7 @@ class SpotifyService {
     window.location = redirecUrl;
   }
 
-  // TODO: Consider to call this on app leave (comp unmount)
+  // TODO: Think of a better strategy to keep user session active without making it eternal
   cleanExpirationTimeout() {
     clearTimeout(this.expirationTimeout);
   }

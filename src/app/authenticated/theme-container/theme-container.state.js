@@ -1,5 +1,5 @@
 // @flow
-import { Machine } from "xstate";
+import { Machine, interpret } from "xstate";
 import { ThemePaletteState } from "./main-container/theme-menu/theme-palette/theme-palette.state";
 import { ThemeMenuState } from "./main-container/theme-menu/theme-menu.state";
 import React from "react";
@@ -53,8 +53,9 @@ export const ThemeContainerState: StateMachine<
         },
       },
       rendered: {
-        initial: "green",
+        initial: "dark",
         states: {
+          dark: {},
           blue: {},
           green: {},
           light: {},
@@ -98,6 +99,9 @@ export const ThemeContainerState: StateMachine<
     },
   }
 );
+
+export const ThemeContainerService = interpret(ThemeContainerState);
+ThemeContainerService.start();
 
 export const ThemeContainerStateContext: Context<any> = React.createContext<any>(
   null
