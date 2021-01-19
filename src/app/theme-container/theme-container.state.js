@@ -5,6 +5,7 @@ import { ThemeMenuState } from "../authenticated/theme-menu/theme-menu.state";
 import React from "react";
 import { persistState, getChildrenStateName } from "utils/helpers";
 import type { Context } from "react";
+import DatabaseService from "services/database.service";
 
 export interface ThemeContainerStateSchema {
   states: {
@@ -88,12 +89,13 @@ export const ThemeContainerState: StateMachine<
     actions: {
       persist: (ctx, e, actionMeta) => {
         const ParentState = "rendered";
+        const newTheme = getChildrenStateName(actionMeta.state, ParentState);
 
         if (actionMeta.state.matches(ParentState)) {
-          persistState(
-            "themeState",
-            getChildrenStateName(actionMeta.state, ParentState)
-          );
+          persistState("themeState", newTheme);
+
+          const databaseService = DatabaseService.getInstance();
+          databaseService.updateProfileOnDB("theme", newTheme);
         }
       },
     },

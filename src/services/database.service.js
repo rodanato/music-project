@@ -1,5 +1,4 @@
 // @flow
-// import Dexie from "dexie";
 import SpotifyService from "services/spotify.service";
 import AuthService from "services/auth.service";
 import { db } from "config/firebase";
@@ -17,7 +16,6 @@ class DatabaseService {
     return DatabaseService.instance;
   }
 
-  // localDB: any;
   authService: AuthService;
   spotifyService: SpotifyService;
 
@@ -25,26 +23,6 @@ class DatabaseService {
     this.spotifyService = SpotifyService.getInstance();
     this.authService = AuthService.getInstance();
   }
-
-  // TODO: Save DB data locally
-  // createDB(): Dexie {
-  //   this.localDB = new Dexie("myDb");
-  //   this.localDB.version(1).stores({
-  //     profiles: `++id, name`,
-  //   });
-
-  //   return this.localDB.open().catch(function(err) {
-  //     console.error("Failed to open db: " + err);
-  //   });
-  // }
-
-  // saveProfile() {
-  //   return this.localDB.profiles
-  //     .put({ name: "Ingemar Bergman" })
-  //     .catch(function(e) {
-  //       console.error(e);
-  //     });
-  // }
 
   spotifyProfileToDBProfile(data: SpotifyProfile): DbProfile {
     return {
@@ -54,12 +32,6 @@ class DatabaseService {
       spotifyId: data.id,
     };
   }
-
-  // getProfile() {
-  //   return this.localDB.profiles.get(0).then(function(profile) {
-  //     console.log("DbProfile name: " + JSON.stringify(profile));
-  //   });
-  // }
 
   async getFromFirestore(): Promise<DbProfile | void> {
     // console.log(">>> currentUser", this.authService.firebaseUser);
@@ -88,6 +60,12 @@ class DatabaseService {
     if (profileOnDB && profileOnDB.email) {
       this.spotifyService.userInfo = profileOnDB;
       console.log(">>> is on DB");
+
+      if (ThemeContainerService.state.value.rendered !== profileOnDB.theme) {
+        const newThemeEvent = `CHANGE_TO_${profileOnDB.theme.toUpperCase()}`;
+        ThemeContainerService.send(newThemeEvent);
+      }
+
       return profileOnDB;
     }
 
@@ -98,7 +76,7 @@ class DatabaseService {
       let profileData: SpotifyProfile | void = await this.spotifyService.getProfile();
       if (profileData) {
         const dbProfile = this.spotifyProfileToDBProfile(profileData);
-        this.saveProfileOnDBs(dbProfile);
+        this.saveProfileOnDB(dbProfile);
         return dbProfile;
       }
     } catch (e) {
@@ -117,23 +95,28 @@ class DatabaseService {
     */
   }
 
-  saveProfileOnDBs(data: DbProfile) {
-    const { name, email, photo, spotifyId } = data;
+  saveProfileOnDB(data: DbProfile) {
+    const newUserData = {
+      ...data,
+      theme: ThemeContainerService.state.value.rendered,
+    };
 
     db.collection("users")
-      .add({
-        name,
-        email,
-        photo,
-        spotifyId,
-        theme: ThemeContainerService.state.value.rendered,
-      })
-      .then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
-      })
+      .doc(this.authService.firebaseUser.uid)
+      .set(newUserData)
+      // .then(function(docRef) {
+      //   console.log("Document written with ID: ", docRef.id);
+      // })
       .catch(function(error) {
         console.error("Error adding document: ", error);
       });
   }
+
+  updateProfileOnDB(key: string, value: string) {
+    db.collection("users")
+      .doc(this.authService.firebaseUser.uid)
+      .update({ [key]: value });
+  }
 }
+
 export default DatabaseService;

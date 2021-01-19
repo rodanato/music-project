@@ -16,16 +16,11 @@ import SliderOrganism from "./slider/slider.organism";
 import SpotifyService from "services/spotify.service";
 import DatabaseService from "services/database.service";
 import SliderService from "services/slider/slider.service";
-import SongMolecule from "shared/song/song.molecule";
 import PlaylistContainerMolecule from "shared/playlist-container/playlist-container.molecule";
 import type { AuthenticatedOrganismProps } from "./authenticated.types";
 
 // STYLES
-import {
-  container,
-  ContainerRow,
-  contentListItem,
-} from "./authenticated.styles";
+import { container, ContainerRow } from "./authenticated.styles";
 
 const MediaQueries = {
   [responsive("tablet")]: {
@@ -74,11 +69,11 @@ function AuthenticatedOrganism({ onLogout }: AuthenticatedOrganismProps): Node {
       items: Playlist[],
     } | void> = await spotifyService.getPlaylists();
 
-    const slideContent: SlideContent = getSlideContent(
+    const profileContentSlide: SlideContent = getSlideContent(
       profileData,
       userPlaylists
     );
-    sliderService.addSlide(slideContent);
+    sliderService.addSlide(profileContentSlide);
   }
 
   useEffect(() => {
