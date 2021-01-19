@@ -5,7 +5,7 @@ import AuthService from "services/auth.service";
 import { db } from "config/firebase";
 import type { DbProfile, SpotifyProfile } from "shared/types/spotify.types";
 import { handleError } from "utils/helpers";
-import { ThemeContainerService } from "app/authenticated/theme-container/theme-container.state";
+import { ThemeContainerService } from "app/theme-container/theme-container.state";
 
 class DatabaseService {
   static instance: DatabaseService;

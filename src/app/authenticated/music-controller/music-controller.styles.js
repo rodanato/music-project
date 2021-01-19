@@ -1,5 +1,5 @@
 // @flow
-export const footer: string = `
+export const musicController: string = `
   background-color: var(--mpp-primary-dark);
   color: var(--mpp-on-primary);
   height: 100px;

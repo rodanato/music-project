@@ -1,4 +1,5 @@
 // @flow
+
 // EXTERNAL
 import React from "react"; // eslint-disable-line
 import type { Node } from "react"; // eslint-disable-line
@@ -18,11 +19,11 @@ function MenuMolecule({ content }: { content: string[] }): Node {
   return (
     <div css={[menuContainer]} className="mpp-show-slowly">
       <CardAtom paddingLess>
-        <div css={[menu]}>
+        <nav css={[menu]}>
           {content.map((item) => (
             <MenuItemAtom name={item} key={uuidv4()} />
           ))}
-        </div>
+        </nav>
       </CardAtom>
     </div>
   );

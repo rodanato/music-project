@@ -7,24 +7,25 @@ import { jsx, css } from "@emotion/core"; // eslint-disable-line
 import type { Node } from "react";
 import type { SlideContent, Playlist } from "shared/types/slide.types";
 import type { DbProfile } from "shared/types/spotify.types";
-import { v4 as uuidv4 } from "uuid";
 
 // DEPENDENCIES
 import { responsive } from "utils/responsive";
-import FooterOrganism from "./footer/footer.organism";
+import MusicControllerOrganism from "./music-controller/music-controller.organism";
 import HeaderOrganism from "./header/header.organism";
 import SliderOrganism from "./slider/slider.organism";
 import SpotifyService from "services/spotify.service";
 import DatabaseService from "services/database.service";
 import SliderService from "services/slider/slider.service";
 import SongMolecule from "shared/song/song.molecule";
+import PlaylistContainerMolecule from "shared/playlist-container/playlist-container.molecule";
+import type { AuthenticatedOrganismProps } from "./authenticated.types";
 
 // STYLES
 import {
   container,
   ContainerRow,
   contentListItem,
-} from "./main-container.styles";
+} from "./authenticated.styles";
 
 const MediaQueries = {
   [responsive("tablet")]: {
@@ -35,56 +36,48 @@ const MediaQueries = {
   },
 };
 
-type MainContainerOrganismProps = {
-  onLogout: () => mixed,
-};
-
-function MainContainerOrganism({ onLogout }: MainContainerOrganismProps): Node {
+function AuthenticatedOrganism({ onLogout }: AuthenticatedOrganismProps): Node {
   const spotifyService = SpotifyService.getInstance();
   const sliderService = SliderService.getInstance();
   const databaseService = DatabaseService.getInstance();
 
-  function playlistsUI(playlists: Playlist[]): Node {
+  function getPlaylistsUI(playlists: Playlist[]): Node {
     const formattedPlaylists = playlists.map((p) => ({
       name: p.name,
       image: p.images[0].url,
     }));
 
-    return (
-      <ul style={{ display: "flex", flexWrap: "wrap", overflow: "scroll" }}>
-        {formattedPlaylists.map((p) => (
-          <li css={[contentListItem]} key={uuidv4()}>
-            <SongMolecule data={p} mode="photo" />
-          </li>
-        ))}
-      </ul>
-    );
+    return <PlaylistContainerMolecule list={formattedPlaylists} />;
   }
 
-  async function addProfileSlide() {
-    let profileData: Promise<DbProfile | void> = await databaseService.getProfileData();
-    let userPlaylists: Promise<{
-      items: Playlist[],
-    } | void> = await spotifyService.getPlaylists();
-
-    // const content = await Promise.all([
-    //   (profileData = ),
-    //   (userPlaylists = await spotifyService.getPlaylists()),
-    // ]);
-
-    const slideContent: SlideContent = {
+  function getSlideContent(
+    profile: DbProfile,
+    playlists: Playlist[]
+  ): SlideContent {
+    return {
       data: {
-        title: profileData.name,
-        photo: profileData.photo,
+        title: profile.name,
+        photo: profile.photo,
         genres: [], //TODO: Get them from playlists
       },
       content: {
         title: "Playlists",
-        listUI: playlistsUI(userPlaylists.items),
+        listUI: getPlaylistsUI(playlists.items),
       },
       menu: ["Playlists"],
     };
+  }
 
+  async function addProfileSlide() {
+    const profileData: Promise<DbProfile | void> = await databaseService.getProfileData();
+    const userPlaylists: Promise<{
+      items: Playlist[],
+    } | void> = await spotifyService.getPlaylists();
+
+    const slideContent: SlideContent = getSlideContent(
+      profileData,
+      userPlaylists
+    );
     sliderService.addSlide(slideContent);
   }
 
@@ -112,10 +105,10 @@ function MainContainerOrganism({ onLogout }: MainContainerOrganismProps): Node {
       </ContainerRow>
 
       <ContainerRow>
-        <FooterOrganism />
+        <MusicControllerOrganism />
       </ContainerRow>
     </main>
   );
 }
 
-export default MainContainerOrganism;
+export default AuthenticatedOrganism;

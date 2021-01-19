@@ -3,7 +3,7 @@ import React from "react"; // eslint-disable-line
 import type { ComponentType } from "react"; // eslint-disable-line
 // $FlowIgnore
 import styled from "@emotion/styled";
-import type { ContainerRowProps, DivProps } from "./main-container.types";
+import type { ContainerRowProps, DivProps } from "./authenticated.types";
 
 const Div = ({ className, content, text, children, ...props }: DivProps) => (
   <div {...props} className={className}>
@@ -37,12 +37,4 @@ export const container: string = `
   height: 100%;
   position: relative;
   width: 100%;
-`;
-
-export const contentListItem: string = `
-  margin-bottom: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  flex: 1;
-  position: relative;
 `;

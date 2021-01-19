@@ -13,7 +13,7 @@ import {
   ThemeContainerService,
 } from "./theme-container.state";
 import { getChildrenStateName, getIfExistOnStorage } from "utils/helpers";
-import ThemeMenuMolecule from "./main-container/theme-menu/theme-menu.molecule";
+import ThemeMenuMolecule from "../authenticated/theme-menu/theme-menu.molecule";
 
 // STYLES
 import { themeContainer } from "./theme-container.styles";
@@ -26,9 +26,9 @@ function ThemeContainerOrganism(props: ThemeContainerOrganismProps): Node {
   const [state, send] = useService(ThemeContainerService);
 
   useEffect(() => {
-    const persistedState = getIfExistOnStorage("themeState");
-
     send("RENDER");
+
+    const persistedState = getIfExistOnStorage("themeState");
 
     if (persistedState && typeof persistedState === "string") {
       const newThemeEvent = `CHANGE_TO_${persistedState.toUpperCase()}`;

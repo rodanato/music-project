@@ -27,7 +27,7 @@ function SliderOrganism(): Node {
   useEffect(() => {
     sliderService.createSwiper();
     sliderService.swiper.init();
-  }, []);
+  }, [sliderService]);
 
   return (
     <section css={[slider]}>

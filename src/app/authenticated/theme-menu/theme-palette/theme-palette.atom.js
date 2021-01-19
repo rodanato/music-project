@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useService } from "@xstate/react";
 
 // DEPENDENCIES
-import { ThemeContainerStateContext } from "../../../theme-container.state";
+import { ThemeContainerStateContext } from "../../../theme-container/theme-container.state";
 import { getChildrenStateName } from "utils/helpers";
 
 // STYLES

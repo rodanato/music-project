@@ -1,7 +1,7 @@
 // @flow
 import { Machine, interpret } from "xstate";
-import { ThemePaletteState } from "./main-container/theme-menu/theme-palette/theme-palette.state";
-import { ThemeMenuState } from "./main-container/theme-menu/theme-menu.state";
+import { ThemePaletteState } from "../authenticated/theme-menu/theme-palette/theme-palette.state";
+import { ThemeMenuState } from "../authenticated/theme-menu/theme-menu.state";
 import React from "react";
 import { persistState, getChildrenStateName } from "utils/helpers";
 import type { Context } from "react";

@@ -1,4 +1,5 @@
 // @flow
+
 // EXTERNAL
 import React from "react"; // eslint-disable-line
 import type { Node } from "react"; // eslint-disable-line
@@ -9,10 +10,10 @@ import { jsx, css } from "@emotion/core"; // eslint-disable-line
 // DEPENDENCIES
 
 // STYLES
-import { footer } from "./footer.styles";
+import { musicController } from "./music-controller.styles";
 
-function FooterOrganism(): Node {
-  return <footer css={[footer]}></footer>;
+function MusicControllerOrganism(): Node {
+  return <section css={[musicController]}></section>;
 }
 
-export default FooterOrganism;
+export default MusicControllerOrganism;
