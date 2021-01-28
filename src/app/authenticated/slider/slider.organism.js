@@ -1,15 +1,18 @@
 // @flow
 // EXTERNAL
-import React, { useEffect, Suspense, useState } from "react"; // eslint-disable-line
+import React, { useEffect, useState } from "react"; // eslint-disable-line
 import type { Node } from "react";
 // $FlowIgnore
 /** @jsx jsx */ import { jsx, css } from "@emotion/core"; // eslint-disable-line
+import { useService } from "@xstate/react";
 
 // DEPENDENCIES
+import SliderService from "services/slider.service";
+import { SliderStateService } from "app/authenticated/slider/slider.state";
 import NavigationOrganism from "../navigation/navigation.organism";
 import SliderNavigationMolecule from "./slider-navigation/slider-navigation.molecule";
+import useProfileSlide from "../use-profile-slide";
 import SwiperContainerOrganism from "./swiper-container/swiper-container.organism";
-import SliderService from "services/slider/slider.service";
 
 // STYLES
 // $FlowIgnore
@@ -18,25 +21,42 @@ import { slider } from "./slider.styles";
 
 function SliderOrganism(): Node {
   const sliderService = SliderService.getInstance();
-  const [, forceRender] = React.useState();
+  const [state, send] = useService(SliderStateService);
+  const list = state.context.list;
+  const { getProfileSlideContent } = useProfileSlide();
 
-  document.addEventListener("slideListUpdated", () => {
-    forceRender({});
-  });
+  async function addSlide() {
+    if (list.length > 0) sliderService.addEmptySlide();
+    const profileContent = await getProfileSlideContent();
+    send("ADD_SLIDE", { slide: profileContent });
+  }
+
+  if (state.matches("started")) {
+    addSlide();
+  }
 
   useEffect(() => {
-    sliderService.createSwiper();
-    sliderService.swiper.init();
-  }, [sliderService]);
+    if (state.matches("notstarted")) {
+      send("START");
+    }
+
+    if (list.length > 0) sliderService.addSlideUpdates();
+  }, [list]);
 
   return (
     <section css={[slider]}>
-      <SwiperContainerOrganism slideList={sliderService.slideList} />
+      <button
+        onClick={async () => {
+          addSlide();
+        }}
+      >
+        GET PROFILE
+      </button>
+
+      <SwiperContainerOrganism slideList={list} />
 
       <NavigationOrganism>
-        <SliderNavigationMolecule
-          slideListLength={sliderService.slideList.length}
-        />
+        <SliderNavigationMolecule slideListLength={list.length} />
       </NavigationOrganism>
     </section>
   );

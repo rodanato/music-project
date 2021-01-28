@@ -25,6 +25,7 @@ export interface ThemeContainerStateSchema {
 
 export type ThemeContainerEvent =
   | { type: string }
+  | { type: "CHANGE_TO_DARK" }
   | { type: "CHANGE_TO_BLUE" }
   | { type: "CHANGE_TO_GREEN" }
   | { type: "CHANGE_TO_PINK" }
@@ -65,6 +66,10 @@ export const ThemeContainerState: StateMachine<
           spotify: {},
         },
         on: {
+          CHANGE_TO_DARK: {
+            target: "rendered.dark",
+            actions: ["persist"],
+          },
           CHANGE_TO_BLUE: {
             target: "rendered.blue",
             actions: ["persist"],
@@ -102,8 +107,8 @@ export const ThemeContainerState: StateMachine<
   }
 );
 
-export const ThemeContainerService = interpret(ThemeContainerState);
-ThemeContainerService.start();
+export const ThemeContainerStateService = interpret(ThemeContainerState);
+ThemeContainerStateService.start();
 
 export const ThemeContainerStateContext: Context<any> = React.createContext<any>(
   null

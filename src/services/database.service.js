@@ -2,9 +2,13 @@
 import SpotifyService from "services/spotify.service";
 import AuthService from "services/auth.service";
 import { db } from "config/firebase";
-import type { DbProfile, SpotifyProfile } from "shared/types/spotify.types";
+import type {
+  DbProfile,
+  SpotifyProfile,
+  Playlists,
+} from "shared/types/spotify.types";
 import { handleError } from "utils/helpers";
-import { ThemeContainerService } from "app/theme-container/theme-container.state";
+import { ThemeContainerStateService } from "app/theme-container/theme-container.state";
 
 class DatabaseService {
   static instance: DatabaseService;
@@ -24,7 +28,7 @@ class DatabaseService {
     this.authService = AuthService.getInstance();
   }
 
-  spotifyProfileToDBProfile(data: SpotifyProfile): DbProfile {
+  adaptSpotifyProfileToDBProfile(data: SpotifyProfile): DbProfile {
     return {
       name: data.display_name,
       email: data.email,
@@ -33,8 +37,7 @@ class DatabaseService {
     };
   }
 
-  async getFromFirestore(): Promise<DbProfile | void> {
-    // console.log(">>> currentUser", this.authService.firebaseUser);
+  async getProfileFromDB(): Promise<DbProfile | void> {
     const email = this.authService.firebaseUser.email;
 
     try {
@@ -42,80 +45,127 @@ class DatabaseService {
       const users = await db.collection("users").get();
       users.forEach(function(doc) {
         if (doc.data().email === email) {
-          console.log(doc.id, " => ", doc.data());
           response = doc.data();
         }
       });
       return response;
     } catch (error) {
-      handleError("spa:databaseService:getFromFirestore", error);
+      handleError("spa:databaseService:getProfileFromDB", error);
     }
   }
 
-  async getProfileData(): Promise<DbProfile | void> {
-    // if (indexedDB) return profileData
+  async getPlaylistsFromDB(): Promise<Playlists | void> {
+    const id = this.authService.firebaseUser.uid;
 
-    // If profile exists on DB
-    const profileOnDB: DbProfile = await this.getFromFirestore();
-    if (profileOnDB && profileOnDB.email) {
-      this.spotifyService.userInfo = profileOnDB;
-      console.log(">>> is on DB");
-
-      if (ThemeContainerService.state.value.rendered !== profileOnDB.theme) {
-        const newThemeEvent = `CHANGE_TO_${profileOnDB.theme.toUpperCase()}`;
-        ThemeContainerService.send(newThemeEvent);
-      }
-
-      return profileOnDB;
-    }
-
-    // If not, get it from Spotify API
-    // if (spotify.getProfile) return profileData
     try {
-      console.log(">>> getting from spotify and save");
-      let profileData: SpotifyProfile | void = await this.spotifyService.getProfile();
+      let response: Playlists;
+
+      await db
+        .collection("playlists")
+        .doc(id)
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            response = doc.data();
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        });
+
+      return response;
+    } catch (error) {
+      handleError("spa:databaseService:getPlaylistsFromDB", error);
+    }
+  }
+
+  updatesBasedOnProfileConfig(profileOnDB: SpotifyProfile): void {
+    this.spotifyService.userInfo = profileOnDB;
+    const currentTheme = ThemeContainerStateService.state.value.rendered;
+
+    if (currentTheme !== profileOnDB.theme) {
+      const newThemeEvent = `CHANGE_TO_${profileOnDB.theme.toUpperCase()}`;
+      ThemeContainerStateService.send(newThemeEvent);
+    }
+  }
+
+  async getProfileFromSpotify(): Promise<DbProfile | void> {
+    try {
+      const profileData: SpotifyProfile | void = await this.spotifyService.getProfile();
+
       if (profileData) {
-        const dbProfile = this.spotifyProfileToDBProfile(profileData);
+        const dbProfile = this.adaptSpotifyProfileToDBProfile(profileData);
         this.saveProfileOnDB(dbProfile);
         return dbProfile;
       }
     } catch (e) {
-      handleError(e, "spa:databaseService:getProfileData");
+      handleError(e, "spa:databaseService:getProfileFromSpotify");
+      // FIXME: On unauthorized response send user to logout
     }
-
-    // sync both DBs async
   }
 
-  getUserPlaylists() {
-    /*
-      if (indexedDB) return UserPlaylists
-      if not firestore.getUserPlaylists
-      sync both DBs
-      return UserPlaylists
-    */
+  async getPlaylistsFromSpotify(): Promise<Playlists | void> {
+    try {
+      console.log(">>> getting playlists from spotify and save");
+      const playlists: Playlists | void = await this.spotifyService.getPlaylists();
+
+      if (playlists) {
+        this.savePlaylistsOnDB(playlists);
+        return playlists;
+      }
+    } catch (e) {
+      handleError(e, "spa:databaseService:getPlaylistsFromSpotify");
+      // FIXME: On unauthorized response send user to logout
+    }
+  }
+
+  async getProfileData(): Promise<DbProfile | void> {
+    const profileOnDB: DbProfile = await this.getProfileFromDB();
+
+    if (profileOnDB?.email) {
+      this.updatesBasedOnProfileConfig(profileOnDB);
+      return profileOnDB;
+    }
+
+    return this.getProfileFromSpotify();
+  }
+
+  async getUserPlaylists() {
+    const playlistsOnDB: Playlists = await this.getPlaylistsFromDB();
+
+    return playlistsOnDB ? playlistsOnDB : this.getPlaylistsFromSpotify();
   }
 
   saveProfileOnDB(data: DbProfile) {
     const newUserData = {
       ...data,
-      theme: ThemeContainerService.state.value.rendered,
+      theme: ThemeContainerStateService.state.value.rendered,
     };
 
     db.collection("users")
       .doc(this.authService.firebaseUser.uid)
       .set(newUserData)
-      // .then(function(docRef) {
-      //   console.log("Document written with ID: ", docRef.id);
-      // })
       .catch(function(error) {
-        console.error("Error adding document: ", error);
+        console.error("spa:databaseService:saveProfileOnDB", error);
+      });
+  }
+
+  savePlaylistsOnDB(data: Playlists) {
+    db.collection("playlists")
+      .doc(this.authService.firebaseUser.uid)
+      .set(data)
+      .catch(function(error) {
+        console.error("spa:databaseService:savePlaylistsOnDB", error);
       });
   }
 
   updateProfileOnDB(key: string, value: string) {
     db.collection("users")
       .doc(this.authService.firebaseUser.uid)
-      .update({ [key]: value });
+      .update({ [key]: value })
+      .catch(function(error) {
+        console.error("spa:databaseService:updateProfileOnDB ", error);
+      });
   }
 }
 

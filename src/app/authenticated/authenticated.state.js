@@ -98,7 +98,7 @@ export const AuthenticatedState: StateMachine<
   {
     actions: {
       handleError: (_ctx, e: any) => {
-        handleError({ message: e.data }, "spa:authentication");
+        handleError({ message: e.data }, "spa:authenticatedState");
       },
       spotifyLogin: () => {
         const spotifyService = SpotifyService.getInstance();

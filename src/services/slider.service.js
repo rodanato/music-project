@@ -1,6 +1,6 @@
 // @flow
 import Swiper from "swiper";
-import type { SlideContent } from "shared/types/slide.types";
+import { SliderStateService } from "app/authenticated/slider/slider.state";
 
 class SliderService {
   static instance: SliderService;
@@ -37,37 +37,41 @@ class SliderService {
       },
     },
   };
-  _slideList: any[] = [];
-
-  set slideList(list) {
-    this._slideList = list;
-    document.dispatchEvent(new CustomEvent("slideListUpdated"));
-  }
-
-  get slideList(): any {
-    return this._slideList;
-  }
 
   createSwiper() {
     this.swiper = new Swiper(".swiper-container", this.swiperConfig);
 
     this.swiper.on("init", () => {
-      const $swiperPagination = document.querySelector(".swiper-pagination");
-      const $bullets: any = $swiperPagination?.querySelectorAll(
-        ".mpp-nav-bullet"
-      );
+      SliderStateService.send("STARTED");
+    });
 
-      Array.from($bullets).forEach((b: any, i: number) => {
-        b.innerHTML = `Demo text ${this.slideList[i]}`;
-        b.title = `Demo text ${this.slideList[i]}`;
-      });
+    this.swiper.init();
+  }
+
+  onInit(list: any) {
+    const $swiperPagination = document.querySelector(".swiper-pagination");
+    const $bullets: any = $swiperPagination?.querySelectorAll(
+      ".mpp-nav-bullet"
+    );
+
+    Array.from($bullets).forEach((b: any, i: number) => {
+      b.innerHTML = `Demo text ${list[i]}`;
+      b.title = `Demo text ${list[i]}`;
     });
   }
 
-  addSlide(slideContent: SlideContent) {
-    this.slideList = [...this.slideList, slideContent];
+  addEmptySlide() {
+    this.swiper.appendSlide('<div class="swiper-slide"></div>');
+    const lastSlideIndex = this.swiper.slides.length - 1;
+    this.swiper.slideTo(lastSlideIndex);
+  }
+
+  addSlideUpdates() {
+    const lastSlideIndex = this.swiper.slides.length - 1;
+    this.swiper.removeSlide(lastSlideIndex);
     this.swiper.update();
-    this.swiper.slideNext();
+    this.swiper.slideTo(lastSlideIndex);
+    SliderStateService.send("GO_TO_IDLE");
   }
 }
 export default SliderService;

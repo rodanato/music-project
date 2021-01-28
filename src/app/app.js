@@ -38,18 +38,16 @@ function App(): Node {
 
   return (
     <Fragment>
-      <React.StrictMode>
-        <Global
-          styles={css`
-            ${reset}
-            ${themeStyles}
-            ${typography}      
-            ${globalClasses}
-          `}
-        />
+      <Global
+        styles={css`
+          ${reset}
+          ${themeStyles}
+          ${typography}      
+          ${globalClasses}
+        `}
+      />
 
-        {authRender()}
-      </React.StrictMode>
+      {authRender()}
     </Fragment>
   );
 }

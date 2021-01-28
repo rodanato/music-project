@@ -8,8 +8,7 @@ import {
 } from "utils/helpers";
 import { apiUrl } from "utils/helpers";
 // import { db } from "./firebase/config";
-import type { Playlist } from "shared/types/slide.types";
-import type { Profile } from "shared/types/spotify.types";
+import type { Profile, Playlist } from "shared/types/spotify.types";
 
 type setCodeResponse = {
   access_token: string,

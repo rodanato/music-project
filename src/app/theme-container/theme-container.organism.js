@@ -10,7 +10,7 @@ import type { Node } from "react";
 // DEPENDENCIES
 import {
   ThemeContainerStateContext,
-  ThemeContainerService,
+  ThemeContainerStateService,
 } from "./theme-container.state";
 import { getChildrenStateName, getIfExistOnStorage } from "utils/helpers";
 import ThemeMenuMolecule from "../authenticated/theme-menu/theme-menu.molecule";
@@ -23,7 +23,7 @@ type ThemeContainerOrganismProps = {
 };
 
 function ThemeContainerOrganism(props: ThemeContainerOrganismProps): Node {
-  const [state, send] = useService(ThemeContainerService);
+  const [state, send] = useService(ThemeContainerStateService);
 
   useEffect(() => {
     send("RENDER");
