@@ -1,6 +1,7 @@
 // @flow
 // EXTERNAL
 import React, { Fragment, useState, useEffect } from "react"; // eslint-disable-line
+import { useQuery } from "react-query";
 
 // DEPENDENCIES
 import type { Node } from "react"; // eslint-disable-line
@@ -50,9 +51,12 @@ function useProfileSlide(): {
     return getSlideContent(profileData, userPlaylists);
   }
 
-  return {
-    getProfileSlideContent,
-  };
+  const { isLoading, isError, data, error } = useQuery(
+    "profileSlideContent",
+    () => getProfileSlideContent()
+  );
+
+  return { isLoading, isError, data, error };
 }
 
 export default useProfileSlide;

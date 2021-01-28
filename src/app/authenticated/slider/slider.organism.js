@@ -23,12 +23,11 @@ function SliderOrganism(): Node {
   const sliderService = SliderService.getInstance();
   const [state, send] = useService(SliderStateService);
   const list = state.context.list;
-  const { getProfileSlideContent } = useProfileSlide();
+  const { isLoading, isError, data, error } = useProfileSlide();
 
   async function addSlide() {
     if (list.length > 0) sliderService.addEmptySlide();
-    const profileContent = await getProfileSlideContent();
-    send("ADD_SLIDE", { slide: profileContent });
+    if (data) send("ADD_SLIDE", { slide: data });
   }
 
   if (state.matches("started")) {
@@ -39,7 +38,9 @@ function SliderOrganism(): Node {
     if (state.matches("notstarted")) {
       send("START");
     }
+  }, []);
 
+  useEffect(() => {
     if (list.length > 0) sliderService.addSlideUpdates();
   }, [list]);
 
