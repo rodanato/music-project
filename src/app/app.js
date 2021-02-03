@@ -6,7 +6,6 @@ import type { Node } from "react"; // eslint-disable-line
 /** @jsx jsx */
 // $FlowIgnore
 import { Global, jsx, css } from "@emotion/core";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 // DEPENDENCIES
 import reset from "config/reset";
@@ -19,8 +18,6 @@ import LoadingAtom from "shared/loading/loading.atom";
 import useAuthentication from "./authenticated/use-authentication";
 import AuthenticatedOrganism from "./authenticated/authenticated.organism";
 
-const queryClient = new QueryClient();
-
 function App(): Node {
   const { authState, login, logout } = useAuthentication();
 
@@ -29,9 +26,7 @@ function App(): Node {
       case "loggedIn":
         return (
           <ThemeContainerOrganism>
-            <QueryClientProvider client={queryClient}>
-              <AuthenticatedOrganism onLogout={() => logout()} />
-            </QueryClientProvider>
+            <AuthenticatedOrganism onLogout={() => logout()} />
           </ThemeContainerOrganism>
         );
       case "loggedOut":

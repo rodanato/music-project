@@ -85,5 +85,6 @@ export const SliderState: StateMachine<
     },
   }
 );
-
+console.log(1);
 export const SliderStateService = interpret(SliderState).start();
+console.log(2);

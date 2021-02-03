@@ -1,4 +1,5 @@
 // @flow
 export type ProfileProps = {
-  imageName: string
-}
+  imageName: string,
+  onClickAction: Function,
+};

@@ -4,7 +4,6 @@ import React, { useEffect, Fragment } from "react"; // eslint-disable-line
 /** @jsx jsx */
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
-// import { QueryClient, QueryClientProvider } from "react-query";
 
 // DEPENDENCIES
 import type { Node } from "react";
@@ -13,10 +12,10 @@ import { responsive } from "utils/responsive";
 import MusicControllerOrganism from "./music-controller/music-controller.organism";
 import HeaderOrganism from "./header/header.organism";
 import SliderOrganism from "./slider/slider.organism";
+import DatabaseService from "services/database.service";
 
 // STYLES
 import { container, ContainerRow } from "./authenticated.styles";
-// const queryClient = new QueryClient();
 
 const MediaQueries = {
   [responsive("tablet")]: {
@@ -27,9 +26,13 @@ const MediaQueries = {
   },
 };
 
-// const SliderOrganism = React.lazy(() => import("./slider/slider.organism"));
-
 function AuthenticatedOrganism({ onLogout }: AuthenticatedOrganismProps): Node {
+  const databaseService = DatabaseService.getInstance();
+
+  useEffect(() => {
+    databaseService.saveLoginTime();
+  }, []);
+
   return (
     <main css={[container]}>
       <ContainerRow css={MediaQueries}>
@@ -38,9 +41,7 @@ function AuthenticatedOrganism({ onLogout }: AuthenticatedOrganismProps): Node {
       </ContainerRow>
 
       <ContainerRow content>
-        {/* <QueryClientProvider client={queryClient}> */}
         <SliderOrganism />
-        {/* </QueryClientProvider> */}
       </ContainerRow>
 
       <ContainerRow>

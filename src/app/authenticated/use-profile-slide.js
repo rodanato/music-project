@@ -1,7 +1,6 @@
 // @flow
 // EXTERNAL
 import React, { Fragment, useState, useEffect } from "react"; // eslint-disable-line
-import { useQuery } from "react-query";
 
 // DEPENDENCIES
 import type { Node } from "react"; // eslint-disable-line
@@ -14,6 +13,8 @@ function useProfileSlide(): {
   getProfileSlideContent: Function,
 } {
   const databaseService = DatabaseService.getInstance();
+  const [state, setState] = useState("notStarted");
+  const [profileData, setData] = useState();
 
   function getPlaylistsUI(playlists: Playlist[]): Node {
     const formattedPlaylists = playlists.map((p) => ({
@@ -48,15 +49,25 @@ function useProfileSlide(): {
       items: Playlist[],
     } | void> = await databaseService.getUserPlaylists();
 
-    return getSlideContent(profileData, userPlaylists);
+    setData(getSlideContent(profileData, userPlaylists));
   }
 
-  const { isLoading, isError, data, error } = useQuery(
-    "profileSlideContent",
-    () => getProfileSlideContent()
-  );
+  useEffect(() => {
+    if (state === "isLoading" && profileData) {
+      setState("done");
+      setData(null);
+    }
 
-  return { isLoading, isError, data, error };
+    if (state === "isLoading" && !profileData) {
+      getProfileSlideContent();
+    }
+  }, [state, profileData]);
+
+  useEffect(() => {
+    setState("isLoading");
+  }, []);
+
+  return { profileData, state };
 }
 
 export default useProfileSlide;

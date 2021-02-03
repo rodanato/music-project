@@ -7,8 +7,12 @@ import type {
   SpotifyProfile,
   Playlists,
 } from "shared/types/spotify.types";
-import { handleError } from "utils/helpers";
 import { ThemeContainerStateService } from "app/theme-container/theme-container.state";
+import {
+  handleError,
+  getIfExistOnStorage,
+  persistOnLocalStorage,
+} from "utils/helpers";
 
 class DatabaseService {
   static instance: DatabaseService;
@@ -22,6 +26,11 @@ class DatabaseService {
 
   authService: AuthService;
   spotifyService: SpotifyService;
+  hoursToRefetch = {
+    playlists: 0,
+  };
+  firstLogin: boolean = false;
+  loginTime: String;
 
   constructor() {
     this.spotifyService = SpotifyService.getInstance();
@@ -54,8 +63,9 @@ class DatabaseService {
     }
   }
 
-  async getPlaylistsFromDB(): Promise<Playlists | void> {
+  async getPlaylistsFromDB(): Promise<Playlists | mixed> {
     const id = this.authService.firebaseUser.uid;
+    console.log("playlists fromDB");
 
     try {
       let response: Playlists;
@@ -105,18 +115,23 @@ class DatabaseService {
   }
 
   async getPlaylistsFromSpotify(): Promise<Playlists | void> {
-    try {
-      console.log(">>> getting playlists from spotify and save");
-      const playlists: Playlists | void = await this.spotifyService.getPlaylists();
+    console.log("playlists fromSpotify");
 
-      if (playlists) {
-        this.savePlaylistsOnDB(playlists);
-        return playlists;
-      }
-    } catch (e) {
-      handleError(e, "spa:databaseService:getPlaylistsFromSpotify");
-      // FIXME: On unauthorized response send user to logout
+    let allPlaylists = [];
+    const firstGroup = await this.spotifyService.getPlaylists(0);
+    const playlistsPromises = [];
+    const totalCalls = Math.ceil(firstGroup.total / firstGroup.limit);
+
+    for (let i = 1; i < totalCalls; i++) {
+      playlistsPromises.push(this.spotifyService.getPlaylists(i * 20));
     }
+
+    const res = await Promise.all(playlistsPromises);
+    allPlaylists = [...firstGroup.items, ...res.flatMap((p) => p.items)];
+
+    const playlists = { ...firstGroup, items: allPlaylists };
+    this.savePlaylistsOnDB(playlists);
+    return playlists;
   }
 
   async getProfileData(): Promise<DbProfile | void> {
@@ -130,10 +145,25 @@ class DatabaseService {
     return this.getProfileFromSpotify();
   }
 
-  async getUserPlaylists() {
-    const playlistsOnDB: Playlists = await this.getPlaylistsFromDB();
+  timeHasExpiredFor(feature: string): boolean {
+    return (
+      (Date.now() - this.loginTime) / (3600 * 1000) >
+      this.hoursToRefetch[feature]
+    );
+  }
 
-    return playlistsOnDB ? playlistsOnDB : this.getPlaylistsFromSpotify();
+  saveLoginTime() {
+    this.firstLogin = true;
+    this.loginTime = Date.now();
+  }
+
+  async getUserPlaylists(): Promise<Playlist | void> {
+    if (this.firstLogin || this.timeHasExpiredFor("playlists")) {
+      this.firstLogin = false;
+      return await this.getPlaylistsFromSpotify();
+    }
+
+    return await this.getPlaylistsFromDB();
   }
 
   saveProfileOnDB(data: DbProfile) {

@@ -8,7 +8,7 @@ import {
 } from "utils/helpers";
 import { apiUrl } from "utils/helpers";
 // import { db } from "./firebase/config";
-import type { Profile, Playlist } from "shared/types/spotify.types";
+import type { Profile, Playlists } from "shared/types/spotify.types";
 
 type setCodeResponse = {
   access_token: string,
@@ -152,10 +152,11 @@ class SpotifyService {
     }
   }
 
-  async getPlaylists(): Promise<{ items: Playlist[] } | void> {
+  async getPlaylists(offset: number): Promise<Playlists | void> {
     try {
       const playlists = await this.spotifyApi.getUserPlaylists(
-        this.userInfo.spotifyId
+        this.userInfo.spotifyId,
+        { offset: offset }
       );
       return playlists;
     } catch (e) {
@@ -168,7 +169,7 @@ class SpotifyService {
     window.location = redirecUrl;
   }
 
-  // TODO: Think of a better strategy to keep user session active without making it eternal
+  // TODO: Think of a better strategy to keep user session active without making it eternal. Maybe refresh session option like adobe
   cleanExpirationTimeout() {
     clearTimeout(this.expirationTimeout);
   }
@@ -225,10 +226,6 @@ class SpotifyService {
   //   handleError(error, "spa:spotify");
   // }
 
-  // getPlaylist() {}
-
-  // savePlaylist() {}
-
   // getArtists() {}
 
   // saveArtists() {}
@@ -240,7 +237,5 @@ class SpotifyService {
   // getListenLater() {}
 
   // saveListenLater() {}
-
-  // getThemePreferences() {}
 }
 export default SpotifyService;
