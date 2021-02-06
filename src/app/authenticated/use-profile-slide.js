@@ -5,10 +5,14 @@ import React, { Fragment, useState, useEffect } from "react"; // eslint-disable-
 // DEPENDENCIES
 import type { Node } from "react"; // eslint-disable-line
 import type { SlideContent } from "shared/types/slide.types";
-import type { DbProfile, Playlists } from "shared/types/spotify.types";
+import type {
+  DbProfile,
+  Playlist,
+  PlaylistsDetail,
+} from "shared/types/spotify.types";
 import DatabaseService from "services/database.service";
 import PlaylistContainerMolecule from "shared/playlist-container/playlist-container.molecule";
-import { useQuery, refetchInterval } from "react-query";
+import { useQuery } from "react-query";
 import { useService } from "@xstate/react";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
 
@@ -18,16 +22,12 @@ function useProfileSlide(): {
   const databaseService = DatabaseService.getInstance();
   const [state] = useService(SliderStateService);
   const playlistRefetchTime = state.context.hoursToRefetch.playlists;
-  const { isLoading, isError, data, error } = useQuery(
-    "profileSlide",
-    getProfileSlideContent,
-    {
-      refetchInterval: playlistRefetchTime,
-    }
-  );
+  const { data } = useQuery("profileSlide", getProfileSlideContent, {
+    refetchInterval: playlistRefetchTime,
+  });
 
-  function getPlaylistsUI(playlists: Playlist[]): Node {
-    const formattedPlaylists = playlists.map((p) => ({
+  function getPlaylistsUI(playlistsItems: Playlist[]): Node {
+    const formattedPlaylists = playlistsItems.map((p) => ({
       name: p.name,
       image: p.images[0].url,
     }));
@@ -37,7 +37,7 @@ function useProfileSlide(): {
 
   function getSlideContent(
     profile: DbProfile,
-    playlists: Playlists
+    playlistsItems: Playlist[]
   ): SlideContent {
     return {
       data: {
@@ -47,19 +47,19 @@ function useProfileSlide(): {
       },
       content: {
         title: "Playlists",
-        listUI: getPlaylistsUI(playlists.items),
+        listUI: getPlaylistsUI(playlistsItems),
       },
       menu: ["Playlists"],
     };
   }
 
   async function getProfileSlideContent() {
-    const profileData: Promise<DbProfile | void> = await databaseService.getProfileData();
-    const userPlaylists: Promise<{
-      items: Playlists,
-    } | void> = await databaseService.getUserPlaylists();
+    const profileData: ?DbProfile = await databaseService.getProfileData();
+    const playlistDetail: ?PlaylistsDetail = await databaseService.getUserPlaylists();
 
-    return getSlideContent(profileData, userPlaylists);
+    if (!profileData || !playlistDetail) return;
+
+    return getSlideContent(profileData, playlistDetail.items);
   }
 
   return { data };

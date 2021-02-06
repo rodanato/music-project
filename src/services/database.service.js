@@ -5,15 +5,12 @@ import { db } from "config/firebase";
 import type {
   DbProfile,
   SpotifyProfile,
-  Playlists,
+  Playlist,
+  PlaylistsDetail,
 } from "shared/types/spotify.types";
 import { ThemeContainerStateService } from "app/theme-container/theme-container.state";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
-import {
-  handleError,
-  getIfExistOnStorage,
-  persistOnLocalStorage,
-} from "utils/helpers";
+import { handleError } from "utils/helpers";
 
 class DatabaseService {
   static instance: DatabaseService;
@@ -41,53 +38,50 @@ class DatabaseService {
       email: data.email,
       photo: data.images[0].url,
       spotifyId: data.id,
+      theme: "",
     };
   }
 
-  async getProfileFromDB(): Promise<DbProfile | void> {
+  async getProfileFromDB(): Promise<?DbProfile> {
     const email = this.authService.firebaseUser.email;
 
     try {
-      let response: DbProfile;
+      // let response: DbProfile = {};
       const users = await db.collection("users").get();
       users.forEach(function(doc) {
         if (doc.data().email === email) {
-          response = doc.data();
+          return doc.data();
         }
       });
-      return response;
+      // return response;
     } catch (error) {
       handleError("spa:databaseService:getProfileFromDB", error);
     }
   }
 
-  async getPlaylistsFromDB(): Promise<Playlists | mixed> {
+  async getPlaylistsFromDB(): Promise<?PlaylistsDetail> {
     const id = this.authService.firebaseUser.uid;
     console.log("playlists fromDB");
 
     try {
-      let response: Playlists;
-
       await db
         .collection("playlists")
         .doc(id)
         .get()
         .then(function(doc) {
           if (doc.exists) {
-            response = doc.data();
+            return doc.data();
           } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
           }
         });
-
-      return response;
     } catch (error) {
       handleError("spa:databaseService:getPlaylistsFromDB", error);
     }
   }
 
-  updatesBasedOnProfileConfig(profileOnDB: SpotifyProfile): void {
+  updatesBasedOnProfileConfig(profileOnDB: DbProfile): void {
     this.spotifyService.userInfo = profileOnDB;
     const currentTheme = ThemeContainerStateService.state.value.rendered;
 
@@ -97,45 +91,69 @@ class DatabaseService {
     }
   }
 
-  async getProfileFromSpotify(): Promise<DbProfile | void> {
+  async getProfileFromSpotify(): Promise<?DbProfile> {
     try {
-      const profileData: SpotifyProfile | void = await this.spotifyService.getProfile();
+      const profileData: ?SpotifyProfile = await this.spotifyService.getProfile();
 
-      if (profileData) {
-        const dbProfile = this.adaptSpotifyProfileToDBProfile(profileData);
-        this.saveProfileOnDB(dbProfile);
-        return dbProfile;
-      }
+      if (!profileData) return;
+
+      const dbProfile: DbProfile = this.adaptSpotifyProfileToDBProfile(
+        profileData
+      );
+      this.saveProfileOnDB(dbProfile);
+      return dbProfile;
     } catch (e) {
       handleError(e, "spa:databaseService:getProfileFromSpotify");
       // FIXME: On unauthorized response send user to logout
     }
   }
 
-  async getPlaylistsFromSpotify(): Promise<Playlists | void> {
+  async getPlaylistsFromSpotify(): Promise<?PlaylistsDetail> {
     console.log("playlists fromSpotify");
 
-    let allPlaylists = [];
-    const firstGroup = await this.spotifyService.getPlaylists(0);
-    const playlistsPromises = [];
-    const totalCalls = Math.ceil(firstGroup.total / firstGroup.limit);
+    let allPlaylists: Array<Playlist> = [];
+    const playlistsFirstGroup: ?PlaylistsDetail = await this.spotifyService.getPlaylists(
+      0
+    );
+
+    if (!playlistsFirstGroup) return;
+
+    const playlistsPromises: Array<Promise<?PlaylistsDetail>> = [];
+    const totalCalls = Math.ceil(
+      playlistsFirstGroup.total / playlistsFirstGroup.limit
+    );
 
     for (let i = 1; i < totalCalls; i++) {
-      playlistsPromises.push(this.spotifyService.getPlaylists(i * 20));
+      const playlistGroup = this.spotifyService.getPlaylists(i * 20);
+      playlistsPromises.push(playlistGroup);
     }
 
-    const res = await Promise.all(playlistsPromises);
-    allPlaylists = [...firstGroup.items, ...res.flatMap((p) => p.items)];
+    const playlistsArray: Array<?PlaylistsDetail> = await Promise.all(
+      playlistsPromises
+    );
+    const playlistArray: ?(Playlist[]) = playlistsArray.flatMap(
+      (p: ?PlaylistsDetail): any => {
+        if (p) return p.items;
+      }
+    );
 
-    const playlists = { ...firstGroup, items: allPlaylists };
+    allPlaylists = [
+      ...playlistsFirstGroup.items,
+      ...(playlistArray ? playlistArray : []),
+    ];
+
+    const playlists = {
+      ...playlistsFirstGroup,
+      items: allPlaylists,
+    };
     this.savePlaylistsOnDB(playlists);
     return playlists;
   }
 
-  async getProfileData(): Promise<DbProfile | void> {
-    const profileOnDB: DbProfile = await this.getProfileFromDB();
+  async getProfileData(): Promise<?DbProfile> {
+    const profileOnDB: ?DbProfile = await this.getProfileFromDB();
 
-    if (profileOnDB?.email) {
+    if (profileOnDB) {
       this.updatesBasedOnProfileConfig(profileOnDB);
       return profileOnDB;
     }
@@ -155,7 +173,7 @@ class DatabaseService {
     this.loginTime = Date.now();
   }
 
-  async getUserPlaylists(): Promise<Playlist | void> {
+  async getUserPlaylists(): Promise<?PlaylistsDetail> {
     // if (this.firstLogin || this.timeHasExpiredFor("playlists")) {
     //   this.firstLogin = false;
     //   return await this.getPlaylistsFromSpotify();
@@ -179,7 +197,7 @@ class DatabaseService {
       });
   }
 
-  savePlaylistsOnDB(data: Playlists) {
+  savePlaylistsOnDB(data: PlaylistsDetail) {
     db.collection("playlists")
       .doc(this.authService.firebaseUser.uid)
       .set(data)

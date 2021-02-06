@@ -5,6 +5,7 @@ import { ThemeMenuState } from "../authenticated/theme-menu/theme-menu.state";
 import React from "react";
 import { persistState, getChildrenStateName } from "utils/helpers";
 import type { Context } from "react";
+import type { StateMachine, Interpreter } from "xstate";
 import DatabaseService from "services/database.service";
 
 export interface ThemeContainerStateSchema {
@@ -107,7 +108,15 @@ export const ThemeContainerState: StateMachine<
   }
 );
 
-export const ThemeContainerStateService = interpret(ThemeContainerState);
+export const ThemeContainerStateService: Interpreter<
+  any,
+  ThemeContainerStateSchema,
+  ThemeContainerEvent,
+  {
+    value: any,
+    context: any,
+  }
+> = interpret(ThemeContainerState);
 ThemeContainerStateService.start();
 
 export const ThemeContainerStateContext: Context<any> = React.createContext<any>(

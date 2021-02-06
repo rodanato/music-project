@@ -1,14 +1,13 @@
 // @flow
 
 import SpotifyWebApi from "spotify-web-api-js";
-import {
-  handleError,
-  getIfExistOnStorage,
-  persistOnLocalStorage,
-} from "utils/helpers";
+import { handleError, getFromStorage, persistOnStorage } from "utils/helpers";
 import { apiUrl } from "utils/helpers";
 // import { db } from "./firebase/config";
-import type { Profile, Playlists } from "shared/types/spotify.types";
+import type {
+  SpotifyProfile,
+  PlaylistsDetail,
+} from "shared/types/spotify.types";
 
 type setCodeResponse = {
   access_token: string,
@@ -52,16 +51,19 @@ class SpotifyService {
 
   constructor() {
     this.spotifyApi = new SpotifyWebApi();
-    const existingToken = getIfExistOnStorage("spotifyToken");
-    const existingRefreshToken = getIfExistOnStorage("spotifyRefreshToken");
-    const expirationDate = getIfExistOnStorage("expirationDate");
-    if (existingToken && typeof existingToken === "string") {
+    const existingToken: mixed = getFromStorage("spotifyToken");
+    const existingRefreshToken: mixed = getFromStorage("spotifyRefreshToken");
+    const expirationDate: mixed = getFromStorage("expirationDate");
+
+    if (typeof existingToken === "string") {
       this.token = existingToken;
     }
-    if (existingRefreshToken && typeof existingRefreshToken === "string") {
+
+    if (typeof existingRefreshToken === "string") {
       this.refreshToken = existingRefreshToken;
     }
-    if (expirationDate && typeof expirationDate === "string") {
+
+    if (typeof expirationDate === "string") {
       this.expirationDate = expirationDate;
       this.setTokenExpirationTimeout();
     }
@@ -89,7 +91,7 @@ class SpotifyService {
 
   set refreshToken(token: string) {
     this._refreshToken = token;
-    persistOnLocalStorage("spotifyRefreshToken", token);
+    persistOnStorage("spotifyRefreshToken", token);
   }
 
   get token(): string {
@@ -98,15 +100,15 @@ class SpotifyService {
 
   set token(token: string) {
     this.spotifyApi.setAccessToken(token);
-    persistOnLocalStorage("spotifyToken", token);
+    persistOnStorage("spotifyToken", token);
   }
 
-  get userInfo(): string {
+  get userInfo(): UserInfo {
     return this._userInfo;
   }
 
-  set userInfo(info: UserInfo): string {
-    return (this._userInfo = info);
+  set userInfo(info: UserInfo): void {
+    this._userInfo = info;
   }
 
   async getToken(code: string): Promise<string> {
@@ -137,9 +139,9 @@ class SpotifyService {
     return this.token;
   }
 
-  async getProfile(): Promise<Profile | void> {
+  async getProfile(): Promise<?SpotifyProfile> {
     try {
-      const profile = await this.spotifyApi.getMe();
+      const profile: SpotifyProfile = await this.spotifyApi.getMe();
       this.userInfo = {
         spotifyId: profile.id,
         name: profile.display_name,
@@ -152,9 +154,9 @@ class SpotifyService {
     }
   }
 
-  async getPlaylists(offset: number): Promise<Playlists | void> {
+  async getPlaylists(offset: number): Promise<?PlaylistsDetail> {
     try {
-      const playlists = await this.spotifyApi.getUserPlaylists(
+      const playlists: PlaylistsDetail = await this.spotifyApi.getUserPlaylists(
         this.userInfo.spotifyId,
         { offset: offset }
       );
@@ -179,7 +181,7 @@ class SpotifyService {
   }
 
   persistExpirationDate() {
-    persistOnLocalStorage("expirationDate", this.expirationDate);
+    persistOnStorage("expirationDate", this.expirationDate);
   }
 
   setTokenExpirationTimeout() {

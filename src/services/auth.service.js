@@ -2,8 +2,8 @@
 import {
   handleError,
   apiUrl,
-  persistOnLocalStorage,
-  getIfExistOnStorage,
+  persistOnStorage,
+  getFromStorage,
 } from "utils/helpers";
 import { auth } from "config/firebase";
 import SpotifyService from "./spotify.service";
@@ -13,9 +13,9 @@ type AuthUrls = {
 };
 
 type FirebaseUser = {
-  displayName: string,
-  email: string,
-  uid: string,
+  +displayName: string,
+  +email: string,
+  +uid: string,
 };
 
 class AuthService {
@@ -36,8 +36,9 @@ class AuthService {
   constructor() {
     this.spotifyService = SpotifyService.getInstance();
 
-    const signedInFirebaseUser = getIfExistOnStorage("firebaseUser");
-    if (signedInFirebaseUser && typeof signedInFirebaseUser === "object") {
+    const signedInFirebaseUser: Object = getFromStorage("firebaseUser");
+
+    if (signedInFirebaseUser) {
       this.firebaseUser = signedInFirebaseUser;
     }
   }
@@ -61,7 +62,7 @@ class AuthService {
     auth.onAuthStateChanged((user) => {
       if (user) {
         this.firebaseUser = user;
-        persistOnLocalStorage("firebaseUser", user);
+        persistOnStorage("firebaseUser", user);
       }
     });
 

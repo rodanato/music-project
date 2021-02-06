@@ -4,6 +4,7 @@ export type DbProfile = {
   email: string,
   photo: string,
   spotifyId: string,
+  theme: string,
 };
 
 export type SpotifyProfile = {
@@ -32,9 +33,9 @@ export type Playlist = {
   },
 };
 
-export type Playlists = {
+export type PlaylistsDetail = {
   items: Playlist[],
-  limit: Number,
+  limit: number,
   previous: string,
   next: string,
   total: number,

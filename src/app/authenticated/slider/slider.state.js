@@ -1,10 +1,16 @@
 // @flow
 import { Machine, interpret } from "xstate";
-import type { StateMachine } from "xstate";
+import type { StateMachine, Interpreter } from "xstate";
 import SliderService from "services/slider.service";
 import { handleError } from "utils/helpers";
 
 export interface SliderStateSchema {
+  context: {
+    list: [],
+    hoursToRefetch: {
+      playlists: number,
+    },
+  };
   states: {
     notstarted: {},
     starting: {},
@@ -17,8 +23,9 @@ export type SliderEvent =
   | { type: string }
   | { type: "START" }
   | { type: "STARTED" }
-  | { type: "ADD_EMPTY_SLIDE" }
-  | { type: "ADD_SLIDE" };
+  | { type: "ADD_SLIDE" }
+  | { type: "REMOVE_SLIDE" }
+  | { type: "GO_TO_IDLE" };
 
 export const SliderState: StateMachine<
   any,
@@ -34,8 +41,7 @@ export const SliderState: StateMachine<
     context: {
       list: [],
       hoursToRefetch: {
-        // playlists: 1000 * 30,
-        playlists: 1000 * 60 * 60 * 24,
+        playlists: 1000 * 60 * 60 * 4, // 4h
       },
     },
     states: {
@@ -58,7 +64,6 @@ export const SliderState: StateMachine<
         },
       },
       started: {
-        // FIXME: Add profile slide here if cond: list is empty
         on: {
           ADD_SLIDE: "addingslide",
         },
@@ -100,6 +105,13 @@ export const SliderState: StateMachine<
     },
   }
 );
-console.log(1);
-export const SliderStateService = interpret(SliderState).start();
-console.log(2);
+
+export const SliderStateService: Interpreter<
+  any,
+  SliderStateSchema,
+  SliderEvent,
+  {
+    value: any,
+    context: any,
+  }
+> = interpret(SliderState).start();
