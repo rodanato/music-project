@@ -5,16 +5,26 @@ import React, { Fragment, useState, useEffect } from "react"; // eslint-disable-
 // DEPENDENCIES
 import type { Node } from "react"; // eslint-disable-line
 import type { SlideContent } from "shared/types/slide.types";
-import type { DbProfile, Playlist } from "shared/types/spotify.types";
+import type { DbProfile, Playlists } from "shared/types/spotify.types";
 import DatabaseService from "services/database.service";
 import PlaylistContainerMolecule from "shared/playlist-container/playlist-container.molecule";
+import { useQuery, refetchInterval } from "react-query";
+import { useService } from "@xstate/react";
+import { SliderStateService } from "app/authenticated/slider/slider.state";
 
 function useProfileSlide(): {
-  getProfileSlideContent: Function,
+  data: any,
 } {
   const databaseService = DatabaseService.getInstance();
-  const [state, setState] = useState("notStarted");
-  const [profileData, setData] = useState();
+  const [state] = useService(SliderStateService);
+  const playlistRefetchTime = state.context.hoursToRefetch.playlists;
+  const { isLoading, isError, data, error } = useQuery(
+    "profileSlide",
+    getProfileSlideContent,
+    {
+      refetchInterval: playlistRefetchTime,
+    }
+  );
 
   function getPlaylistsUI(playlists: Playlist[]): Node {
     const formattedPlaylists = playlists.map((p) => ({
@@ -27,7 +37,7 @@ function useProfileSlide(): {
 
   function getSlideContent(
     profile: DbProfile,
-    playlists: Playlist[]
+    playlists: Playlists
   ): SlideContent {
     return {
       data: {
@@ -46,28 +56,13 @@ function useProfileSlide(): {
   async function getProfileSlideContent() {
     const profileData: Promise<DbProfile | void> = await databaseService.getProfileData();
     const userPlaylists: Promise<{
-      items: Playlist[],
+      items: Playlists,
     } | void> = await databaseService.getUserPlaylists();
 
-    setData(getSlideContent(profileData, userPlaylists));
+    return getSlideContent(profileData, userPlaylists);
   }
 
-  useEffect(() => {
-    if (state === "isLoading" && profileData) {
-      setState("done");
-      setData(null);
-    }
-
-    if (state === "isLoading" && !profileData) {
-      getProfileSlideContent();
-    }
-  }, [state, profileData]);
-
-  useEffect(() => {
-    setState("isLoading");
-  }, []);
-
-  return { profileData, state };
+  return { data };
 }
 
 export default useProfileSlide;

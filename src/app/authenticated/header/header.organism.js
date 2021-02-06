@@ -1,6 +1,6 @@
 // @flow
 // EXTERNAL
-import React from "react"; // eslint-disable-line
+import React, { useEffect } from "react"; // eslint-disable-line
 import type { Node } from "react"; // eslint-disable-line
 /** @jsx jsx */
 // $FlowIgnore
@@ -21,13 +21,23 @@ import { header, headerBlock } from "./header.styles";
 function HeaderOrganism(): Node {
   const sliderService = SliderService.getInstance();
   const [state, send] = useService(SliderStateService);
-  const { profileData } = useProfileSlide();
+  const { data } = useProfileSlide();
   const list = state.context.list;
+
+  async function removeSlide() {
+    send("REMOVE_SLIDE");
+  }
 
   async function addSlide() {
     if (list.length > 0) sliderService.addEmptySlide();
-    if (profileData) send("ADD_SLIDE", { slide: profileData });
+    if (data) send("ADD_SLIDE", { slide: data });
   }
+
+  useEffect(() => {
+    if (state.matches("removingSlide")) {
+      send("GO_TO_IDLE");
+    }
+  });
 
   return (
     <header css={[header]}>
@@ -37,7 +47,8 @@ function HeaderOrganism(): Node {
       </div>
 
       <div css={[headerBlock]}>
-        <ProfileAtom imageName="logo.png" onClickAction={addSlide} />
+        <button onClick={() => removeSlide()}>Remove first slide</button>
+        <ProfileAtom imageName="logo.png" onClickAction={() => addSlide()} />
       </div>
     </header>
   );

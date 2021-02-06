@@ -24,6 +24,8 @@ export const SwiperPagination: ComponentType<SwiperPaginationProps> = styled(
     opacity: 1;
     outline: none;
     position: relative;
+    top: auto !important;
+    transform: scale(1);
 
     &.swiper-pagination-bullet-active {
       background-color: var(--mpp-on-primary);

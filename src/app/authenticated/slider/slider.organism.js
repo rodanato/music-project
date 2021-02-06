@@ -22,12 +22,12 @@ import { slider } from "./slider.styles";
 function SliderOrganism(): Node {
   const sliderService = SliderService.getInstance();
   const [state, send] = useService(SliderStateService);
-  const { profileData } = useProfileSlide();
+  const { data } = useProfileSlide();
   const list = state.context.list;
 
   async function addSlide() {
     if (list.length > 0) sliderService.addEmptySlide();
-    if (profileData) send("ADD_SLIDE", { slide: profileData });
+    if (data) send("ADD_SLIDE", { slide: data });
   }
 
   if (state.matches("started")) {
@@ -47,7 +47,6 @@ function SliderOrganism(): Node {
   return (
     <section css={[slider]}>
       <SwiperContainerOrganism slideList={list} />
-
       <NavigationOrganism>
         <SliderNavigationMolecule slideListLength={list.length} />
       </NavigationOrganism>

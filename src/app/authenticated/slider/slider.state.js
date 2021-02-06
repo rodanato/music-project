@@ -33,6 +33,10 @@ export const SliderState: StateMachine<
     initial: "notstarted",
     context: {
       list: [],
+      hoursToRefetch: {
+        // playlists: 1000 * 30,
+        playlists: 1000 * 60 * 60 * 24,
+      },
     },
     states: {
       notstarted: {
@@ -50,6 +54,7 @@ export const SliderState: StateMachine<
       idle: {
         on: {
           ADD_SLIDE: "addingslide",
+          REMOVE_SLIDE: "removingSlide",
         },
       },
       started: {
@@ -60,6 +65,12 @@ export const SliderState: StateMachine<
       },
       addingslide: {
         entry: ["addSlide"],
+        on: {
+          GO_TO_IDLE: "idle",
+        },
+      },
+      removingSlide: {
+        entry: ["removeSlide"],
         on: {
           GO_TO_IDLE: "idle",
         },
@@ -81,6 +92,10 @@ export const SliderState: StateMachine<
       },
       addSlide: (ctx, e: any) => {
         ctx.list = [...ctx.list, e.slide];
+      },
+      removeSlide: (ctx, e: any) => {
+        const newList = ctx.list.filter((item, i) => i !== 0);
+        ctx.list = [...newList];
       },
     },
   }

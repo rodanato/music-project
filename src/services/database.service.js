@@ -8,6 +8,7 @@ import type {
   Playlists,
 } from "shared/types/spotify.types";
 import { ThemeContainerStateService } from "app/theme-container/theme-container.state";
+import { SliderStateService } from "app/authenticated/slider/slider.state";
 import {
   handleError,
   getIfExistOnStorage,
@@ -26,11 +27,8 @@ class DatabaseService {
 
   authService: AuthService;
   spotifyService: SpotifyService;
-  hoursToRefetch = {
-    playlists: 0,
-  };
   firstLogin: boolean = false;
-  loginTime: String;
+  loginTime: number;
 
   constructor() {
     this.spotifyService = SpotifyService.getInstance();
@@ -146,10 +144,10 @@ class DatabaseService {
   }
 
   timeHasExpiredFor(feature: string): boolean {
-    return (
-      (Date.now() - this.loginTime) / (3600 * 1000) >
-      this.hoursToRefetch[feature]
-    );
+    const timeToRefecth =
+      SliderStateService.state.context.hoursToRefetch[feature];
+
+    return Date.now() - this.loginTime > timeToRefecth;
   }
 
   saveLoginTime() {
@@ -158,12 +156,13 @@ class DatabaseService {
   }
 
   async getUserPlaylists(): Promise<Playlist | void> {
-    if (this.firstLogin || this.timeHasExpiredFor("playlists")) {
-      this.firstLogin = false;
-      return await this.getPlaylistsFromSpotify();
-    }
+    // if (this.firstLogin || this.timeHasExpiredFor("playlists")) {
+    //   this.firstLogin = false;
+    //   return await this.getPlaylistsFromSpotify();
+    // }
+    return await this.getPlaylistsFromSpotify();
 
-    return await this.getPlaylistsFromDB();
+    // return await this.getPlaylistsFromDB();
   }
 
   saveProfileOnDB(data: DbProfile) {

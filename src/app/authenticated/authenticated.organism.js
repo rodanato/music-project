@@ -4,6 +4,7 @@ import React, { useEffect, Fragment } from "react"; // eslint-disable-line
 /** @jsx jsx */
 // $FlowIgnore
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
+import { QueryClient, QueryClientProvider } from "react-query";
 
 // DEPENDENCIES
 import type { Node } from "react";
@@ -26,6 +27,14 @@ const MediaQueries = {
   },
 };
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 function AuthenticatedOrganism({ onLogout }: AuthenticatedOrganismProps): Node {
   const databaseService = DatabaseService.getInstance();
 
@@ -35,14 +44,16 @@ function AuthenticatedOrganism({ onLogout }: AuthenticatedOrganismProps): Node {
 
   return (
     <main css={[container]}>
-      <ContainerRow css={MediaQueries}>
-        <button onClick={() => onLogout()}>Logout here</button>
-        <HeaderOrganism />
-      </ContainerRow>
+      <QueryClientProvider client={queryClient}>
+        <ContainerRow css={MediaQueries}>
+          <button onClick={() => onLogout()}>Logout here</button>
+          <HeaderOrganism />
+        </ContainerRow>
 
-      <ContainerRow content>
-        <SliderOrganism />
-      </ContainerRow>
+        <ContainerRow content>
+          <SliderOrganism />
+        </ContainerRow>
+      </QueryClientProvider>
 
       <ContainerRow>
         <MusicControllerOrganism />
