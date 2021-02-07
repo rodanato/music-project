@@ -51,7 +51,7 @@ describe("ThemeContainerState machine", () => {
 
     themeContainerState.send("RENDER");
 
-    expect(themeContainerState.state.matches("rendered.green")).toBeTruthy();
+    expect(themeContainerState.state.matches("rendered.dark")).toBeTruthy();
     done();
   });
 
@@ -60,7 +60,7 @@ describe("ThemeContainerState machine", () => {
 
     themeContainerState.send("RENDER");
 
-    expect(themeContainerState.state.matches("rendered.green")).toBeTruthy();
+    expect(themeContainerState.state.matches("rendered.dark")).toBeTruthy();
 
     themeContainerState.send("CHANGE_TO_BLUE");
 
