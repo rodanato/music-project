@@ -7,13 +7,13 @@ import "firebase/auth";
 import "firebase/firestore";
 
 type Config = {
-  apiKey: string,
-  authDomain: string,
+  apiKey?: string,
+  authDomain?: string,
   databaseURL: string,
-  projectId: string,
-  storageBucket: string,
-  messagingSenderId: string,
-  appId: string,
+  projectId?: string,
+  storageBucket?: string,
+  messagingSenderId?: string,
+  appId?: string,
 };
 
 type ConfigEnv = {

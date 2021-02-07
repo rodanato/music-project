@@ -3,7 +3,7 @@ import { Machine } from "xstate";
 import type { StateMachine } from "xstate";
 import AuthService from "services/auth.service";
 import SpotifyService from "services/spotify.service";
-import { persistOnLocalStorage, handleError } from "utils/helpers";
+import { persistOnStorage, handleError } from "utils/helpers";
 
 export interface AuthenticatedStateSchema {
   states: {
@@ -98,7 +98,7 @@ export const AuthenticatedState: StateMachine<
   {
     actions: {
       handleError: (_ctx, e: any) => {
-        handleError({ message: e.data }, "spa:authentication");
+        handleError({ message: e.data }, "spa:authenticatedState");
       },
       spotifyLogin: () => {
         const spotifyService = SpotifyService.getInstance();
@@ -114,7 +114,7 @@ export const AuthenticatedState: StateMachine<
       },
       cleanUrlAndAddToStorage: (_ctx, e: any) => {
         window.history.replaceState({}, document.title, "/");
-        persistOnLocalStorage("loggedIn", "true");
+        persistOnStorage("loggedIn", "true");
       },
     },
   }

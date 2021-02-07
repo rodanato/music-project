@@ -1,6 +1,9 @@
 // @flow
+import type { Node } from "react"; // eslint-disable-line
+
 export type DataContent = {
-  image: string,
+  title: string,
+  photo: string,
   metadata?: {
     title: string,
     subtitle?: Node,

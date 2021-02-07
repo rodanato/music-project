@@ -3,7 +3,7 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
-    "serve": "yarn build && firebase functions:config:set app.url=http://localhost:3000 && firebase functions:config:get > .runtimeconfig.json && firebase emulators:start --only functions",
+    "serve": "yarn build && firebase functions:config:set app.url=http://localhost:3000 && firebase functions:config:get > .runtimeconfig.json && firebase emulators:start",
     "shell": "yarn build && firebase functions:shell",
     "start": "yarn shell",
     "deploy:test": "firebase functions:config:set app.url=https://social-music-addd0.web.app && firebase deploy -P test --only functions",

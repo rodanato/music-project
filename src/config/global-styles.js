@@ -36,12 +36,15 @@ export default `
   }
   .mpp-show-slowly {
     opacity: 0;
-    animation: opacity 1.5s;
+    animation: opacity 0.4s;
     animation-fill-mode: both;
+  }
+  .mpp-show-slowly--after {
+    animation: opacity 1.5s;
   }
   .mpp__loading-block {
     width: 100%;
-    height: 100%;
+    margin: 25px;
     background-color: #eaeaeb;
     animation: pulse 1.55s infinite;
   }

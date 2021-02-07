@@ -13,6 +13,18 @@ export type Theme = {
 
 export const themes: Theme[] = [
   {
+    name: "dark",
+    colors: [
+      { primary: "#000" },
+      { "primary-light": "#f1f1f1" },
+      { "primary-dark": "#c1c1c1" },
+      { secondary: "#fff" },
+      { "secondary-dark": "#cccccc" },
+      { "on-primary": "#fff" },
+      { "on-secondary": "#000" },
+    ],
+  },
+  {
     name: "blue",
     colors: [
       { primary: "#5742cc" },

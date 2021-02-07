@@ -1,4 +1,17 @@
 // @flow
+import SpotifyService from "services/spotify.service";
+import AuthService from "services/auth.service";
+import { db } from "config/firebase";
+import type {
+  DbProfile,
+  SpotifyProfile,
+  Playlist,
+  PlaylistsDetail,
+} from "shared/types/spotify.types";
+import { ThemeContainerStateService } from "app/theme-container/theme-container.state";
+import { SliderStateService } from "app/authenticated/slider/slider.state";
+import { handleError } from "utils/helpers";
+
 class DatabaseService {
   static instance: DatabaseService;
   static getInstance(): DatabaseService {
@@ -9,51 +22,198 @@ class DatabaseService {
     return DatabaseService.instance;
   }
 
-  createDB() {
-    if (!("indexedDB" in window)) {
-      console.log("This browser doesn't support IndexedDB");
-      return;
+  authService: AuthService;
+  spotifyService: SpotifyService;
+  firstLogin: boolean = false;
+  loginTime: number;
+
+  constructor() {
+    this.spotifyService = SpotifyService.getInstance();
+    this.authService = AuthService.getInstance();
+  }
+
+  adaptSpotifyProfileToDBProfile(data: SpotifyProfile): DbProfile {
+    return {
+      name: data.display_name,
+      email: data.email,
+      photo: data.images[0].url,
+      spotifyId: data.id,
+      theme: "",
+    };
+  }
+
+  async getProfileFromDB(): Promise<?DbProfile> {
+    const email = this.authService.firebaseUser.email;
+
+    try {
+      // let response: DbProfile = {};
+      const users = await db.collection("users").get();
+      users.forEach(function(doc) {
+        if (doc.data().email === email) {
+          return doc.data();
+        }
+      });
+      // return response;
+    } catch (error) {
+      handleError("spa:databaseService:getProfileFromDB", error);
+    }
+  }
+
+  async getPlaylistsFromDB(): Promise<?PlaylistsDetail> {
+    const id = this.authService.firebaseUser.uid;
+    console.log("playlists fromDB");
+
+    try {
+      await db
+        .collection("playlists")
+        .doc(id)
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            return doc.data();
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        });
+    } catch (error) {
+      handleError("spa:databaseService:getPlaylistsFromDB", error);
+    }
+  }
+
+  updatesBasedOnProfileConfig(profileOnDB: DbProfile): void {
+    this.spotifyService.userInfo = profileOnDB;
+    const currentTheme = ThemeContainerStateService.state.value.rendered;
+
+    if (currentTheme !== profileOnDB.theme) {
+      const newThemeEvent = `CHANGE_TO_${profileOnDB.theme.toUpperCase()}`;
+      ThemeContainerStateService.send(newThemeEvent);
+    }
+  }
+
+  async getProfileFromSpotify(): Promise<?DbProfile> {
+    try {
+      const profileData: ?SpotifyProfile = await this.spotifyService.getProfile();
+
+      if (!profileData) return;
+
+      const dbProfile: DbProfile = this.adaptSpotifyProfileToDBProfile(
+        profileData
+      );
+      this.saveProfileOnDB(dbProfile);
+      return dbProfile;
+    } catch (e) {
+      handleError(e, "spa:databaseService:getProfileFromSpotify");
+      // FIXME: On unauthorized response send user to logout
+    }
+  }
+
+  async getPlaylistsFromSpotify(): Promise<?PlaylistsDetail> {
+    console.log("playlists fromSpotify");
+
+    let allPlaylists: Array<Playlist> = [];
+    const playlistsFirstGroup: ?PlaylistsDetail = await this.spotifyService.getPlaylists(
+      0
+    );
+
+    if (!playlistsFirstGroup) return;
+
+    const playlistsPromises: Array<Promise<?PlaylistsDetail>> = [];
+    const totalCalls = Math.ceil(
+      playlistsFirstGroup.total / playlistsFirstGroup.limit
+    );
+
+    for (let i = 1; i < totalCalls; i++) {
+      const playlistGroup = this.spotifyService.getPlaylists(i * 20);
+      playlistsPromises.push(playlistGroup);
     }
 
-    const DB_NAME = "localSpotifyDB";
-    const DB_VERSION = 1;
-    const DB_STORE_NAME = "localSpotify";
-
-    let openRequest = indexedDB.open(DB_NAME, DB_VERSION);
-
-    openRequest.onupgradeneeded = function() {
-      let db = openRequest.result;
-      if (!db.objectStoreNames.contains("profile")) {
-        db.createObjectStore("profile", { keyPath: "id" });
+    const playlistsArray: Array<?PlaylistsDetail> = await Promise.all(
+      playlistsPromises
+    );
+    const playlistArray: ?(Playlist[]) = playlistsArray.flatMap(
+      (p: ?PlaylistsDetail): any => {
+        if (p) return p.items;
       }
-    };
+    );
 
-    openRequest.onerror = function() {
-      console.error("Error", openRequest.error);
-    };
+    allPlaylists = [
+      ...playlistsFirstGroup.items,
+      ...(playlistArray ? playlistArray : []),
+    ];
 
-    openRequest.onsuccess = function() {
-      let db = openRequest.result;
-      // continue working with database using db object
+    const playlists = {
+      ...playlistsFirstGroup,
+      items: allPlaylists,
     };
+    this.savePlaylistsOnDB(playlists);
+    return playlists;
   }
 
-  getProfileData() {
-    /*
-      if (indexedDB) return profileData
-      if not firestore.getProfileData
-      sync both DBs
-      return profileData
-    */
+  async getProfileData(): Promise<?DbProfile> {
+    const profileOnDB: ?DbProfile = await this.getProfileFromDB();
+
+    if (profileOnDB) {
+      this.updatesBasedOnProfileConfig(profileOnDB);
+      return profileOnDB;
+    }
+
+    return this.getProfileFromSpotify();
   }
 
-  getUserPlaylists() {
-    /*
-      if (indexedDB) return UserPlaylists
-      if not firestore.getUserPlaylists
-      sync both DBs
-      return UserPlaylists
-    */
+  timeHasExpiredFor(feature: string): boolean {
+    const timeToRefecth =
+      SliderStateService.state.context.hoursToRefetch[feature];
+
+    return Date.now() - this.loginTime > timeToRefecth;
+  }
+
+  saveLoginTime() {
+    this.firstLogin = true;
+    this.loginTime = Date.now();
+  }
+
+  async getUserPlaylists(): Promise<?PlaylistsDetail> {
+    // if (this.firstLogin || this.timeHasExpiredFor("playlists")) {
+    //   this.firstLogin = false;
+    //   return await this.getPlaylistsFromSpotify();
+    // }
+    return await this.getPlaylistsFromSpotify();
+
+    // return await this.getPlaylistsFromDB();
+  }
+
+  saveProfileOnDB(data: DbProfile) {
+    const newUserData = {
+      ...data,
+      theme: ThemeContainerStateService.state.value.rendered,
+    };
+
+    db.collection("users")
+      .doc(this.authService.firebaseUser.uid)
+      .set(newUserData)
+      .catch(function(error) {
+        console.error("spa:databaseService:saveProfileOnDB", error);
+      });
+  }
+
+  savePlaylistsOnDB(data: PlaylistsDetail) {
+    db.collection("playlists")
+      .doc(this.authService.firebaseUser.uid)
+      .set(data)
+      .catch(function(error) {
+        console.error("spa:databaseService:savePlaylistsOnDB", error);
+      });
+  }
+
+  updateProfileOnDB(key: string, value: string) {
+    db.collection("users")
+      .doc(this.authService.firebaseUser.uid)
+      .update({ [key]: value })
+      .catch(function(error) {
+        console.error("spa:databaseService:updateProfileOnDB ", error);
+      });
   }
 }
+
 export default DatabaseService;

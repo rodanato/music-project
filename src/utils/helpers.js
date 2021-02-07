@@ -2,19 +2,19 @@
 import { localUrl, testUrl, prodUrl } from "config/constants";
 
 export const persistState = (name: string, value: string): void => {
-  persistOnLocalStorage(name, value);
+  persistOnStorage(name, value);
 };
 
-export const getIfExistOnStorage = (item: string): mixed => {
+export const getFromStorage = (item: string): mixed => {
   const value: ?string = localStorage.getItem(item);
-  return value ? JSON.parse(value) : false;
+  return typeof value === "string" ? JSON.parse(value) : null;
 };
 
-export const persistOnLocalStorage = (name: string, value: string): void => {
+export const persistOnStorage = (name: string, value: string): void => {
   try {
     localStorage.setItem(name, JSON.stringify(value));
   } catch (e) {
-    handleError(e, "on localstorage setItem");
+    handleError(e, "spa:localstorage:setItem");
   }
 };
 

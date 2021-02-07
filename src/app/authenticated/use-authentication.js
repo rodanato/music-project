@@ -7,7 +7,7 @@ import type { Node } from "react"; // eslint-disable-line
 import AuthService from "services/auth.service";
 import { useMachine } from "@xstate/react";
 import { AuthenticatedState } from "./authenticated.state";
-import { getIfExistOnStorage } from "utils/helpers";
+import { getFromStorage } from "utils/helpers";
 
 function useAuthentication(): {
   authState: string,
@@ -32,10 +32,10 @@ function useAuthentication(): {
 
   function alreadyLoggedIn(): mixed {
     return (
-      getIfExistOnStorage("loggedIn") &&
-      getIfExistOnStorage("expirationDate") &&
-      getIfExistOnStorage("spotifyToken") &&
-      getIfExistOnStorage("spotifyRefreshToken")
+      getFromStorage("loggedIn") &&
+      getFromStorage("expirationDate") &&
+      getFromStorage("spotifyToken") &&
+      getFromStorage("spotifyRefreshToken")
     );
   }
 

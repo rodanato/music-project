@@ -1,13 +1,13 @@
 // @flow
 
 import SpotifyWebApi from "spotify-web-api-js";
-import {
-  handleError,
-  getIfExistOnStorage,
-  persistOnLocalStorage,
-} from "utils/helpers";
+import { handleError, getFromStorage, persistOnStorage } from "utils/helpers";
 import { apiUrl } from "utils/helpers";
 // import { db } from "./firebase/config";
+import type {
+  SpotifyProfile,
+  PlaylistsDetail,
+} from "shared/types/spotify.types";
 
 type setCodeResponse = {
   access_token: string,
@@ -22,7 +22,7 @@ type SpotifyUrls = {
 };
 
 type UserInfo = {
-  id: string,
+  spotifyId: string,
   name: string,
   email: string,
   photo: string,
@@ -38,7 +38,7 @@ class SpotifyService {
     return SpotifyService.instance;
   }
 
-  userInfo: UserInfo = { id: "", name: "", email: "", photo: "" };
+  _userInfo: UserInfo = { spotifyId: "", name: "", email: "", photo: "" };
   _spotifyUrls: SpotifyUrls = {
     redirect: "redirect",
     setCode: "setCode",
@@ -51,16 +51,19 @@ class SpotifyService {
 
   constructor() {
     this.spotifyApi = new SpotifyWebApi();
-    const existingToken = getIfExistOnStorage("spotifyToken");
-    const existingRefreshToken = getIfExistOnStorage("spotifyRefreshToken");
-    const expirationDate = getIfExistOnStorage("expirationDate");
-    if (existingToken && typeof existingToken === "string") {
+    const existingToken: mixed = getFromStorage("spotifyToken");
+    const existingRefreshToken: mixed = getFromStorage("spotifyRefreshToken");
+    const expirationDate: mixed = getFromStorage("expirationDate");
+
+    if (typeof existingToken === "string") {
       this.token = existingToken;
     }
-    if (existingRefreshToken && typeof existingRefreshToken === "string") {
+
+    if (typeof existingRefreshToken === "string") {
       this.refreshToken = existingRefreshToken;
     }
-    if (expirationDate && typeof expirationDate === "string") {
+
+    if (typeof expirationDate === "string") {
       this.expirationDate = expirationDate;
       this.setTokenExpirationTimeout();
     }
@@ -88,7 +91,7 @@ class SpotifyService {
 
   set refreshToken(token: string) {
     this._refreshToken = token;
-    persistOnLocalStorage("spotifyRefreshToken", token);
+    persistOnStorage("spotifyRefreshToken", token);
   }
 
   get token(): string {
@@ -97,7 +100,15 @@ class SpotifyService {
 
   set token(token: string) {
     this.spotifyApi.setAccessToken(token);
-    persistOnLocalStorage("spotifyToken", token);
+    persistOnStorage("spotifyToken", token);
+  }
+
+  get userInfo(): UserInfo {
+    return this._userInfo;
+  }
+
+  set userInfo(info: UserInfo): void {
+    this._userInfo = info;
   }
 
   async getToken(code: string): Promise<string> {
@@ -128,34 +139,26 @@ class SpotifyService {
     return this.token;
   }
 
-  async getProfile(): Promise<any | void> {
+  async getProfile(): Promise<?SpotifyProfile> {
     try {
-      const profile = await this.spotifyApi.getMe();
+      const profile: SpotifyProfile = await this.spotifyApi.getMe();
       this.userInfo = {
-        id: profile.id,
+        spotifyId: profile.id,
         name: profile.display_name,
         email: profile.email,
         photo: profile.images[0].url,
       };
       return profile;
-      // db.collection("users").add({
-      //   name: profile.display_name
-      // })
-      // .then(function(docRef) {
-      //     console.log("Document written with ID: ", docRef.id);
-      // })
-      // .catch(function(error) {
-      //     console.error("Error adding document: ", error);
-      // });
     } catch (error) {
       handleError(error, "spa:spotifyService:getProfile");
     }
   }
 
-  async getPlaylists(): Promise<any | void> {
+  async getPlaylists(offset: number): Promise<?PlaylistsDetail> {
     try {
-      const playlists = await this.spotifyApi.getUserPlaylists(
-        this.userInfo.id
+      const playlists: PlaylistsDetail = await this.spotifyApi.getUserPlaylists(
+        this.userInfo.spotifyId,
+        { offset: offset }
       );
       return playlists;
     } catch (e) {
@@ -168,7 +171,7 @@ class SpotifyService {
     window.location = redirecUrl;
   }
 
-  // TODO: Consider to call this on app leave (comp unmount)
+  // TODO: Think of a better strategy to keep user session active without making it eternal. Maybe refresh session option like adobe
   cleanExpirationTimeout() {
     clearTimeout(this.expirationTimeout);
   }
@@ -178,7 +181,7 @@ class SpotifyService {
   }
 
   persistExpirationDate() {
-    persistOnLocalStorage("expirationDate", this.expirationDate);
+    persistOnStorage("expirationDate", this.expirationDate);
   }
 
   setTokenExpirationTimeout() {
@@ -225,10 +228,6 @@ class SpotifyService {
   //   handleError(error, "spa:spotify");
   // }
 
-  // getPlaylist() {}
-
-  // savePlaylist() {}
-
   // getArtists() {}
 
   // saveArtists() {}
@@ -240,7 +239,5 @@ class SpotifyService {
   // getListenLater() {}
 
   // saveListenLater() {}
-
-  // getThemePreferences() {}
 }
 export default SpotifyService;
