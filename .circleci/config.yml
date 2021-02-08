@@ -4,6 +4,7 @@ commands:
   pre_build:
     steps:
       - checkout
+      - rm -rf node_modules
       - restore_package_cache
       - run: yarn install
       - save_package_cache
