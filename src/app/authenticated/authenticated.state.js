@@ -33,6 +33,8 @@ const firebaseLogin = (ctx, e): Promise<any> => {
   return authService.firebaseLogin(e.code);
 };
 
+const spotifyService = SpotifyService.getInstance();
+
 export const AuthenticatedState: StateMachine<
   any,
   AuthenticatedStateSchema,
@@ -101,7 +103,6 @@ export const AuthenticatedState: StateMachine<
         handleError({ message: e.data }, "spa:authenticatedState");
       },
       spotifyLogin: () => {
-        const spotifyService = SpotifyService.getInstance();
         spotifyService.loginRedirect();
       },
       removeFromStorage: (_ctx, e: any) => {
@@ -109,7 +110,6 @@ export const AuthenticatedState: StateMachine<
         localStorage.removeItem("expirationDate");
         localStorage.removeItem("spotifyToken");
         localStorage.removeItem("spotifyRefreshToken");
-        const spotifyService = SpotifyService.getInstance();
         spotifyService.cleanExpirationTimeout();
       },
       cleanUrlAndAddToStorage: (_ctx, e: any) => {

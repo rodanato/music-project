@@ -23,17 +23,19 @@ export const getChildrenStateName = (state: any, parent: string): string => {
 };
 
 export const handleError = (e: any, where: string): void => {
-  if (e.response && e.response.data) {
-    console.error(
-      e.response.data.error.status,
-      e.response.data.error.message,
-      where
-    );
-    // TODO: Save somewhere as error log
-  } else {
-    console.error(e.message, where);
-    // TODO: Save somewhere as error log
-  }
+  throw new Error(e);
+
+  // if (e.response && e.response.data) {
+  //   console.error(
+  //     e.response.data.error.status,
+  //     e.response.data.error.message,
+  //     where
+  //   );
+  //   // TODO: Save somewhere as error log
+  // } else {
+  //   console.error(e.message, where);
+  //   // TODO: Save somewhere as error log
+  // }
 };
 
 export const isProd = (): boolean => process.env.REACT_APP_ENV === "prod";

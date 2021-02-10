@@ -35,7 +35,7 @@ function useProfileSlide(): {
     return <PlaylistContainerMolecule list={formattedPlaylists} />;
   }
 
-  function getSlideContent(
+  function formatSlideContent(
     profile: DbProfile,
     playlistsItems: Playlist[]
   ): SlideContent {
@@ -53,13 +53,19 @@ function useProfileSlide(): {
     };
   }
 
+  async function getGenres() {
+    const genres: ?Array<any> = await databaseService.getPlaylistGenres();
+    console.log(">>> genres", genres);
+  }
+
   async function getProfileSlideContent() {
     const profileData: ?DbProfile = await databaseService.getProfileData();
-    const playlistDetail: ?PlaylistsDetail = await databaseService.getUserPlaylists();
+    const playlists: ?Array<Playlist> = await databaseService.getUserPlaylists();
+    getGenres();
 
-    if (!profileData || !playlistDetail) return;
+    if (!profileData || !playlists) return;
 
-    return getSlideContent(profileData, playlistDetail.items);
+    return formatSlideContent(profileData, playlists);
   }
 
   return { data };

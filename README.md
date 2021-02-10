@@ -56,7 +56,7 @@ rm -rf node_modules/ && yarn
 yarn start
 ```
 
-> IMPORTANT: Manual deployment should be avoided.
+> IMPORTANT: Manual deployment must be avoided.
 
 ## SPA Deployment
 
@@ -75,7 +75,7 @@ yarn start
 yarn deploy:test
 ```
 
-\*\*\*Use deploy:local to run the spa locally and point the remote functions
+\*\*\*Use yarn serve to run the spa locally and point the remote functions
 
 ## Other commands
 

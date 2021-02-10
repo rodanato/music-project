@@ -22,6 +22,7 @@ import { slider } from "./slider.styles";
 function SliderOrganism(): Node {
   const sliderService = SliderService.getInstance();
   const [state, send] = useService(SliderStateService);
+  // TODO: Try loading the profile first and adding the slide only with it, then get playlists and genres and update context.list, sliderOrganism should rerender with the new data
   const { data } = useProfileSlide();
   const list = state.context.list;
 

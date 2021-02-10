@@ -1,5 +1,5 @@
 import { admin, cors, OAUTH_SCOPES, spotifyApiConfig } from "./config/config";
-import { Profile } from "./config/types";
+import { Profile, Playlist } from "./config/types";
 import { handleError } from "./config/utils";
 const SpotifyWebApi = require("spotify-web-api-node");
 const crypto = require("crypto");
@@ -18,6 +18,78 @@ spotify.get("/redirect", (req: any, res: any) => {
   );
   res.redirect(301, authorizeURL);
 });
+
+async function getPlaylistIds(userProfileId: string) {
+  try {
+    const playlistsDetail = await spotifyApi.getUserPlaylists(userProfileId);
+    return playlistsDetail.body.items.map((p: Playlist) => p.id);
+  } catch (e) {
+    handleError(e, "api:spotify:getPlaylistIds");
+  }
+}
+
+async function getGenres(songs: any[]) {
+  let genres = [];
+  let artists = [
+    ...new Set(
+      songs
+        .filter((song) => song.track)
+        .map((song) => song.track.artists[0].name)
+    ),
+  ];
+
+  for (let artistName of artists) {
+    artistName = artistName.toLowerCase();
+
+    try {
+      const searchResult = await spotifyApi.searchArtists(artistName);
+
+      if (searchResult.body.artists.items.length > 0) {
+        const artistGenres = searchResult.body.artists.items.filter(
+          (artist: any) => artist.name.toLowerCase() === artistName
+        );
+
+        if (artistGenres.length > 0) {
+          genres.push(...artistGenres[0].genres);
+        }
+      }
+    } catch (e) {
+      handleError(e, "api:spotify:getGenres");
+    }
+  }
+
+  return [...new Set(genres)];
+}
+
+function getRandomNumber(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
+spotify.post(
+  "/genres",
+  async (req: { body: { userProfileId: string; token: string } }, res: any) => {
+    await spotifyApi.setAccessToken(req.body.token);
+    const { userProfileId } = req.body;
+    const playlistIds = await getPlaylistIds(userProfileId);
+    const playlistIdstoScan = new Array(3)
+      .fill(0)
+      .map(() => getRandomNumber(0, playlistIds.length - 1));
+    let songs = [];
+
+    for (const playlistId of playlistIdstoScan) {
+      try {
+        const playlistSongs = await spotifyApi.getPlaylistTracks(playlistId);
+        songs.push(...playlistSongs.body.items);
+      } catch (e) {
+        handleError(e, "api:spotify:getPlaylistTracks");
+      }
+    }
+
+    const genres = await getGenres(songs);
+
+    res.json(genres);
+  }
+);
 
 spotify.post("/setCode", (req: { body: { code: string } }, res: any) => {
   spotifyApi.authorizationCodeGrant(req.body.code).then(

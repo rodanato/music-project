@@ -19,6 +19,7 @@ type setCodeResponse = {
 type SpotifyUrls = {
   redirect: string,
   setCode: string,
+  genres: string,
 };
 
 type UserInfo = {
@@ -42,6 +43,7 @@ class SpotifyService {
   _spotifyUrls: SpotifyUrls = {
     redirect: "redirect",
     setCode: "setCode",
+    genres: "genres",
   };
   spotifyApi: any;
   expiresIn: number = 3600;
@@ -163,6 +165,30 @@ class SpotifyService {
       return playlists;
     } catch (e) {
       handleError(e, "spa:spotifyService:getPlaylists");
+    }
+  }
+
+  async getGenres() {
+    const url = `${apiUrl()}/${this._spotifyUrls.genres}`;
+    const request = new Request(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+      body: JSON.stringify({
+        userProfileId: this.userInfo.spotifyId,
+        token: this.token,
+      }),
+    });
+
+    try {
+      const res = await fetch(request);
+      const genres: any = await res.json();
+      return genres;
+    } catch (e) {
+      handleError(e, "spa:spotifyService:getGenres");
     }
   }
 

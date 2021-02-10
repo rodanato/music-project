@@ -13,3 +13,14 @@ export type Profile = {
   type: string,
   uri: string
 };
+
+export type Playlist = {
+  name: string,
+  images: any[],
+  description: string,
+  id: string,
+  tracks: {
+    href: string,
+    total: number,
+  },
+};

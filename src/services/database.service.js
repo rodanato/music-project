@@ -59,27 +59,27 @@ class DatabaseService {
     }
   }
 
-  async getPlaylistsFromDB(): Promise<?PlaylistsDetail> {
-    const id = this.authService.firebaseUser.uid;
-    console.log("playlists fromDB");
+  // async getPlaylistsFromDB(): Promise<?PlaylistsDetail> {
+  //   const id = this.authService.firebaseUser.uid;
+  //   console.log("playlists fromDB");
 
-    try {
-      await db
-        .collection("playlists")
-        .doc(id)
-        .get()
-        .then(function(doc) {
-          if (doc.exists) {
-            return doc.data();
-          } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-          }
-        });
-    } catch (error) {
-      handleError("spa:databaseService:getPlaylistsFromDB", error);
-    }
-  }
+  //   try {
+  //     await db
+  //       .collection("playlists")
+  //       .doc(id)
+  //       .get()
+  //       .then(function(doc) {
+  //         if (doc.exists) {
+  //           return doc.data();
+  //         } else {
+  //           // doc.data() will be undefined in this case
+  //           console.log("No such document!");
+  //         }
+  //       });
+  //   } catch (error) {
+  //     handleError("spa:databaseService:getPlaylistsFromDB", error);
+  //   }
+  // }
 
   updatesBasedOnProfileConfig(profileOnDB: DbProfile): void {
     this.spotifyService.userInfo = profileOnDB;
@@ -108,46 +108,57 @@ class DatabaseService {
     }
   }
 
-  async getPlaylistsFromSpotify(): Promise<?PlaylistsDetail> {
-    console.log("playlists fromSpotify");
+  getPlaylistDetailPromises(totalCalls: number) {
+    let promisesArray = [];
 
-    let allPlaylists: Array<Playlist> = [];
+    for (let i = 1; i < totalCalls; i++) {
+      const playlistGroup = this.spotifyService.getPlaylists(i * 20);
+      promisesArray.push(playlistGroup);
+    }
+
+    return promisesArray;
+  }
+
+  extractItemsFromPlaylistsDetail(
+    playlistDetailArray: Array<?PlaylistsDetail>
+  ): Array<Playlist> {
+    return playlistDetailArray.flatMap((p: ?PlaylistsDetail): any => {
+      if (p) return p.items;
+    });
+  }
+
+  async getPlaylistsFromSpotify(): Promise<?(Playlist[])> {
     const playlistsFirstGroup: ?PlaylistsDetail = await this.spotifyService.getPlaylists(
       0
     );
 
     if (!playlistsFirstGroup) return;
 
-    const playlistsPromises: Array<Promise<?PlaylistsDetail>> = [];
     const totalCalls = Math.ceil(
       playlistsFirstGroup.total / playlistsFirstGroup.limit
     );
-
-    for (let i = 1; i < totalCalls; i++) {
-      const playlistGroup = this.spotifyService.getPlaylists(i * 20);
-      playlistsPromises.push(playlistGroup);
-    }
-
-    const playlistsArray: Array<?PlaylistsDetail> = await Promise.all(
-      playlistsPromises
+    const playlistDetailPromises: Array<
+      Promise<?PlaylistsDetail>
+    > = this.getPlaylistDetailPromises(totalCalls);
+    const playlistDetailArray: Array<?PlaylistsDetail> = await Promise.all(
+      playlistDetailPromises
     );
-    const playlistArray: ?(Playlist[]) = playlistsArray.flatMap(
-      (p: ?PlaylistsDetail): any => {
-        if (p) return p.items;
-      }
+    const remainingPlaylists: Array<Playlist> = this.extractItemsFromPlaylistsDetail(
+      playlistDetailArray
     );
 
-    allPlaylists = [
+    const allPlaylists: Array<Playlist> = [
       ...playlistsFirstGroup.items,
-      ...(playlistArray ? playlistArray : []),
+      ...(remainingPlaylists ? remainingPlaylists : []),
     ];
 
     const playlists = {
       ...playlistsFirstGroup,
       items: allPlaylists,
     };
+
     this.savePlaylistsOnDB(playlists);
-    return playlists;
+    return allPlaylists;
   }
 
   async getProfileData(): Promise<?DbProfile> {
@@ -173,7 +184,7 @@ class DatabaseService {
     this.loginTime = Date.now();
   }
 
-  async getUserPlaylists(): Promise<?PlaylistsDetail> {
+  async getUserPlaylists(): Promise<?(Playlist[])> {
     // if (this.firstLogin || this.timeHasExpiredFor("playlists")) {
     //   this.firstLogin = false;
     //   return await this.getPlaylistsFromSpotify();
@@ -213,6 +224,10 @@ class DatabaseService {
       .catch(function(error) {
         console.error("spa:databaseService:updateProfileOnDB ", error);
       });
+  }
+
+  async getPlaylistGenres() {
+    return await this.spotifyService.getGenres();
   }
 }
 

@@ -27,6 +27,8 @@ export type SliderEvent =
   | { type: "REMOVE_SLIDE" }
   | { type: "GO_TO_IDLE" };
 
+const sliderService = SliderService.getInstance();
+
 export const SliderState: StateMachine<
   any,
   SliderStateSchema,
@@ -88,11 +90,9 @@ export const SliderState: StateMachine<
         handleError({ message: e.data }, "spa:sliderState");
       },
       createSwiper: (ctx, e) => {
-        const sliderService = SliderService.getInstance();
         sliderService.createSwiper();
       },
       initSwiper: (ctx, e) => {
-        const sliderService = SliderService.getInstance();
         sliderService.onInit(ctx.list);
       },
       addSlide: (ctx, e: any) => {
