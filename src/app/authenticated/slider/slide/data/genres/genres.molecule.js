@@ -11,6 +11,7 @@ import type { GenresProps } from "./genres.types";
 // STYLES
 
 function GenresMolecule({ genres }: GenresProps): Node {
+  console.log("loading genres on genresMOolecule");
   return (
     <div>
       {genres.map((genre) => (

@@ -3,12 +3,14 @@ import { Machine, interpret } from "xstate";
 import type { StateMachine, Interpreter } from "xstate";
 import SliderService from "services/slider.service";
 import { handleError } from "utils/helpers";
+import * as R from "ramda";
 
 export interface SliderStateSchema {
   context: {
     list: [],
     hoursToRefetch: {
       playlists: number,
+      profile: number,
     },
   };
   states: {
@@ -43,7 +45,8 @@ export const SliderState: StateMachine<
     context: {
       list: [],
       hoursToRefetch: {
-        playlists: 1000 * 60 * 60 * 4, // 4h
+        playlists: 1000 * 60 * 60 * 24, // 24h
+        profile: 1000 * 60 * 60 * 4, // 4h
       },
     },
     states: {
@@ -63,6 +66,7 @@ export const SliderState: StateMachine<
         on: {
           ADD_SLIDE: "addingslide",
           REMOVE_SLIDE: "removingSlide",
+          UPDATE_SLIDE: "updatingSlide",
         },
       },
       started: {
@@ -80,6 +84,13 @@ export const SliderState: StateMachine<
         entry: ["removeSlide"],
         on: {
           GO_TO_IDLE: "idle",
+        },
+      },
+      updatingSlide: {
+        entry: ["updateSlide"],
+        on: {
+          GO_TO_IDLE: "idle",
+          UPDATE_SLIDE: "updatingSlide",
         },
       },
     },
@@ -101,6 +112,14 @@ export const SliderState: StateMachine<
       removeSlide: (ctx, e: any) => {
         const newList = ctx.list.filter((item, i) => i !== 0);
         ctx.list = [...newList];
+      },
+      updateSlide: (ctx, e: any) => {
+        let currentList = [...ctx.list];
+        const newSlide = R.mergeDeepWith(R.concat, ctx.list[e.index], e.slide);
+
+        currentList.splice(e.index, 1, newSlide);
+
+        ctx.list = currentList;
       },
     },
   }

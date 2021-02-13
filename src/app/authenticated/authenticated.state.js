@@ -23,17 +23,16 @@ export type AuthenticatedEvent =
   | { type: "LOGOUT" }
   | { type: "LOGIN" };
 
+const spotifyService = SpotifyService.getInstance();
+const authService = AuthService.getInstance();
+
 const firebaseLogout = (): Promise<any> => {
-  const authService = AuthService.getInstance();
   return authService.firebaseLogout();
 };
 
 const firebaseLogin = (ctx, e): Promise<any> => {
-  const authService = AuthService.getInstance();
   return authService.firebaseLogin(e.code);
 };
-
-const spotifyService = SpotifyService.getInstance();
 
 export const AuthenticatedState: StateMachine<
   any,

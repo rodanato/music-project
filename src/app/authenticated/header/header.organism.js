@@ -13,7 +13,7 @@ import PollAtom from "./poll/poll.atom";
 import ProfileAtom from "./profile/profile.atom";
 import SliderService from "services/slider.service";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
-import useProfileSlide from "../use-profile-slide";
+import useFetchProfile from "shared/custom-hooks/use-fetch-profile";
 
 // STYLES
 import { header, headerBlock } from "./header.styles";
@@ -21,7 +21,7 @@ import { header, headerBlock } from "./header.styles";
 function HeaderOrganism(): Node {
   const sliderService = SliderService.getInstance();
   const [state, send] = useService(SliderStateService);
-  const { data } = useProfileSlide();
+  const { data } = useFetchProfile();
   const list = state.context.list;
 
   async function removeSlide() {

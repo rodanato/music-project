@@ -38,6 +38,8 @@ async function getGenres(songs: any[]) {
     ),
   ];
 
+  artists.splice(10, artists.length - 10);
+
   for (let artistName of artists) {
     artistName = artistName.toLowerCase();
 
@@ -45,18 +47,20 @@ async function getGenres(songs: any[]) {
       const searchResult = await spotifyApi.searchArtists(artistName);
 
       if (searchResult.body.artists.items.length > 0) {
-        const artistGenres = searchResult.body.artists.items.filter(
+        const artistInfo = searchResult.body.artists.items.filter(
           (artist: any) => artist.name.toLowerCase() === artistName
         );
 
-        if (artistGenres.length > 0) {
-          genres.push(...artistGenres[0].genres);
+        if (artistInfo.length > 0) {
+          genres.push(...artistInfo[0].genres);
         }
       }
     } catch (e) {
       handleError(e, "api:spotify:getGenres");
     }
   }
+
+  genres.splice(10, genres.length - 10);
 
   return [...new Set(genres)];
 }
@@ -65,15 +69,21 @@ function getRandomNumber(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+function filterPlaylistIdstoScan(ids: string[]): string[] {
+  const selectedIds = new Array(3)
+    .fill(0)
+    .map(() => getRandomNumber(0, ids.length - 1));
+
+  return ids.filter((id: string, i: number) => selectedIds.includes(i));
+}
+
 spotify.post(
   "/genres",
   async (req: { body: { userProfileId: string; token: string } }, res: any) => {
     await spotifyApi.setAccessToken(req.body.token);
     const { userProfileId } = req.body;
     const playlistIds = await getPlaylistIds(userProfileId);
-    const playlistIdstoScan = new Array(3)
-      .fill(0)
-      .map(() => getRandomNumber(0, playlistIds.length - 1));
+    const playlistIdstoScan: string[] = filterPlaylistIdstoScan(playlistIds);
     let songs = [];
 
     for (const playlistId of playlistIdstoScan) {
@@ -122,15 +132,16 @@ spotify.post(
 
 spotify.post(
   "/createFirebaseAccount",
-  async (req: { body: { token: string; userprofile: Profile } }, res: any) => {
+  async (req: { body: { userprofile: Profile } }, res: any) => {
     const { userprofile } = req.body;
     const uid = `spotify:${userprofile.id}`;
+    const fakeEmail = `${userprofile.id}@spotify-api-mpp.fake`;
     const userCreationTask = admin
       .auth()
       .updateUser(uid, {
         displayName: userprofile.display_name,
         photoURL: userprofile.images[0].url,
-        email: userprofile.email,
+        email: userprofile.email || fakeEmail,
       })
       .catch((error: any) => {
         if (error.code === "auth/user-not-found") {
@@ -138,7 +149,7 @@ spotify.post(
             uid: uid,
             displayName: userprofile.display_name,
             photoURL: userprofile.images[0].url,
-            email: userprofile.email,
+            email: userprofile.email || fakeEmail,
           });
         }
         throw error;

@@ -152,12 +152,7 @@ class DatabaseService {
       ...(remainingPlaylists ? remainingPlaylists : []),
     ];
 
-    const playlists = {
-      ...playlistsFirstGroup,
-      items: allPlaylists,
-    };
-
-    this.savePlaylistsOnDB(playlists);
+    this.savePlaylistsOnDB(allPlaylists);
     return allPlaylists;
   }
 
@@ -208,7 +203,12 @@ class DatabaseService {
       });
   }
 
-  savePlaylistsOnDB(data: PlaylistsDetail) {
+  savePlaylistsOnDB(playlists: Playlist[]) {
+    const data = {
+      items: playlists,
+      total: playlists.length,
+    };
+
     db.collection("playlists")
       .doc(this.authService.firebaseUser.uid)
       .set(data)

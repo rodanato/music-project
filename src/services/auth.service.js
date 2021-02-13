@@ -67,10 +67,9 @@ class AuthService {
     });
 
     try {
-      const spotifyToken: string = await this.spotifyService.getToken(code);
+      await this.spotifyService.getToken(code);
       const userprofile = await this.spotifyService.getProfile();
       const firebaseToken: string | void = await this.createFirebaseAccount(
-        spotifyToken,
         userprofile
       );
 
@@ -80,10 +79,7 @@ class AuthService {
     }
   }
 
-  async createFirebaseAccount(
-    spotifyToken: string,
-    userprofile: any
-  ): Promise<string | void> {
+  async createFirebaseAccount(userprofile: any): Promise<string | void> {
     const url = `${apiUrl()}/${this._authUrls.createFirebaseAccount}`;
     const request = new Request(url, {
       method: "POST",
@@ -92,7 +88,7 @@ class AuthService {
         "Content-Type": "application/json",
       },
       mode: "cors",
-      body: JSON.stringify({ token: spotifyToken, userprofile: userprofile }),
+      body: JSON.stringify({ userprofile: userprofile }),
     });
 
     try {

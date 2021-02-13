@@ -9,7 +9,7 @@ import type { Node } from "react";
 
 // DEPENDENCIES
 import type { PlaylistProps } from "./playlist.types";
-import SongMolecule from "shared/song/song.molecule";
+import SongMolecule from "shared/components/song/song.molecule";
 
 // STYLES
 import { Playlist } from "./playlist.styles";

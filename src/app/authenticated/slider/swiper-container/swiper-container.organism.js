@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 // DEPENDENCIES
 import SlideMolecule from "../slide/slide.molecule";
 import { swiperContainer } from "./swiper-container.styles";
-import LoadingAtom from "shared/loading/loading.atom";
+import LoadingAtom from "shared/components/loading/loading.atom";
 
 function SwiperContainerOrganism({ slideList }: { slideList: any[] }): Node {
   function SliderFallback(): Node {
