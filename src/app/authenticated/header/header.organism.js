@@ -11,7 +11,6 @@ import { useService } from "@xstate/react";
 import LogoAtom from "./logo/logo.atom";
 import PollAtom from "./poll/poll.atom";
 import ProfileAtom from "./profile/profile.atom";
-import SliderService from "services/slider.service";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
 import useLoadProfile from "shared/custom-hooks/use-load-profile";
 
@@ -19,9 +18,7 @@ import useLoadProfile from "shared/custom-hooks/use-load-profile";
 import { header, headerBlock } from "./header.styles";
 
 function HeaderOrganism(): Node {
-  const sliderService = SliderService.getInstance();
   const [state, send] = useService(SliderStateService);
-  const list = state.context.list;
   const { loadProfileSlide } = useLoadProfile();
 
   async function removeSlide() {

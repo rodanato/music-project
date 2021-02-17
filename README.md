@@ -56,6 +56,12 @@ rm -rf node_modules/ && yarn
 yarn start
 ```
 
+**Unit Tests**
+
+```sh
+yarn test
+```
+
 > IMPORTANT: Manual deployment must be avoided.
 
 ## SPA Deployment

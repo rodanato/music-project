@@ -34,11 +34,6 @@ export type SliderEvent =
 
 const sliderService = SliderService.getInstance();
 
-const addSlidePromise = async (ctx, e) => {
-  ctx.list = [...ctx.list, e.slide];
-  return Promise.resolve(ctx.list);
-};
-
 export const SliderState: StateMachine<
   any,
   SliderStateSchema,

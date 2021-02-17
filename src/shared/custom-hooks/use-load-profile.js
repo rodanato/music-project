@@ -5,8 +5,6 @@ import React, { Fragment, useState, useEffect, useRef } from "react"; // eslint-
 // DEPENDENCIES
 import type { Node } from "react"; // eslint-disable-line
 import type { SlideContent } from "shared/types/slide.types";
-import SliderService from "services/slider.service";
-import { useQuery } from "react-query";
 import { useService } from "@xstate/react";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
 import useFetchProfile from "shared/custom-hooks/use-fetch-profile";
@@ -32,7 +30,6 @@ function useLoadProfile(): {
   } = useFetchPlaylists();
   const { genresData, refetchGenres, genresStatus } = useFetchGenres();
   const [state, send] = useService(SliderStateService);
-  const sliderService = SliderService.getInstance();
   const started = useRef(false);
   const list = state.context.list;
   const dataLoaded = useRef({
