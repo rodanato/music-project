@@ -4,25 +4,23 @@ import React, { Fragment, useState, useEffect } from "react"; // eslint-disable-
 
 // DEPENDENCIES
 import type { Node } from "react"; // eslint-disable-line
-import type {
-  DbProfile,
-  Playlist,
-  PlaylistsDetail,
-} from "shared/types/spotify.types";
+import type { DbProfile } from "shared/types/spotify.types";
 import DatabaseService from "services/database.service";
-import PlaylistContainerMolecule from "shared/components/playlist-container/playlist-container.molecule";
 import { useQuery } from "react-query";
 import { useService } from "@xstate/react";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
 
 function useFetchProfile(): {
   profileData: ?DbProfile,
+  refetchProfile: Function,
+  profileStatus: string,
 } {
   const databaseService = DatabaseService.getInstance();
   const [state] = useService(SliderStateService);
   const profileRefetchTime = state.context.hoursToRefetch.profile;
-  const { data } = useQuery("profileData", getProfileData, {
+  const { data, refetch, status } = useQuery("profileData", getProfileData, {
     refetchInterval: profileRefetchTime,
+    enabled: false,
   });
 
   async function getProfileData() {
@@ -33,7 +31,7 @@ function useFetchProfile(): {
     return profileData;
   }
 
-  return { profileData: data };
+  return { profileData: data, refetchProfile: refetch, profileStatus: status };
 }
 
 export default useFetchProfile;

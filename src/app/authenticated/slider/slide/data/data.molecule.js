@@ -33,7 +33,6 @@ function DataMolecule({ content }: { content: any }): Node {
 
       {content.genres.length > 0 ? (
         <CardAtom>
-          {console.log("loading genresMOolecule on dataMolecule")}
           <GenresMolecule genres={content.genres} />
         </CardAtom>
       ) : null}

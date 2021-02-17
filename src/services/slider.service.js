@@ -45,6 +45,16 @@ class SliderService {
       SliderStateService.send("STARTED");
     });
 
+    this.swiper.on("slideNextTransitionEnd", () => {
+      if (this.swiper.activeIndex === this.swiper.slides.length - 1) {
+        console.log("final slide transition end");
+
+        if (SliderStateService.state.matches("addingslide")) {
+          SliderStateService.send("UPDATE_SLIDE");
+        }
+      }
+    });
+
     this.swiper.init();
   }
 
@@ -61,17 +71,19 @@ class SliderService {
   }
 
   addEmptySlide() {
-    this.swiper.appendSlide('<div class="swiper-slide"></div>');
+    this.swiper.addSlide(
+      this.swiper.slides.length,
+      '<div class="swiper-slide"></div>'
+    );
     const lastSlideIndex = this.swiper.slides.length - 1;
     this.swiper.slideTo(lastSlideIndex);
   }
 
   addSlideUpdates() {
-    const lastSlideIndex = this.swiper.slides.length - 1;
-    this.swiper.removeSlide(lastSlideIndex);
     this.swiper.update();
+    const lastSlideIndex = this.swiper.slides.length - 1;
+    // this.swiper.removeSlide(lastSlideIndex);
     this.swiper.slideTo(lastSlideIndex);
-    SliderStateService.send("GO_TO_IDLE");
   }
 }
 export default SliderService;

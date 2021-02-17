@@ -37,7 +37,7 @@ function SlideMolecule({ slideContent }: { slideContent: SlideContent }): Node {
         ) : (
           <LoadingAtom flex="2" />
         )}
-        {slideContent.menu ? (
+        {slideContent.menu.length > 0 ? (
           <MenuMolecule content={slideContent.menu} />
         ) : (
           <LoadingAtom flex="1" />

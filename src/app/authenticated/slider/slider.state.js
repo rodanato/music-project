@@ -16,8 +16,10 @@ export interface SliderStateSchema {
   states: {
     notstarted: {},
     starting: {},
-    started: {},
+    idle: {},
     addingslide: {},
+    removingSlide: {},
+    updatingSlide: {},
   };
 }
 
@@ -27,9 +29,15 @@ export type SliderEvent =
   | { type: "STARTED" }
   | { type: "ADD_SLIDE" }
   | { type: "REMOVE_SLIDE" }
+  | { type: "UPDATE_SLIDE" }
   | { type: "GO_TO_IDLE" };
 
 const sliderService = SliderService.getInstance();
+
+const addSlidePromise = async (ctx, e) => {
+  ctx.list = [...ctx.list, e.slide];
+  return Promise.resolve(ctx.list);
+};
 
 export const SliderState: StateMachine<
   any,
@@ -58,26 +66,34 @@ export const SliderState: StateMachine<
       starting: {
         entry: ["createSwiper"],
         on: {
-          STARTED: "started",
+          STARTED: "idle",
         },
         exit: ["initSwiper"],
       },
       idle: {
         on: {
           ADD_SLIDE: "addingslide",
+          // TODO: Put cond for these two, if ctx.list.length > 0
           REMOVE_SLIDE: "removingSlide",
           UPDATE_SLIDE: "updatingSlide",
         },
       },
-      started: {
-        on: {
-          ADD_SLIDE: "addingslide",
-        },
-      },
       addingslide: {
+        // invoke: {
+        //   id: "addSlidePromise",
+        //   src: addSlidePromise,
+        //   onDone: {
+        //     target: "idle",
+        //   },
+        //   onError: {
+        //     actions: ["handleError"],
+        //   },
+        // },
+
         entry: ["addSlide"],
         on: {
-          GO_TO_IDLE: "idle",
+          // GO_TO_IDLE: "idle",
+          UPDATE_SLIDE: "updatingSlide",
         },
       },
       removingSlide: {
@@ -114,12 +130,15 @@ export const SliderState: StateMachine<
         ctx.list = [...newList];
       },
       updateSlide: (ctx, e: any) => {
-        let currentList = [...ctx.list];
-        const newSlide = R.mergeDeepWith(R.concat, ctx.list[e.index], e.slide);
+        if (e.slide) {
+          let currentList = [...ctx.list];
+          const index = ctx.list.length - 1;
+          const newSlide = R.mergeDeepRight(ctx.list[index], e.slide);
 
-        currentList.splice(e.index, 1, newSlide);
+          currentList.splice(index, 1, newSlide);
 
-        ctx.list = currentList;
+          ctx.list = currentList;
+        }
       },
     },
   }

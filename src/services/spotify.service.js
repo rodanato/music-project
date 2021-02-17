@@ -212,7 +212,6 @@ class SpotifyService {
 
   setTokenExpirationTimeout() {
     this.expirationTimeout = setTimeout(() => {
-      console.log(">>> expirationDate");
       this.getNewToken();
     }, Number(this.expirationDate) - 30 * 1000 - Date.now());
   }

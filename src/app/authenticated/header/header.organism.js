@@ -13,7 +13,7 @@ import PollAtom from "./poll/poll.atom";
 import ProfileAtom from "./profile/profile.atom";
 import SliderService from "services/slider.service";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
-import useFetchProfile from "shared/custom-hooks/use-fetch-profile";
+import useLoadProfile from "shared/custom-hooks/use-load-profile";
 
 // STYLES
 import { header, headerBlock } from "./header.styles";
@@ -21,23 +21,12 @@ import { header, headerBlock } from "./header.styles";
 function HeaderOrganism(): Node {
   const sliderService = SliderService.getInstance();
   const [state, send] = useService(SliderStateService);
-  const { data } = useFetchProfile();
   const list = state.context.list;
+  const { loadProfileSlide } = useLoadProfile();
 
   async function removeSlide() {
     send("REMOVE_SLIDE");
   }
-
-  async function addSlide() {
-    if (list.length > 0) sliderService.addEmptySlide();
-    if (data) send("ADD_SLIDE", { slide: data });
-  }
-
-  useEffect(() => {
-    if (state.matches("removingSlide")) {
-      send("GO_TO_IDLE");
-    }
-  });
 
   return (
     <header css={[header]}>
@@ -48,7 +37,10 @@ function HeaderOrganism(): Node {
 
       <div css={[headerBlock]}>
         <button onClick={() => removeSlide()}>Remove first slide</button>
-        <ProfileAtom imageName="logo.png" onClickAction={() => addSlide()} />
+        <ProfileAtom
+          imageName="logo.png"
+          onClickAction={() => loadProfileSlide()}
+        />
       </div>
     </header>
   );
