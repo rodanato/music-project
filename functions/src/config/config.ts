@@ -13,7 +13,12 @@ const corsOptions = {
 
 export const cors = require("cors")(corsOptions);
 
-export const OAUTH_SCOPES = ["user-read-private", "user-read-email"];
+export const OAUTH_SCOPES = [
+  "user-read-private",
+  "user-read-email",
+  "playlist-read-private",
+  "playlist-read-collaborative",
+];
 
 export const spotifyApiConfig = {
   clientId: "2db814ad4e7e4d3b9de12532c65efd8a",

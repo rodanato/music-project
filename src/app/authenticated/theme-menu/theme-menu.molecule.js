@@ -11,7 +11,7 @@ import { useMachine } from "@xstate/react";
 
 // DEPENDENCIES
 import { ThemeMenuState } from "./theme-menu.state";
-import CardAtom from "shared/card/card.atom";
+import CardAtom from "shared/components/card/card.atom";
 import ThemePaletteAtom from "./theme-palette/theme-palette.atom";
 
 // STYLES

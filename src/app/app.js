@@ -14,7 +14,7 @@ import typography from "config/typography";
 import globalClasses from "config/global-styles";
 import ThemeContainerOrganism from "./theme-container/theme-container.organism";
 import UnauthenticatedOrganism from "./unauthenticated/unauthenticated.organism";
-import LoadingAtom from "shared/loading/loading.atom";
+import LoadingAtom from "shared/components/loading/loading.atom";
 import useAuthentication from "./authenticated/use-authentication";
 import AuthenticatedOrganism from "./authenticated/authenticated.organism";
 

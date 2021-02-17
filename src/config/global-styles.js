@@ -56,16 +56,16 @@ export default `
   }
   @keyframes pulse {
     0% {
-      opacity: 1;
+      opacity: 0.75;
     }
     25% {
       opacity: 0.3;
     }
     50% {
-      opacity: 1;
+      opacity: 0.75;
     }
     100% {
-      opacity: 1;
+      opacity: 0.75;
     }
   }
 `;

@@ -9,7 +9,7 @@ import { jsx, css } from "@emotion/core"; // eslint-disable-line
 import { v4 as uuidv4 } from "uuid";
 
 // DEPENDENCIES
-import CardAtom from "shared/card/card.atom";
+import CardAtom from "shared/components/card/card.atom";
 import MenuItemAtom from "./menu-item/menu-item.atom";
 
 // STYLES

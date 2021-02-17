@@ -3,19 +3,23 @@ import { Machine, interpret } from "xstate";
 import type { StateMachine, Interpreter } from "xstate";
 import SliderService from "services/slider.service";
 import { handleError } from "utils/helpers";
+import * as R from "ramda";
 
 export interface SliderStateSchema {
   context: {
     list: [],
     hoursToRefetch: {
       playlists: number,
+      profile: number,
     },
   };
   states: {
     notstarted: {},
     starting: {},
-    started: {},
+    idle: {},
     addingslide: {},
+    updatingSlide: {},
+    removingSlide: {},
   };
 }
 
@@ -25,7 +29,10 @@ export type SliderEvent =
   | { type: "STARTED" }
   | { type: "ADD_SLIDE" }
   | { type: "REMOVE_SLIDE" }
+  | { type: "UPDATE_SLIDE" }
   | { type: "GO_TO_IDLE" };
+
+const sliderService = SliderService.getInstance();
 
 export const SliderState: StateMachine<
   any,
@@ -41,7 +48,8 @@ export const SliderState: StateMachine<
     context: {
       list: [],
       hoursToRefetch: {
-        playlists: 1000 * 60 * 60 * 4, // 4h
+        playlists: 1000 * 60 * 60 * 24, // 24h
+        profile: 1000 * 60 * 60 * 4, // 4h
       },
     },
     states: {
@@ -53,31 +61,34 @@ export const SliderState: StateMachine<
       starting: {
         entry: ["createSwiper"],
         on: {
-          STARTED: "started",
+          STARTED: "idle",
         },
         exit: ["initSwiper"],
       },
       idle: {
         on: {
           ADD_SLIDE: "addingslide",
+          // TODO: Put cond for this, if ctx.list.length > 0
           REMOVE_SLIDE: "removingSlide",
-        },
-      },
-      started: {
-        on: {
-          ADD_SLIDE: "addingslide",
         },
       },
       addingslide: {
         entry: ["addSlide"],
         on: {
-          GO_TO_IDLE: "idle",
+          UPDATE_SLIDE: "updatingSlide",
         },
       },
       removingSlide: {
         entry: ["removeSlide"],
         on: {
           GO_TO_IDLE: "idle",
+        },
+      },
+      updatingSlide: {
+        entry: ["updateSlide"],
+        on: {
+          GO_TO_IDLE: "idle",
+          UPDATE_SLIDE: "updatingSlide",
         },
       },
     },
@@ -88,11 +99,9 @@ export const SliderState: StateMachine<
         handleError({ message: e.data }, "spa:sliderState");
       },
       createSwiper: (ctx, e) => {
-        const sliderService = SliderService.getInstance();
         sliderService.createSwiper();
       },
       initSwiper: (ctx, e) => {
-        const sliderService = SliderService.getInstance();
         sliderService.onInit(ctx.list);
       },
       addSlide: (ctx, e: any) => {
@@ -101,6 +110,17 @@ export const SliderState: StateMachine<
       removeSlide: (ctx, e: any) => {
         const newList = ctx.list.filter((item, i) => i !== 0);
         ctx.list = [...newList];
+      },
+      updateSlide: (ctx, e: any) => {
+        if (e.slide) {
+          let currentList = [...ctx.list];
+          const index = ctx.list.length - 1;
+          const newSlide = R.mergeDeepRight(ctx.list[index], e.slide);
+
+          currentList.splice(index, 1, newSlide);
+
+          ctx.list = currentList;
+        }
       },
     },
   }

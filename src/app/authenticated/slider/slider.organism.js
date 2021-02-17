@@ -11,8 +11,8 @@ import SliderService from "services/slider.service";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
 import NavigationOrganism from "../navigation/navigation.organism";
 import SliderNavigationMolecule from "./slider-navigation/slider-navigation.molecule";
-import useProfileSlide from "../use-profile-slide";
 import SwiperContainerOrganism from "./swiper-container/swiper-container.organism";
+import useLoadProfile from "shared/custom-hooks/use-load-profile";
 
 // STYLES
 // $FlowIgnore
@@ -22,27 +22,28 @@ import { slider } from "./slider.styles";
 function SliderOrganism(): Node {
   const sliderService = SliderService.getInstance();
   const [state, send] = useService(SliderStateService);
-  const { data } = useProfileSlide();
+  const { loadProfileSlide } = useLoadProfile();
+  const [firstSlideLoaded, setFirstSlideLoaded] = useState(false);
   const list = state.context.list;
-
-  async function addSlide() {
-    if (list.length > 0) sliderService.addEmptySlide();
-    if (data) send("ADD_SLIDE", { slide: data });
-  }
-
-  if (state.matches("started")) {
-    addSlide();
-  }
 
   useEffect(() => {
     if (state.matches("notstarted")) {
       send("START");
     }
-  }, []);
+    if (state.matches("removingSlide")) {
+      send("GO_TO_IDLE");
+    }
+    if (state.matches("idle") && !firstSlideLoaded) {
+      loadProfileSlide();
+      setFirstSlideLoaded(true);
+    }
+  }, [state]);
 
   useEffect(() => {
-    if (list.length > 0) sliderService.addSlideUpdates();
-  }, [list]);
+    if (list.length > 0) {
+      sliderService.addSlideUpdates();
+    }
+  }, [list.length]);
 
   return (
     <section css={[slider]}>
@@ -54,4 +55,4 @@ function SliderOrganism(): Node {
   );
 }
 
-export default SliderOrganism;
+export default React.memo(SliderOrganism);

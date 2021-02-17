@@ -7,15 +7,13 @@ import type { Node } from "react";
 import { jsx, css } from "@emotion/core"; // eslint-disable-line
 
 // DEPENDENCIES
-import CardAtom from "shared/card/card.atom";
+import CardAtom from "shared/components/card/card.atom";
 import GenresMolecule from "./genres/genres.molecule";
 import MainImageAtom from "./data-main-image/data-main-image.atom";
 import MetadataMolecule from "./metadata/metadata.molecule";
 
 // STYLES
 import { data } from "./data.styles";
-
-const genresSampleData = ["Rock", "Progressive Rock", "Indie", "Soft Rock"];
 
 function DataMolecule({ content }: { content: any }): Node {
   return (
@@ -33,9 +31,11 @@ function DataMolecule({ content }: { content: any }): Node {
         </CardAtom>
       ) : null}
 
-      <CardAtom>
-        <GenresMolecule genres={genresSampleData} />
-      </CardAtom>
+      {content.genres.length > 0 ? (
+        <CardAtom>
+          <GenresMolecule genres={content.genres} />
+        </CardAtom>
+      ) : null}
     </section>
   );
 }
