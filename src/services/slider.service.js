@@ -46,16 +46,19 @@ class SliderService {
     });
 
     this.swiper.on("slideNextTransitionEnd", () => {
-      if (this.swiper.activeIndex === this.swiper.slides.length - 1) {
-        console.log("final slide transition end");
-
-        if (SliderStateService.state.matches("addingslide")) {
-          SliderStateService.send("UPDATE_SLIDE");
-        }
+      if (
+        this.isLastSlide() &&
+        SliderStateService.state.matches("addingslide")
+      ) {
+        SliderStateService.send("UPDATE_SLIDE");
       }
     });
 
     this.swiper.init();
+  }
+
+  isLastSlide(): boolean {
+    return this.swiper.activeIndex === this.swiper.slides.length - 1;
   }
 
   onInit(list: any) {

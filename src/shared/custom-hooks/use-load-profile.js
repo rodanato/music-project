@@ -41,15 +41,6 @@ function useLoadProfile(): {
     genres: false,
   });
 
-  function addEmptySlide() {
-    if (list.length > 0) sliderService.addEmptySlide();
-  }
-
-  function start() {
-    started.current = true;
-    addSlide();
-  }
-
   function addSlide() {
     const baseContent = {
       data: {
@@ -78,9 +69,7 @@ function useLoadProfile(): {
 
     const featureProps = {
       feature: "profile",
-      status: profileStatus,
       data: profileData,
-      refetch: refetchProfile,
       newContent,
     };
     loadFeature(featureProps);
@@ -101,9 +90,7 @@ function useLoadProfile(): {
 
     const featureProps = {
       feature: "playlists",
-      status: playlistsStatus,
       data: playlistsData,
-      refetch: refetchPlaylists,
       newContent,
     };
     loadFeature(featureProps);
@@ -120,106 +107,77 @@ function useLoadProfile(): {
 
     const featureProps = {
       feature: "genres",
-      status: genresStatus,
       data: genresData,
-      refetch: refetchGenres,
       newContent,
     };
     loadFeature(featureProps);
   }
 
-  function loadFeature({
-    feature,
-    status,
-    data,
-    refetch,
-    newContent,
-  }: FeatureProps) {
-    if (status === "success" && data) {
+  function loadFeature({ feature, data, newContent }: FeatureProps) {
+    if (data) {
       dataLoaded.current[feature] = true;
-      send("UPDATE_SLIDE", {
-        slide: newContent,
-      });
-    } else if (status !== "loading") {
-      refetch();
+      send("UPDATE_SLIDE", { slide: newContent });
     }
   }
 
-  function allSlideDataLoaded() {
-    const profileExist = dataLoaded.current.profile;
-    const playlistsExist = dataLoaded.current.playlists;
-    const genresExist = dataLoaded.current.genres;
-    // const profileExist = featureExistOnSlide("data", "title");
-    // const playlistsExist = featureExistOnSlide("content", "listUI");
-    // const genresExist = featureExistOnSlide("data", "genres");
-
-    return profileExist && playlistsExist && genresExist;
+  function allDataHasLoaded() {
+    const { profile, playlists, genres } = dataLoaded.current;
+    return profile && playlists && genres;
   }
 
-  function featureExistOnSlide(prop: string, subProp: string): boolean {
-    const featureExist = list[list.length - 1];
-
-    if (featureExist) {
-      const featureValue = featureExist[prop][subProp];
-      return featureValue && featureValue.length > 0;
-    }
-
-    return false;
+  function featureHasntLoaded(feature: string): boolean {
+    return !dataLoaded.current[feature];
   }
 
-  function shouldLoadFeature(featureDoesntExist: boolean): boolean {
-    return (
-      (state.matches("idle") || state.matches("updatingSlide")) &&
-      featureDoesntExist
-    );
+  function firstSlideWasAdded() {
+    return state.matches("addingslide") && list.length === 1;
+  }
+
+  function resetFlags() {
+    started.current = false;
+    dataLoaded.current.profile = false;
+    dataLoaded.current.playlists = false;
+    dataLoaded.current.genres = false;
   }
 
   function loadProfileSlide() {
-    // addEmptySlide();
-    start();
+    started.current = true;
+    addSlide();
   }
 
   useEffect(() => {
-    if (state.matches("addingslide") && list.length === 1) {
+    if (firstSlideWasAdded()) {
       send("UPDATE_SLIDE");
     }
   }, [state]);
 
   useEffect(() => {
-    if (started.current) {
-      // const profileDoesntExist = !featureExistOnSlide("data", "title");
-      const profileDoesntExist = !dataLoaded.current.profile;
-
-      if (shouldLoadFeature(profileDoesntExist)) {
-        return loadProfile();
+    if (started.current && state.matches("updatingSlide")) {
+      if (profileStatus === "idle") {
+        refetchProfile();
       }
-      // }, [state, profileData]);
 
-      // useEffect(() => {
-      // const playlistsDoesntExist = !featureExistOnSlide("content", "listUI");
-      const playlistsDoesntExist = !dataLoaded.current.playlists;
-
-      if (profileData && shouldLoadFeature(playlistsDoesntExist)) {
-        return loadPlaylists();
+      if (profileStatus === "success" && featureHasntLoaded("profile")) {
+        loadProfile();
       }
-      // }, [state, profileData, playlistsData]);
 
-      // useEffect(() => {
-      // const genresDoesntExist = !featureExistOnSlide("data", "genres");
-      const genresDoesntExist = !dataLoaded.current.genres;
+      if (profileData) {
+        if (playlistsStatus === "idle" && genresStatus === "idle") {
+          refetchPlaylists();
+          refetchGenres();
+        }
 
-      if (profileData && shouldLoadFeature(genresDoesntExist)) {
-        return loadGenres();
+        if (playlistsStatus === "success" && featureHasntLoaded("playlists")) {
+          loadPlaylists();
+        }
+
+        if (genresStatus === "success" && featureHasntLoaded("genres")) {
+          loadGenres();
+        }
       }
-      // }, [state, profileData, genresData]);
 
-      // useEffect(() => {
-      // if (state.matches("updatingSlide") && profileData) {
-      if (state.matches("updatingSlide") && allSlideDataLoaded()) {
-        started.current = false;
-        dataLoaded.current.profile = false;
-        dataLoaded.current.playlists = false;
-        dataLoaded.current.genres = false;
+      if (allDataHasLoaded()) {
+        resetFlags();
         send("GO_TO_IDLE");
       }
     }

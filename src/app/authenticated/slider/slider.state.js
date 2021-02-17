@@ -18,8 +18,8 @@ export interface SliderStateSchema {
     starting: {},
     idle: {},
     addingslide: {},
-    removingSlide: {},
     updatingSlide: {},
+    removingSlide: {},
   };
 }
 
@@ -73,26 +73,13 @@ export const SliderState: StateMachine<
       idle: {
         on: {
           ADD_SLIDE: "addingslide",
-          // TODO: Put cond for these two, if ctx.list.length > 0
+          // TODO: Put cond for this, if ctx.list.length > 0
           REMOVE_SLIDE: "removingSlide",
-          UPDATE_SLIDE: "updatingSlide",
         },
       },
       addingslide: {
-        // invoke: {
-        //   id: "addSlidePromise",
-        //   src: addSlidePromise,
-        //   onDone: {
-        //     target: "idle",
-        //   },
-        //   onError: {
-        //     actions: ["handleError"],
-        //   },
-        // },
-
         entry: ["addSlide"],
         on: {
-          // GO_TO_IDLE: "idle",
           UPDATE_SLIDE: "updatingSlide",
         },
       },

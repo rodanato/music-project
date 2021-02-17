@@ -25,7 +25,7 @@ function SlideMolecule({ slideContent }: { slideContent: SlideContent }): Node {
   return (
     <div className="swiper-slide" css={[swiperSlide]}>
       <div className="swiper-content" css={[swiperContent]}>
-        {slideContent.data ? (
+        {slideContent.data?.photo ? (
           <DataMolecule content={slideContent.data} />
         ) : (
           <LoadingAtom flex="1.5" />
