@@ -28,7 +28,7 @@ function useLoadProfile(): {
     refetchPlaylists,
     playlistsStatus,
   } = useFetchPlaylists();
-  const { genresData, refetchGenres, genresStatus } = useFetchGenres();
+  // const { genresData, refetchGenres, genresStatus } = useFetchGenres();
   const [state, send] = useService(SliderStateService);
   const started = useRef(false);
   const list = state.context.list;
@@ -44,7 +44,7 @@ function useLoadProfile(): {
         genres: [],
       },
       content: {
-        listUI: [],
+        list: [],
       },
       menu: [],
     };
@@ -74,15 +74,19 @@ function useLoadProfile(): {
 
   function loadPlaylists() {
     const newContent = {
+      data: {
+        genres: [],
+      },
       content: {
-        listUI: [],
+        list: [],
         title: "",
       },
     };
 
     if (playlistsData) {
-      newContent.content.listUI = playlistsData;
+      newContent.content.list = playlistsData.items;
       newContent.content.title = "Playlists";
+      newContent.data.genres = playlistsData.genres;
     }
 
     const featureProps = {
@@ -93,22 +97,22 @@ function useLoadProfile(): {
     loadFeature(featureProps);
   }
 
-  function loadGenres() {
-    const newContent = {
-      data: {
-        genres: [],
-      },
-    };
+  // function loadGenres() {
+  //   const newContent = {
+  //     data: {
+  //       genres: [],
+  //     },
+  //   };
 
-    if (genresData) newContent.data.genres = genresData;
+  //   if (genresData) newContent.data.genres = genresData;
 
-    const featureProps = {
-      feature: "genres",
-      data: genresData,
-      newContent,
-    };
-    loadFeature(featureProps);
-  }
+  //   const featureProps = {
+  //     feature: "genres",
+  //     data: genresData,
+  //     newContent,
+  //   };
+  //   loadFeature(featureProps);
+  // }
 
   function loadFeature({ feature, data, newContent }: FeatureProps) {
     if (data) {
@@ -119,7 +123,7 @@ function useLoadProfile(): {
 
   function allDataHasLoaded() {
     const { profile, playlists, genres } = dataLoaded.current;
-    return profile && playlists && genres;
+    return profile && playlists;
   }
 
   function featureHasntLoaded(feature: string): boolean {
@@ -127,7 +131,7 @@ function useLoadProfile(): {
   }
 
   function firstSlideWasAdded() {
-    return state.matches("addingslide") && list.length === 1;
+    return state.matches("slideAdded") && list.length === 1;
   }
 
   function resetFlags() {
@@ -159,18 +163,19 @@ function useLoadProfile(): {
       }
 
       if (profileData) {
-        if (playlistsStatus === "idle" && genresStatus === "idle") {
+        // if (playlistsStatus === "idle" && genresStatus === "idle") {
+        if (playlistsStatus === "idle") {
           refetchPlaylists();
-          refetchGenres();
+          // refetchGenres();
         }
 
         if (playlistsStatus === "success" && featureHasntLoaded("playlists")) {
           loadPlaylists();
         }
 
-        if (genresStatus === "success" && featureHasntLoaded("genres")) {
-          loadGenres();
-        }
+        // if (genresStatus === "success" && featureHasntLoaded("genres")) {
+        //   loadGenres();
+        // }
       }
 
       if (allDataHasLoaded()) {
@@ -178,7 +183,8 @@ function useLoadProfile(): {
         send("GO_TO_IDLE");
       }
     }
-  }, [started, state, profileData, playlistsData, genresData]);
+  }, [started, state, profileData, playlistsData]);
+  // }, [started, state, profileData, playlistsData, genresData]);
 
   return { loadProfileSlide };
 }

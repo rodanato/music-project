@@ -23,7 +23,7 @@ function useFetchGenres(): {
   });
 
   async function getGenresData() {
-    const genres: ?Array<any> = await databaseService.getPlaylistGenres();
+    const genres: ?Array<Genre> = await databaseService.getPlaylistGenres();
 
     if (!genres) return;
 

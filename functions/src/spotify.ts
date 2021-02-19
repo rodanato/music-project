@@ -28,9 +28,19 @@ async function getPlaylistIds(userProfileId: string) {
   }
 }
 
+// function saveGenresOnDB(genres: any, userProfileId: string) {
+//   admin.db
+//     .collection("playlists")
+//     .doc(`spotify:${userProfileId}`)
+//     .update({ genres: genres })
+//     .catch(function(error: any) {
+//       handleError("api:spotify:saveGenresOnDB", error);
+//     });
+// }
+
 async function getGenres(songs: any[]) {
-  let genres = [];
-  let artists = [
+  const genres = [];
+  const artists = [
     ...new Set(
       songs
         .filter((song) => song.track)
@@ -84,7 +94,7 @@ spotify.post(
     const { userProfileId } = req.body;
     const playlistIds = await getPlaylistIds(userProfileId);
     const playlistIdstoScan: string[] = filterPlaylistIdstoScan(playlistIds);
-    let songs = [];
+    const songs = [];
 
     for (const playlistId of playlistIdstoScan) {
       try {
@@ -96,6 +106,7 @@ spotify.post(
     }
 
     const genres = await getGenres(songs);
+    // saveGenresOnDB(genres, userProfileId);
 
     res.json(genres);
   }

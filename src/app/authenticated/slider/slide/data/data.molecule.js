@@ -31,7 +31,7 @@ function DataMolecule({ content }: { content: any }): Node {
         </CardAtom>
       ) : null}
 
-      {content.genres.length > 0 ? (
+      {content?.genres?.length > 0 ? (
         <CardAtom>
           <GenresMolecule genres={content.genres} />
         </CardAtom>

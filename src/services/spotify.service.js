@@ -7,6 +7,7 @@ import { apiUrl } from "utils/helpers";
 import type {
   SpotifyProfile,
   PlaylistsDetail,
+  Genre,
 } from "shared/types/spotify.types";
 
 type setCodeResponse = {
@@ -168,7 +169,7 @@ class SpotifyService {
     }
   }
 
-  async getGenres() {
+  async getGenres(): Promise<?(Genre[])> {
     const url = `${apiUrl()}/${this._spotifyUrls.genres}`;
     const request = new Request(url, {
       method: "POST",
@@ -185,7 +186,7 @@ class SpotifyService {
 
     try {
       const res = await fetch(request);
-      const genres: any = await res.json();
+      const genres: Genre[] = await res.json();
       return genres;
     } catch (e) {
       handleError(e, "spa:spotifyService:getGenres");

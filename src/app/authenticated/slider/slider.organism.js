@@ -27,7 +27,7 @@ function SliderOrganism(): Node {
   const list = state.context.list;
 
   useEffect(() => {
-    if (state.matches("notstarted")) {
+    if (state.matches("notStarted")) {
       send("START");
     }
     if (state.matches("removingSlide")) {

@@ -7,6 +7,7 @@ import type {
   SpotifyProfile,
   Playlist,
   PlaylistsDetail,
+  Genre,
 } from "shared/types/spotify.types";
 import { ThemeContainerStateService } from "app/theme-container/theme-container.state";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
@@ -24,7 +25,7 @@ class DatabaseService {
 
   authService: AuthService;
   spotifyService: SpotifyService;
-  firstLogin: boolean = false;
+  // firstLogin: boolean = false;
   loginTime: number;
 
   constructor() {
@@ -46,38 +47,66 @@ class DatabaseService {
     const email = this.authService.firebaseUser.email;
 
     try {
-      // let response: DbProfile = {};
+      let response: DbProfile;
+
       const users = await db.collection("users").get();
       users.forEach(function(doc) {
         if (doc.data().email === email) {
-          return doc.data();
+          response = doc.data();
         }
       });
-      // return response;
+      return response;
     } catch (error) {
       handleError("spa:databaseService:getProfileFromDB", error);
     }
   }
 
-  // async getPlaylistsFromDB(): Promise<?PlaylistsDetail> {
+  async getPlaylistsFromDB(): Promise<?PlaylistsDetail> {
+    const id = this.authService.firebaseUser.uid;
+
+    try {
+      let response: PlaylistsDetail;
+
+      await db
+        .collection("playlists")
+        .doc(id)
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            response = doc.data();
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        });
+      return response;
+    } catch (error) {
+      handleError("spa:databaseService:getPlaylistsFromDB", error);
+    }
+  }
+
+  // async getGenresFromDB(): Promise<?(Genre[])> {
   //   const id = this.authService.firebaseUser.uid;
-  //   console.log("playlists fromDB");
+  //   console.log("genres fromDB");
 
   //   try {
+  //     let response: Genre[] = [];
+
   //     await db
   //       .collection("playlists")
   //       .doc(id)
   //       .get()
   //       .then(function(doc) {
   //         if (doc.exists) {
-  //           return doc.data();
+  //           response = doc.data().items;
   //         } else {
   //           // doc.data() will be undefined in this case
   //           console.log("No such document!");
   //         }
   //       });
+  //     return response;
   //   } catch (error) {
-  //     handleError("spa:databaseService:getPlaylistsFromDB", error);
+  //     handleError("spa:databaseService:getGenresFromDB", error);
   //   }
   // }
 
@@ -127,7 +156,7 @@ class DatabaseService {
     });
   }
 
-  async getPlaylistsFromSpotify(): Promise<?(Playlist[])> {
+  async getPlaylistsFromSpotify(): Promise<?PlaylistsDetail> {
     const playlistsFirstGroup: ?PlaylistsDetail = await this.spotifyService.getPlaylists(
       0
     );
@@ -152,11 +181,26 @@ class DatabaseService {
       ...(remainingPlaylists ? remainingPlaylists : []),
     ];
 
-    this.savePlaylistsOnDB(allPlaylists);
-    return allPlaylists;
+    const genres: ?(Genre[]) = await this.spotifyService.getGenres();
+
+    if (!genres) return;
+
+    const playlistsDetail = {
+      total: playlistsFirstGroup.total,
+      limit: playlistsFirstGroup.limit,
+      items: allPlaylists,
+      genres: genres,
+    };
+
+    this.savePlaylistsOnDB(playlistsDetail);
+    return playlistsDetail;
   }
 
   async getProfileData(): Promise<?DbProfile> {
+    if (this.timeHasExpiredFor("profile")) {
+      return await this.getProfileFromSpotify();
+    }
+
     const profileOnDB: ?DbProfile = await this.getProfileFromDB();
 
     if (profileOnDB) {
@@ -164,7 +208,7 @@ class DatabaseService {
       return profileOnDB;
     }
 
-    return this.getProfileFromSpotify();
+    return await this.getProfileFromSpotify();
   }
 
   timeHasExpiredFor(feature: string): boolean {
@@ -175,18 +219,18 @@ class DatabaseService {
   }
 
   saveLoginTime() {
-    this.firstLogin = true;
+    // this.firstLogin = true;
     this.loginTime = Date.now();
   }
 
-  async getUserPlaylists(): Promise<?(Playlist[])> {
-    // if (this.firstLogin || this.timeHasExpiredFor("playlists")) {
-    //   this.firstLogin = false;
-    //   return await this.getPlaylistsFromSpotify();
-    // }
-    return await this.getPlaylistsFromSpotify();
+  async getUserPlaylists(): Promise<?PlaylistsDetail> {
+    if (this.timeHasExpiredFor("playlists")) {
+      return await this.getPlaylistsFromSpotify();
+    }
 
-    // return await this.getPlaylistsFromDB();
+    const playlistsOnDB: ?PlaylistsDetail = await this.getPlaylistsFromDB();
+
+    return playlistsOnDB ? playlistsOnDB : await this.getPlaylistsFromSpotify();
   }
 
   saveProfileOnDB(data: DbProfile) {
@@ -203,10 +247,11 @@ class DatabaseService {
       });
   }
 
-  savePlaylistsOnDB(playlists: Playlist[]) {
+  savePlaylistsOnDB(playlistsDetail: PlaylistsDetail) {
     const data = {
-      items: playlists,
-      total: playlists.length,
+      genres: playlistsDetail.genres,
+      items: playlistsDetail.items,
+      total: playlistsDetail.items.length,
     };
 
     db.collection("playlists")
@@ -226,8 +271,19 @@ class DatabaseService {
       });
   }
 
-  async getPlaylistGenres() {
-    return await this.spotifyService.getGenres();
+  // async getPlaylistGenres(): Promise<?(Genre[])> {
+  //   if (this.timeHasExpiredFor("genres")) {
+  //     return await this.spotifyService.getGenres();
+  //   }
+
+  //   const genresOnDB: ?(Genre[]) = await this.getGenresFromDB();
+
+  //   return genresOnDB ? genresOnDB : await this.spotifyService.getGenres();
+  // }
+
+  refetchPersistedData() {
+    // TODO: On any change to user´s spotify data also allocated on the DB, do a refetch of each from the spotify API so the DB will be up to date
+    // Use a listener
   }
 }
 

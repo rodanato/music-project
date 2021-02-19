@@ -24,6 +24,7 @@ export const getChildrenStateName = (state: any, parent: string): string => {
 
 export const handleError = (e: any, where: string): void => {
   // throw new Error(e);
+  // TODO: Apply better error handling strategy
 
   if (e.response && e.response.data) {
     console.error(

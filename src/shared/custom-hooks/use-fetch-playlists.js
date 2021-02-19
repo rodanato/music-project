@@ -4,14 +4,14 @@ import React, { Fragment, useState, useEffect } from "react"; // eslint-disable-
 
 // DEPENDENCIES
 import type { Node } from "react"; // eslint-disable-line
-import type { Playlist } from "shared/types/spotify.types";
+import type { PlaylistsDetail } from "shared/types/spotify.types";
 import DatabaseService from "services/database.service";
 import { useQuery } from "react-query";
 import { useService } from "@xstate/react";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
 
 function useFetchPlaylists(): {
-  playlistsData: ?Array<Playlist>,
+  playlistsData: ?PlaylistsDetail,
   refetchPlaylists: Function,
   playlistsStatus: string,
 } {
@@ -28,7 +28,7 @@ function useFetchPlaylists(): {
   );
 
   async function getPlaylistsData() {
-    const playlists: ?Array<Playlist> = await databaseService.getUserPlaylists();
+    const playlists: ?PlaylistsDetail = await databaseService.getUserPlaylists();
 
     if (!playlists) return;
 

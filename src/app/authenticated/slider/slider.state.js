@@ -14,10 +14,10 @@ export interface SliderStateSchema {
     },
   };
   states: {
-    notstarted: {},
+    notStarted: {},
     starting: {},
     idle: {},
-    addingslide: {},
+    slideAdded: {},
     updatingSlide: {},
     removingSlide: {},
   };
@@ -44,16 +44,16 @@ export const SliderState: StateMachine<
   }
 > = Machine<any, SliderStateSchema, SliderEvent>(
   {
-    initial: "notstarted",
+    initial: "notStarted",
     context: {
       list: [],
       hoursToRefetch: {
         playlists: 1000 * 60 * 60 * 24, // 24h
-        profile: 1000 * 60 * 60 * 4, // 4h
+        profile: 1000 * 60 * 60 * 24, // 24h
       },
     },
     states: {
-      notstarted: {
+      notStarted: {
         on: {
           START: "starting",
         },
@@ -67,12 +67,12 @@ export const SliderState: StateMachine<
       },
       idle: {
         on: {
-          ADD_SLIDE: "addingslide",
+          ADD_SLIDE: "slideAdded",
           // TODO: Put cond for this, if ctx.list.length > 0
           REMOVE_SLIDE: "removingSlide",
         },
       },
-      addingslide: {
+      slideAdded: {
         entry: ["addSlide"],
         on: {
           UPDATE_SLIDE: "updatingSlide",

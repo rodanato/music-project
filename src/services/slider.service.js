@@ -48,7 +48,7 @@ class SliderService {
     this.swiper.on("slideNextTransitionEnd", () => {
       if (
         this.isLastSlide() &&
-        SliderStateService.state.matches("addingslide")
+        SliderStateService.state.matches("slideAdded")
       ) {
         SliderStateService.send("UPDATE_SLIDE");
       }

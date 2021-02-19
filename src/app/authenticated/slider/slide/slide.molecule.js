@@ -30,9 +30,9 @@ function SlideMolecule({ slideContent }: { slideContent: SlideContent }): Node {
         ) : (
           <LoadingAtom flex="1.5" />
         )}
-        {slideContent.content && slideContent.content.listUI.length > 0 ? (
+        {slideContent.content?.list?.length > 0 ? (
           <ContentMolecule title={slideContent.content.title}>
-            {slideContent.content.listUI}
+            {slideContent.content.list}
           </ContentMolecule>
         ) : (
           <LoadingAtom flex="2" />

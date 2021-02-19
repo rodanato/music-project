@@ -35,8 +35,11 @@ export type Playlist = {
 
 export type PlaylistsDetail = {
   items: Playlist[],
-  limit: number,
-  previous: string,
-  next: string,
+  genres: Genre[],
   total: number,
+  limit: number,
+  previous?: string,
+  next?: string,
 };
+
+export type Genre = string;

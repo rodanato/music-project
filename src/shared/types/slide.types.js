@@ -13,7 +13,7 @@ export type DataContent = {
 };
 export type Content = {
   title: string,
-  listUI: any,
+  list: any,
 };
 
 export type SlideContent = {
