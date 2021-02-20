@@ -1,5 +1,5 @@
 // @flow
-import { Machine, interpret } from "xstate";
+import { Machine, interpret, assign } from "xstate";
 import type { StateMachine, Interpreter } from "xstate";
 import SliderService from "services/slider.service";
 import { handleError } from "utils/helpers";
@@ -104,24 +104,30 @@ export const SliderState: StateMachine<
       initSwiper: (ctx, e) => {
         sliderService.onInit(ctx.list);
       },
-      addSlide: (ctx, e: any) => {
-        ctx.list = [...ctx.list, e.slide];
-      },
-      removeSlide: (ctx, e: any) => {
-        const newList = ctx.list.filter((item, i) => i !== 0);
-        ctx.list = [...newList];
-      },
-      updateSlide: (ctx, e: any) => {
-        if (e.slide) {
-          let currentList = [...ctx.list];
-          const index = ctx.list.length - 1;
-          const newSlide = R.mergeDeepRight(ctx.list[index], e.slide);
+      addSlide: assign({
+        list: (ctx, e) => [...ctx.list, e.slide],
+      }),
+      removeSlide: assign({
+        list: (ctx, e) => {
+          const newList = ctx.list.filter((item, i) => i !== 0);
+          return newList;
+        },
+      }),
+      updateSlide: assign({
+        list: (ctx, e) => {
+          if (e.slide) {
+            const currentList = [...ctx.list];
+            const index = ctx.list.length - 1;
+            const newSlide = R.mergeDeepRight(ctx.list[index], e.slide);
 
-          currentList.splice(index, 1, newSlide);
+            currentList.splice(index, 1, newSlide);
 
-          ctx.list = currentList;
-        }
-      },
+            return currentList;
+          }
+
+          return ctx.list;
+        },
+      }),
     },
   }
 );

@@ -9,7 +9,6 @@ import { useService } from "@xstate/react";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
 import useFetchProfile from "shared/custom-hooks/use-fetch-profile";
 import useFetchPlaylists from "shared/custom-hooks/use-fetch-playlists";
-import useFetchGenres from "shared/custom-hooks/use-fetch-genres";
 
 type FeatureProps = {
   feature: string,
@@ -28,7 +27,6 @@ function useLoadProfile(): {
     refetchPlaylists,
     playlistsStatus,
   } = useFetchPlaylists();
-  // const { genresData, refetchGenres, genresStatus } = useFetchGenres();
   const [state, send] = useService(SliderStateService);
   const started = useRef(false);
   const list = state.context.list;
@@ -96,23 +94,6 @@ function useLoadProfile(): {
     };
     loadFeature(featureProps);
   }
-
-  // function loadGenres() {
-  //   const newContent = {
-  //     data: {
-  //       genres: [],
-  //     },
-  //   };
-
-  //   if (genresData) newContent.data.genres = genresData;
-
-  //   const featureProps = {
-  //     feature: "genres",
-  //     data: genresData,
-  //     newContent,
-  //   };
-  //   loadFeature(featureProps);
-  // }
 
   function loadFeature({ feature, data, newContent }: FeatureProps) {
     if (data) {

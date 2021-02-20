@@ -106,7 +106,6 @@ spotify.post(
     }
 
     const genres = await getGenres(songs);
-    // saveGenresOnDB(genres, userProfileId);
 
     res.json(genres);
   }
