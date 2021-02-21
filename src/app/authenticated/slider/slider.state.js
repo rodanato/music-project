@@ -68,7 +68,6 @@ export const SliderState: StateMachine<
       idle: {
         on: {
           ADD_SLIDE: "slideAdded",
-          // TODO: Put cond for this, if ctx.list.length > 0
           REMOVE_SLIDE: "removingSlide",
         },
       },

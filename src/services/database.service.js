@@ -1,6 +1,5 @@
 // @flow
 import SpotifyService from "services/spotify.service";
-import AuthService from "services/auth.service";
 import { db } from "config/firebase";
 import type {
   DbProfile,
@@ -12,6 +11,7 @@ import type {
 import { ThemeContainerStateService } from "app/theme-container/theme-container.state";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
 import { handleError } from "utils/helpers";
+import { UserStateService } from "shared/user.state";
 
 class DatabaseService {
   static instance: DatabaseService;
@@ -23,14 +23,12 @@ class DatabaseService {
     return DatabaseService.instance;
   }
 
-  authService: AuthService;
   spotifyService: SpotifyService;
   // firstLogin: boolean = false;
   loginTime: number;
 
   constructor() {
     this.spotifyService = SpotifyService.getInstance();
-    this.authService = AuthService.getInstance();
   }
 
   adaptSpotifyProfileToDBProfile(data: SpotifyProfile): DbProfile {
@@ -44,7 +42,7 @@ class DatabaseService {
   }
 
   async getProfileFromDB(): Promise<?DbProfile> {
-    const email = this.authService.firebaseUser.email;
+    const { email } = UserStateService.state.context.firebaseUser;
 
     try {
       let response: DbProfile;
@@ -62,14 +60,14 @@ class DatabaseService {
   }
 
   async getPlaylistsFromDB(): Promise<?PlaylistsDetail> {
-    const id = this.authService.firebaseUser.uid;
+    const { uid } = UserStateService.state.context.firebaseUser;
 
     try {
       let response: PlaylistsDetail;
 
       await db
         .collection("playlists")
-        .doc(id)
+        .doc(uid)
         .get()
         .then(function(doc) {
           if (doc.exists) {
@@ -85,33 +83,9 @@ class DatabaseService {
     }
   }
 
-  // async getGenresFromDB(): Promise<?(Genre[])> {
-  //   const id = this.authService.firebaseUser.uid;
-  //   console.log("genres fromDB");
-
-  //   try {
-  //     let response: Genre[] = [];
-
-  //     await db
-  //       .collection("playlists")
-  //       .doc(id)
-  //       .get()
-  //       .then(function(doc) {
-  //         if (doc.exists) {
-  //           response = doc.data().items;
-  //         } else {
-  //           // doc.data() will be undefined in this case
-  //           console.log("No such document!");
-  //         }
-  //       });
-  //     return response;
-  //   } catch (error) {
-  //     handleError("spa:databaseService:getGenresFromDB", error);
-  //   }
-  // }
-
   updatesBasedOnProfileConfig(profileOnDB: DbProfile): void {
-    this.spotifyService.userInfo = profileOnDB;
+    UserStateService.send("UPDATE_USER_INFO", { userInfo: profileOnDB });
+
     const currentTheme = ThemeContainerStateService.state.value.rendered;
 
     if (currentTheme !== profileOnDB.theme) {
@@ -239,8 +213,10 @@ class DatabaseService {
       theme: ThemeContainerStateService.state.value.rendered,
     };
 
+    const { uid } = UserStateService.state.context.firebaseUser;
+
     db.collection("users")
-      .doc(this.authService.firebaseUser.uid)
+      .doc(uid)
       .set(newUserData)
       .catch(function(error) {
         console.error("spa:databaseService:saveProfileOnDB", error);
@@ -253,9 +229,10 @@ class DatabaseService {
       items: playlistsDetail.items,
       total: playlistsDetail.items.length,
     };
+    const { uid } = UserStateService.state.context.firebaseUser;
 
     db.collection("playlists")
-      .doc(this.authService.firebaseUser.uid)
+      .doc(uid)
       .set(data)
       .catch(function(error) {
         console.error("spa:databaseService:savePlaylistsOnDB", error);
@@ -263,23 +240,15 @@ class DatabaseService {
   }
 
   updateProfileOnDB(key: string, value: string) {
+    const { uid } = UserStateService.state.context.firebaseUser;
+
     db.collection("users")
-      .doc(this.authService.firebaseUser.uid)
+      .doc(uid)
       .update({ [key]: value })
       .catch(function(error) {
         console.error("spa:databaseService:updateProfileOnDB ", error);
       });
   }
-
-  // async getPlaylistGenres(): Promise<?(Genre[])> {
-  //   if (this.timeHasExpiredFor("genres")) {
-  //     return await this.spotifyService.getGenres();
-  //   }
-
-  //   const genresOnDB: ?(Genre[]) = await this.getGenresFromDB();
-
-  //   return genresOnDB ? genresOnDB : await this.spotifyService.getGenres();
-  // }
 
   refetchPersistedData() {
     // TODO: On any change to user´s spotify data also allocated on the DB, do a refetch of each from the spotify API so the DB will be up to date

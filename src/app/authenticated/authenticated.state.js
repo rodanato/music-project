@@ -109,6 +109,7 @@ export const AuthenticatedState: StateMachine<
         localStorage.removeItem("expirationDate");
         localStorage.removeItem("spotifyToken");
         localStorage.removeItem("spotifyRefreshToken");
+        localStorage.removeItem("firebaseUser");
         spotifyService.cleanExpirationTimeout();
       },
       cleanUrlAndAddToStorage: (_ctx, e: any) => {

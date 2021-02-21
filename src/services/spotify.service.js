@@ -3,12 +3,12 @@
 import SpotifyWebApi from "spotify-web-api-js";
 import { handleError, getFromStorage, persistOnStorage } from "utils/helpers";
 import { apiUrl } from "utils/helpers";
-// import { db } from "./firebase/config";
 import type {
   SpotifyProfile,
   PlaylistsDetail,
   Genre,
 } from "shared/types/spotify.types";
+import { UserStateService } from "shared/user.state";
 
 type setCodeResponse = {
   access_token: string,
@@ -145,12 +145,16 @@ class SpotifyService {
   async getProfile(): Promise<?SpotifyProfile> {
     try {
       const profile: SpotifyProfile = await this.spotifyApi.getMe();
-      this.userInfo = {
+
+      const userInfo = {
         spotifyId: profile.id,
         name: profile.display_name,
         email: profile.email,
         photo: profile.images[0].url,
       };
+
+      UserStateService.send("UPDATE_USER_INFO", { userInfo });
+
       return profile;
     } catch (error) {
       handleError(error, "spa:spotifyService:getProfile");
@@ -159,8 +163,9 @@ class SpotifyService {
 
   async getPlaylists(offset: number): Promise<?PlaylistsDetail> {
     try {
+      const { spotifyId } = UserStateService.state.context.userInfo;
       const playlists: PlaylistsDetail = await this.spotifyApi.getUserPlaylists(
-        this.userInfo.spotifyId,
+        spotifyId,
         { offset: offset }
       );
       return playlists;
@@ -170,6 +175,7 @@ class SpotifyService {
   }
 
   async getGenres(): Promise<?(Genre[])> {
+    const { spotifyId } = UserStateService.state.context.userInfo;
     const url = `${apiUrl()}/${this._spotifyUrls.genres}`;
     const request = new Request(url, {
       method: "POST",
@@ -179,7 +185,7 @@ class SpotifyService {
       },
       mode: "cors",
       body: JSON.stringify({
-        userProfileId: this.userInfo.spotifyId,
+        userProfileId: spotifyId,
         token: this.token,
       }),
     });

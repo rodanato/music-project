@@ -7,6 +7,7 @@ import {
 } from "utils/helpers";
 import { auth } from "config/firebase";
 import SpotifyService from "./spotify.service";
+import { UserStateService } from "shared/user.state";
 
 type AuthUrls = {
   createFirebaseAccount: string,
@@ -39,7 +40,9 @@ class AuthService {
     const signedInFirebaseUser: Object = getFromStorage("firebaseUser");
 
     if (signedInFirebaseUser) {
-      this.firebaseUser = signedInFirebaseUser;
+      UserStateService.send("UPDATE_FIREBASE_USER", {
+        firebaseUser: signedInFirebaseUser,
+      });
     }
   }
 
@@ -61,7 +64,7 @@ class AuthService {
   async firebaseLogin(code: string): Promise<any> {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        this.firebaseUser = user;
+        UserStateService.send("UPDATE_FIREBASE_USER", { firebaseUser: user });
         persistOnStorage("firebaseUser", user);
       }
     });

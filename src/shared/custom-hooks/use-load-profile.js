@@ -144,19 +144,13 @@ function useLoadProfile(): {
       }
 
       if (profileData) {
-        // if (playlistsStatus === "idle" && genresStatus === "idle") {
         if (playlistsStatus === "idle") {
           refetchPlaylists();
-          // refetchGenres();
         }
 
         if (playlistsStatus === "success" && featureHasntLoaded("playlists")) {
           loadPlaylists();
         }
-
-        // if (genresStatus === "success" && featureHasntLoaded("genres")) {
-        //   loadGenres();
-        // }
       }
 
       if (allDataHasLoaded()) {
@@ -165,7 +159,6 @@ function useLoadProfile(): {
       }
     }
   }, [started, state, profileData, playlistsData]);
-  // }, [started, state, profileData, playlistsData, genresData]);
 
   return { loadProfileSlide };
 }
