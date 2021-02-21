@@ -13,7 +13,7 @@ import { responsive } from "utils/responsive";
 import MusicControllerOrganism from "./music-controller/music-controller.organism";
 import HeaderOrganism from "./header/header.organism";
 import SliderOrganism from "./slider/slider.organism";
-import DatabaseService from "services/database.service";
+import BackendService from "services/backend.service";
 
 // STYLES
 import { container, ContainerRow } from "./authenticated.styles";
@@ -36,10 +36,10 @@ const queryClient = new QueryClient({
 });
 
 function AuthenticatedOrganism({ onLogout }: AuthenticatedOrganismProps): Node {
-  const databaseService = DatabaseService.getInstance();
+  const backendService = BackendService.getInstance();
 
   useEffect(() => {
-    databaseService.saveLoginTime();
+    backendService.saveLoginTime();
   }, []);
 
   return (

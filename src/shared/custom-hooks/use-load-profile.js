@@ -33,7 +33,6 @@ function useLoadProfile(): {
   const dataLoaded = useRef({
     profile: false,
     playlists: false,
-    genres: false,
   });
 
   function addSlide() {
@@ -103,7 +102,7 @@ function useLoadProfile(): {
   }
 
   function allDataHasLoaded() {
-    const { profile, playlists, genres } = dataLoaded.current;
+    const { profile, playlists } = dataLoaded.current;
     return profile && playlists;
   }
 

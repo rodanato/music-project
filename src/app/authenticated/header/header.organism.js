@@ -18,7 +18,7 @@ import useLoadProfile from "shared/custom-hooks/use-load-profile";
 import { header, headerBlock } from "./header.styles";
 
 function HeaderOrganism(): Node {
-  const [state, send] = useService(SliderStateService);
+  const [_, send] = useService(SliderStateService);
   const { loadProfileSlide } = useLoadProfile();
 
   async function removeSlide() {

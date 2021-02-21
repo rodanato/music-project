@@ -6,17 +6,10 @@ import {
   getFromStorage,
 } from "utils/helpers";
 import { auth } from "config/firebase";
-import SpotifyService from "./spotify.service";
 import { UserStateService } from "shared/user.state";
 
 type AuthUrls = {
   createFirebaseAccount: string,
-};
-
-type FirebaseUser = {
-  +displayName: string,
-  +email: string,
-  +uid: string,
 };
 
 class AuthService {
@@ -31,12 +24,8 @@ class AuthService {
   _authUrls: AuthUrls = {
     createFirebaseAccount: "createFirebaseAccount",
   };
-  firebaseUser: FirebaseUser;
-  spotifyService: SpotifyService;
 
   constructor() {
-    this.spotifyService = SpotifyService.getInstance();
-
     const signedInFirebaseUser: Object = getFromStorage("firebaseUser");
 
     if (signedInFirebaseUser) {
@@ -44,13 +33,6 @@ class AuthService {
         firebaseUser: signedInFirebaseUser,
       });
     }
-  }
-
-  getCodeIfPresent(): mixed {
-    const searchParams: URLSearchParams = new URLSearchParams(
-      window.location.search
-    );
-    return searchParams.has("code") ? searchParams.get("code") : false;
   }
 
   async firebaseLogout(): Promise<void> {
@@ -61,7 +43,7 @@ class AuthService {
     }
   }
 
-  async firebaseLogin(code: string): Promise<any> {
+  async firebaseLogin(code: string, userProfile: any): Promise<any> {
     auth.onAuthStateChanged((user) => {
       if (user) {
         UserStateService.send("UPDATE_FIREBASE_USER", { firebaseUser: user });
@@ -70,10 +52,8 @@ class AuthService {
     });
 
     try {
-      await this.spotifyService.getToken(code);
-      const userprofile = await this.spotifyService.getProfile();
       const firebaseToken: string | void = await this.createFirebaseAccount(
-        userprofile
+        userProfile
       );
 
       return await auth.signInWithCustomToken(firebaseToken);
@@ -82,7 +62,7 @@ class AuthService {
     }
   }
 
-  async createFirebaseAccount(userprofile: any): Promise<string | void> {
+  async createFirebaseAccount(userProfile: any): Promise<string | void> {
     const url = `${apiUrl()}/${this._authUrls.createFirebaseAccount}`;
     const request = new Request(url, {
       method: "POST",
@@ -91,7 +71,7 @@ class AuthService {
         "Content-Type": "application/json",
       },
       mode: "cors",
-      body: JSON.stringify({ userprofile: userprofile }),
+      body: JSON.stringify({ userprofile: userProfile }),
     });
 
     try {
@@ -99,7 +79,7 @@ class AuthService {
       const firebaseToken: string = await res.json();
       return firebaseToken;
     } catch (e) {
-      handleError(e, "spa:spotifyService:getToken");
+      handleError(e, "spa:authService:createFirebaseAccount");
     }
   }
 }

@@ -1,8 +1,7 @@
 // @flow
 import { Machine } from "xstate";
 import type { StateMachine } from "xstate";
-import AuthService from "services/auth.service";
-import SpotifyService from "services/spotify.service";
+import BackendService from "services/backend.service";
 import { persistOnStorage, handleError } from "utils/helpers";
 
 export interface AuthenticatedStateSchema {
@@ -23,15 +22,14 @@ export type AuthenticatedEvent =
   | { type: "LOGOUT" }
   | { type: "LOGIN" };
 
-const spotifyService = SpotifyService.getInstance();
-const authService = AuthService.getInstance();
+const backendService = BackendService.getInstance();
 
 const firebaseLogout = (): Promise<any> => {
-  return authService.firebaseLogout();
+  return backendService.logout();
 };
 
 const firebaseLogin = (ctx, e): Promise<any> => {
-  return authService.firebaseLogin(e.code);
+  return backendService.login(e.code);
 };
 
 export const AuthenticatedState: StateMachine<
@@ -102,15 +100,11 @@ export const AuthenticatedState: StateMachine<
         handleError({ message: e.data }, "spa:authenticatedState");
       },
       spotifyLogin: () => {
-        spotifyService.loginRedirect();
+        backendService.loginRedirect();
       },
       removeFromStorage: (_ctx, e: any) => {
-        localStorage.removeItem("loggedIn");
-        localStorage.removeItem("expirationDate");
-        localStorage.removeItem("spotifyToken");
-        localStorage.removeItem("spotifyRefreshToken");
-        localStorage.removeItem("firebaseUser");
-        spotifyService.cleanExpirationTimeout();
+        backendService.cleanStorage();
+        backendService.cleanExpirationTimeout();
       },
       cleanUrlAndAddToStorage: (_ctx, e: any) => {
         window.history.replaceState({}, document.title, "/");

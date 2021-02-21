@@ -4,7 +4,7 @@ import React, { Fragment, useEffect, useState } from "react"; // eslint-disable-
 import type { Node } from "react"; // eslint-disable-line
 
 // DEPENDENCIES
-import AuthService from "services/auth.service";
+import BackendService from "services/backend.service";
 import { useMachine } from "@xstate/react";
 import { AuthenticatedState } from "./authenticated.state";
 import { getFromStorage } from "utils/helpers";
@@ -15,7 +15,7 @@ function useAuthentication(): {
   logout: Function,
 } {
   const [state, send] = useMachine(AuthenticatedState);
-  const authService = AuthService.getInstance();
+  const backendService = BackendService.getInstance();
   let auth = {
     authState: state.value,
     login,
@@ -40,7 +40,7 @@ function useAuthentication(): {
   }
 
   if (state.matches("loading")) {
-    const code = authService.getCodeIfPresent();
+    const code = backendService.getCodeIfPresent();
 
     if (alreadyLoggedIn()) {
       send("LOGGED_IN");

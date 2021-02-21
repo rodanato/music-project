@@ -1,5 +1,5 @@
 // @flow
-import { Machine, interpret, assign, actions } from "xstate";
+import { Machine, interpret, assign } from "xstate";
 import type { StateMachine, Interpreter } from "xstate";
 
 export interface UserStateSchema {

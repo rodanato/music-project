@@ -23,13 +23,6 @@ type SpotifyUrls = {
   genres: string,
 };
 
-type UserInfo = {
-  spotifyId: string,
-  name: string,
-  email: string,
-  photo: string,
-};
-
 class SpotifyService {
   static instance: SpotifyService;
   static getInstance(): SpotifyService {
@@ -40,7 +33,6 @@ class SpotifyService {
     return SpotifyService.instance;
   }
 
-  _userInfo: UserInfo = { spotifyId: "", name: "", email: "", photo: "" };
   _spotifyUrls: SpotifyUrls = {
     redirect: "redirect",
     setCode: "setCode",
@@ -104,14 +96,6 @@ class SpotifyService {
   set token(token: string) {
     this.spotifyApi.setAccessToken(token);
     persistOnStorage("spotifyToken", token);
-  }
-
-  get userInfo(): UserInfo {
-    return this._userInfo;
-  }
-
-  set userInfo(info: UserInfo): void {
-    this._userInfo = info;
   }
 
   async getToken(code: string): Promise<string> {
@@ -259,17 +243,5 @@ class SpotifyService {
 
   //   handleError(error, "spa:spotify");
   // }
-
-  // getArtists() {}
-
-  // saveArtists() {}
-
-  // getAlbums() {}
-
-  // saveAlbums() {}
-
-  // getListenLater() {}
-
-  // saveListenLater() {}
 }
 export default SpotifyService;

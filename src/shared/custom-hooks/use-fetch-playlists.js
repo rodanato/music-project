@@ -5,7 +5,7 @@ import React, { Fragment, useState, useEffect } from "react"; // eslint-disable-
 // DEPENDENCIES
 import type { Node } from "react"; // eslint-disable-line
 import type { PlaylistsDetail } from "shared/types/spotify.types";
-import DatabaseService from "services/database.service";
+import BackendService from "services/backend.service";
 import { useQuery } from "react-query";
 import { useService } from "@xstate/react";
 import { SliderStateService } from "app/authenticated/slider/slider.state";
@@ -15,7 +15,7 @@ function useFetchPlaylists(): {
   refetchPlaylists: Function,
   playlistsStatus: string,
 } {
-  const databaseService = DatabaseService.getInstance();
+  const backendService = BackendService.getInstance();
   const [state] = useService(SliderStateService);
   const playlistRefetchTime = state.context.hoursToRefetch.playlists;
   const { data, refetch, status } = useQuery(
@@ -28,7 +28,7 @@ function useFetchPlaylists(): {
   );
 
   async function getPlaylistsData() {
-    const playlists: ?PlaylistsDetail = await databaseService.getUserPlaylists();
+    const playlists: ?PlaylistsDetail = await backendService.getUserPlaylists();
 
     if (!playlists) return;
 

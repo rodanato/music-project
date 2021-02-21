@@ -6,7 +6,7 @@ import React from "react";
 import { persistState, getChildrenStateName } from "utils/helpers";
 import type { Context } from "react";
 import type { StateMachine, Interpreter } from "xstate";
-import DatabaseService from "services/database.service";
+import BackendService from "services/backend.service";
 
 export interface ThemeContainerStateSchema {
   states: {
@@ -100,8 +100,8 @@ export const ThemeContainerState: StateMachine<
         if (actionMeta.state.matches(ParentState)) {
           persistState("themeState", newTheme);
 
-          const databaseService = DatabaseService.getInstance();
-          databaseService.updateProfileOnDB("theme", newTheme);
+          const backendService = BackendService.getInstance();
+          backendService.updateProfileOnDB("theme", newTheme);
         }
       },
     },
