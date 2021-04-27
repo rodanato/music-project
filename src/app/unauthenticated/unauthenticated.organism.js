@@ -15,7 +15,7 @@ function UnauthenticatedOrganism({ onLogin }: UnauthenticatedProps): Node {
   return (
     <div>
       <h2>You are not loggedIn</h2>
-      <button onClick={() => onLogin()}>Login here</button>
+      <button onClick={onLogin}>Login here</button>
     </div>
   );
 }

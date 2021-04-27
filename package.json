@@ -6,7 +6,6 @@
     "@emotion/core": "^10.0.28",
     "@xstate/react": "^0.8.1",
     "classnames": "^2.2.6",
-    "dexie": "^3.0.3",
     "emotion-theming": "^10.0.27",
     "firebase": "^7.16.1",
     "ramda": "^0.27.1",
@@ -28,7 +27,7 @@
     "build:prod": "CI=true yarn build REACT_APP_ENV=prod",
     "deploy:local": "firebase serve",
     "test": "react-scripts test",
-    "coverage": "npm test -- --coverage",
+    "coverage": "yarn test -- --coverage",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public"

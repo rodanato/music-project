@@ -43,10 +43,10 @@ function AuthenticatedOrganism({ onLogout }: AuthenticatedOrganismProps): Node {
   }, []);
 
   return (
-    <main css={[container]}>
+    <div css={[container]}>
       <QueryClientProvider client={queryClient}>
         <ContainerRow css={MediaQueries}>
-          <button onClick={() => onLogout()}>Logout here</button>
+          <button onClick={onLogout}>Logout here</button>
           <HeaderOrganism />
         </ContainerRow>
 
@@ -58,7 +58,7 @@ function AuthenticatedOrganism({ onLogout }: AuthenticatedOrganismProps): Node {
       <ContainerRow>
         <MusicControllerOrganism />
       </ContainerRow>
-    </main>
+    </div>
   );
 }
 

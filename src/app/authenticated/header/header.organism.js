@@ -33,11 +33,8 @@ function HeaderOrganism(): Node {
       </div>
 
       <div css={[headerBlock]}>
-        <button onClick={() => removeSlide()}>Remove first slide</button>
-        <ProfileAtom
-          imageName="logo.png"
-          onClickAction={() => loadProfileSlide()}
-        />
+        <button onClick={removeSlide}>Remove first slide</button>
+        <ProfileAtom imageName="logo.png" onClickAction={loadProfileSlide} />
       </div>
     </header>
   );

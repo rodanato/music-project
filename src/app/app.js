@@ -26,11 +26,11 @@ function App(): Node {
       case "loggedIn":
         return (
           <ThemeContainerOrganism>
-            <AuthenticatedOrganism onLogout={() => logout()} />
+            <AuthenticatedOrganism onLogout={logout} />
           </ThemeContainerOrganism>
         );
       case "loggedOut":
-        return <UnauthenticatedOrganism onLogin={() => login()} />;
+        return <UnauthenticatedOrganism onLogin={login} />;
       default:
         return <LoadingAtom flex="1" />;
     }

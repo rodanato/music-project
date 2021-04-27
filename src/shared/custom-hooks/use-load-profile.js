@@ -142,14 +142,16 @@ function useLoadProfile(): {
         loadProfile();
       }
 
-      if (profileData) {
-        if (playlistsStatus === "idle") {
-          refetchPlaylists();
-        }
+      if (profileData && playlistsStatus === "idle") {
+        refetchPlaylists();
+      }
 
-        if (playlistsStatus === "success" && featureHasntLoaded("playlists")) {
-          loadPlaylists();
-        }
+      if (
+        profileData &&
+        playlistsStatus === "success" &&
+        featureHasntLoaded("playlists")
+      ) {
+        loadPlaylists();
       }
 
       if (allDataHasLoaded()) {

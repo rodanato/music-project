@@ -14,11 +14,7 @@ import { getPublicUrl } from "utils/helpers";
 
 function ProfileAtom({ imageName, onClickAction }: ProfileProps): Node {
   return (
-    <button
-      className="mpp-no-btn"
-      type="button"
-      onClick={() => onClickAction()}
-    >
+    <button className="mpp-no-btn" type="button" onClick={onClickAction}>
       <img
         width="50"
         src={`https://dummyimage.com/50x50/000/ffffff.png&text=X`}

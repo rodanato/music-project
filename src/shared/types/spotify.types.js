@@ -27,10 +27,6 @@ export type Playlist = {
   images: any[],
   description: string,
   id: string,
-  tracks: {
-    href: string,
-    total: number,
-  },
 };
 
 export type PlaylistsDetail = {

@@ -46,12 +46,12 @@ function SliderOrganism(): Node {
   }, [list.length]);
 
   return (
-    <section css={[slider]}>
+    <main css={[slider]}>
       <SwiperContainerOrganism slideList={list} />
       <NavigationOrganism>
         <SliderNavigationMolecule slideListLength={list.length} />
       </NavigationOrganism>
-    </section>
+    </main>
   );
 }
 

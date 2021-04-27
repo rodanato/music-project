@@ -127,10 +127,10 @@ class BackendService {
   }
 
   // DATABASE
-  updateProfileOnDB() {
+  updateProfileOnDB(key: string, value: string) {
     const { uid } = UserStateService.state.context.firebaseUser;
 
-    this.databaseService.updateProfile(uid);
+    this.databaseService.updateProfile(key, value, uid);
   }
 
   refetchPersistedData() {
@@ -197,7 +197,16 @@ class BackendService {
     const allPlaylists: Array<Playlist> = [
       ...playlistsFirstGroup.items,
       ...(remainingPlaylists ? remainingPlaylists : []),
-    ];
+    ].map((p) => {
+      const { description, id, images, name } = p;
+
+      return {
+        name,
+        images,
+        id,
+        description,
+      };
+    });
 
     const genres: ?(Genre[]) = await this.spotifyService.getGenres();
 

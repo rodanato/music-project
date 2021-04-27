@@ -17,6 +17,7 @@ class DatabaseService {
       let response: DbProfile;
 
       const users = await db.collection("users").get();
+
       users.forEach(function(doc) {
         if (doc.data().email === email) {
           response = doc.data();
